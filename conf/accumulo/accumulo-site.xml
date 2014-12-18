@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+    <name>instance.zookeeper.host</name>
+    <value>localhost:2181</value>
+  </property>
+
+  <property>
+    <name>logger.dir.walog</name>
+    <value>walogs</value>
+  </property>
+
+  <property>
+    <name>instance.secret</name>
+    <value>DEFAULT</value>
+  </property>
+
+  <property>
+    <name>tserver.wal.sync.method</name>
+    <value>hflush</value>
+  </property>
+
+  <property>
+    <name>tserver.server.threads.minimum</name>
+    <value>64</value>
+  </property>
+
+  <property>
+    <name>tserver.cache.data.size</name>
+    <value>1G</value>
+  </property>
+
+  <property>
+    <name>tserver.cache.index.size</name>
+    <value>1G</value>
+  </property>
+
+  <property>
+    <name>tserver.memory.maps.max</name>
+    <value>512M</value>
+  </property>
+
+  <property>
+    <name>tserver.memory.maps.native.enabled</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>tserver.cache.data.size</name>
+    <value>30M</value>
+  </property>
+
+  <property>
+    <name>tserver.cache.index.size</name>
+    <value>80M</value>
+  </property>
+
+  <property>
+    <name>trace.token.property.password</name>
+    <!-- change this to the root user's password, and/or change the user below -->
+    <value>secret</value>
+  </property>
+
+  <property>
+    <name>trace.user</name>
+    <value>root</value>
+  </property>
+
+  <property>
+    <name>tserver.sort.buffer.size</name>
+    <value>50M</value>
+  </property>
+
+  <property>
+    <name>tserver.walog.max.size</name>
+    <value>512M</value>
+  </property>
+
+  <property>
+    <name>general.classpaths</name>
+    <value>
+      <!-- Accumulo requirements -->
+      $ACCUMULO_HOME/lib/accumulo-server.jar,
+      $ACCUMULO_HOME/lib/accumulo-core.jar,
+      $ACCUMULO_HOME/lib/accumulo-start.jar,
+      $ACCUMULO_HOME/lib/accumulo-fate.jar,
+      $ACCUMULO_HOME/lib/accumulo-proxy.jar,
+      $ACCUMULO_HOME/lib/[^.].*.jar,
+      <!-- End Accumulo requirements -->
+
+      <!-- ZooKeeper requirements -->
+      $ZOOKEEPER_HOME/zookeeper[^.].*.jar,
+      <!-- End ZooKeeper requirements -->
+
+      <!-- Common Hadoop requirements -->
+      $HADOOP_CONF_DIR,
+      <!-- End Common Hadoop requirements -->
+
+      <!-- Hadoop 2 requirements -->
+      $HADOOP_PREFIX/share/hadoop/common/[^.].*.jar,
+      $HADOOP_PREFIX/share/hadoop/common/lib/(?!slf4j)[^.].*.jar,
+      $HADOOP_PREFIX/share/hadoop/hdfs/[^.].*.jar,
+      $HADOOP_PREFIX/share/hadoop/mapreduce/[^.].*.jar,
+      $HADOOP_PREFIX/share/hadoop/yarn/[^.].*.jar,
+      /usr/lib/hadoop/[^.].*.jar,
+      /usr/lib/hadoop/lib/[^.].*.jar,
+      /usr/lib/hadoop-hdfs/[^.].*.jar,
+      /usr/lib/hadoop-mapreduce/[^.].*.jar,
+      /usr/lib/hadoop-yarn/[^.].*.jar,
+      <!-- End Hadoop 2 requirements -->
+
+      <!-- Hadoop 1 requirements -->
+      $HADOOP_PREFIX/[^.].*.jar,
+      $HADOOP_PREFIX/lib/(?!slf4j)[^.].*.jar,
+      <!-- End Hadoop 1 requirements -->
+
+    </value>
+  </property>
+</configuration>
