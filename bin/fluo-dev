@@ -1,0 +1,68 @@
+#! /usr/bin/env bash
+
+# Copyright 2014 Fluo authors (see AUTHORS)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Start: Resolve Script Directory
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+   bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+   SOURCE="$(readlink "$SOURCE")"
+   [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+script=$( basename "$SOURCE" )
+# Stop: Resolve Script Directory
+
+. "$bin"/impl/load-env.sh
+
+case "$1" in
+configure)
+  "$bin"/impl/configure.sh "${*:2}"
+	;;
+reset)
+  "$bin"/impl/reset.sh "${*:2}"
+	;;
+deploy)
+  "$bin"/impl/deploy.sh "${*:2}"
+	;;
+stress)
+  "$bin"/impl/stress.sh "${*:2}"
+	;;
+kill)
+  "$bin"/impl/kill.sh "${*:2}"
+	;;
+ashell)
+  $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD
+	;;
+fluo)
+  if [ -d "$FLUO_HOME" ]; then
+    $FLUO_HOME/bin/fluo ${*:2}
+  else 
+    echo "Fluo has not be deployed yet!  Run 'fluo-dev deploy' first."
+  fi
+	;;
+*)
+	echo -e "Usage: fluo-dev <command> (<argument>)\n"
+  echo -e "Possible commands:\n"
+	echo "  configure   Configures Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
+	echo "  reset       Stops, clears data, and restarts Fluo dependencies (i.e Hadoop, Accumulo, & Zookeeper)"
+	echo "  deploy      Stops/removes existing Fluo deployment, builds fluo from local repo, and deploys it"
+	echo "  stress      Runs Fluo stress test"
+	echo "  kill        Kills Fluo and its depenedencies"
+	echo "  ashell      Runs the Accumulo shell"
+	echo "  fluo        Runs fluo script"
+  echo " " 
+	exit 1
+esac
