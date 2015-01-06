@@ -61,35 +61,30 @@ fi
 . $FLUO_DEV/conf/env.sh
 
 # Confirm that env variables were set correctly
-if [ -z "$HADOOP_PREFIX" -o ! -d "$HADOOP_PREFIX" ]; then
-  echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory.  Please make sure it exists and is set in env.sh"
+if [ -z "$FLUO_REPO" -o ! -d "$FLUO_REPO" ]
+then
+  echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
-if [ -z "$ZOOKEEPER_HOME" -o ! -d "$ZOOKEEPER_HOME" ]; then
-  echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory.  Please make sure it exists and is set in env.sh"
+if [ -z "$SOFTWARE" -o ! -d "$SOFTWARE" ]
+then
+  echo "SOFTWARE=$SOFTWARE is not a valid directory.  Please make sure it exists"
   exit 1
 fi
-if [ -z "$ACCUMULO_HOME" -o ! -d "$ACCUMULO_HOME" ]; then
-  echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory.  Please make sure it exists and is set in env.sh"
-  exit 1
-fi
-if [ -z "$FLUO_HOME" ]; then
-  echo "FLUO_HOME is not set env.sh"
-  exit 1
-fi
-if [ -z "$ACCUMULO_INSTANCE" ]; then
-  echo "ACCUMULO_INSTANCE is not set env.sh"
-  exit 1
-fi
-if [ -z "$ACCUMULO_USER" ]; then
-  echo "ACCUMULO_USER is not set env.sh"
-  exit 1
-fi
-if [ -z "$ACCUMULO_PASSWORD" ]; then
-  echo "ACCUMULO_PASSWORD is not set env.sh"
-  exit 1
-fi
-if [ -z "$ACCUMULO_TABLE" ]; then
-  echo "ACCUMULO_TABLE is not set env.sh"
-  exit 1
-fi
+: ${FLUO_VERSION:?"FLUO_VERSION is not set in env.sh"}
+: ${HADOOP_VERSION:?"HADOOP_VERSION is not set in env.sh"}
+: ${ZOOKEEPER_VERSION:?"ZOOKEEPER_VERSION is not set in env.sh"}
+: ${ACCUMULO_VERSION:?"ACCUMULO_VERSION is not set in env.sh"}
+: ${DOWNLOADS:?"DOWNLOADS is not set in env.sh"}
+: ${APACHE_MIRROR:?"APACHE_MIRROR is not set in env.sh"}
+: ${ACCUMULO_TARBALL:?"ACCUMULO_TARBALL is not set in env.sh"}
+: ${HADOOP_TARBALL:?"HADOOP_TARBALL is not set in env.sh"}
+: ${ZOOKEEPER_TARBALL:?"ZOOKEEPER_TARBALL is not set in env.sh"}
+: ${FLUO_HOME:?"FLUO_HOME is not set in env.sh"}
+: ${ZOOKEEPER_HOME:?"ZOOKEEPER_HOME is not set in env.sh"}
+: ${HADOOP_PREFIX:?"HADOOP_PREFIX is not set in env.sh"}
+: ${ACCUMULO_HOME:?"ACCUMULO_HOME is not set in env.sh"}
+: ${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in env.sh"}
+: ${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}
+: ${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}
+: ${ACCUMULO_TABLE:?"ACCUMULO_TABLE is not set in env.sh"}

@@ -27,26 +27,53 @@ script=$( basename "$SOURCE" )
 
 . "$bin"/impl/load-env.sh
 
+function check_dirs() {
+  if [ ! -d "$HADOOP_PREFIX" ]; then
+    echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory.  Please make sure it exists"
+    exit 1
+  fi
+  if [ ! -d "$ZOOKEEPER_HOME" ]; then
+    echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory.  Please make sure it exists"
+    exit 1
+  fi
+  if [ ! -d "$ACCUMULO_HOME" ]; then
+    echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory.  Please make sure it exists"
+    exit 1
+  fi
+}
+
 case "$1" in
+download)
+  "$bin"/impl/download.sh ${*:2}
+	;;
+install)
+  "$bin"/impl/install.sh ${*:2}
+	;;
 configure)
+  check_dirs
   "$bin"/impl/configure.sh "${*:2}"
 	;;
 reset)
+  check_dirs
   "$bin"/impl/reset.sh "${*:2}"
 	;;
 deploy)
+  check_dirs
   "$bin"/impl/deploy.sh "${*:2}"
 	;;
 stress)
+  check_dirs
   "$bin"/impl/stress.sh "${*:2}"
 	;;
 kill)
   "$bin"/impl/kill.sh "${*:2}"
 	;;
 ashell)
+  check_dirs
   $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD
 	;;
 fluo)
+  check_dirs
   if [ -d "$FLUO_HOME" ]; then
     $FLUO_HOME/bin/fluo ${*:2}
   else 
@@ -56,8 +83,10 @@ fluo)
 *)
 	echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-	echo "  configure   Configures Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
-	echo "  reset       Stops, clears data, and restarts Fluo dependencies (i.e Hadoop, Accumulo, & Zookeeper)"
+	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper) into downloads directory"
+	echo "  install     Installs Fluo dependencies in downloads directory"
+	echo "  configure   Configures Fluo dependencies"
+	echo "  reset       Stops, clears data, and restarts Fluo dependencies"
 	echo "  deploy      Stops/removes existing Fluo deployment, builds fluo from local repo, and deploys it"
 	echo "  stress      Runs Fluo stress test"
 	echo "  kill        Kills Fluo and its depenedencies"

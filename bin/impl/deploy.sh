@@ -39,7 +39,7 @@ cd $FLUO_REPO
 mvn package -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
 
 # Deploy new tarball
-tar xzf $TARBALL -C $COMMON_INSTALL/
+tar xzf $TARBALL -C $SOFTWARE/
 
 # Copy example config to deployment
 cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
