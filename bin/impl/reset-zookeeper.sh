@@ -17,8 +17,7 @@
 $ZOOKEEPER_HOME/bin/zkServer.sh stop
 
 rm $ZOOKEEPER_HOME/zookeeper.out
-
-rm -rf /tmp/fluo-dev-data/zookeeper/*
+rm -rf $DATA_DIR/zookeeper
 
 export ZOO_LOG_DIR=$ZOOKEEPER_HOME
 $ZOOKEEPER_HOME/bin/zkServer.sh start

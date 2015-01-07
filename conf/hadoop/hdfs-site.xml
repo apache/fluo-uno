@@ -27,10 +27,10 @@
   </property>
   <property>
     <name>dfs.namenode.name.dir</name>
-    <value>/tmp/fluo-dev-data/hadoop/name</value>
+    <value>DATA_DIR/hadoop/name</value>
   </property>
   <property>
     <name>dfs.datanode.data.dir</name>
-    <value>/tmp/fluo-dev-data/hadoop/data</value>
+    <value>DATA_DIR/hadoop/data</value>
   </property>
 </configuration>

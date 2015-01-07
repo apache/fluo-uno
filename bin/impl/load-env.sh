@@ -71,6 +71,7 @@ then
   echo "SOFTWARE=$SOFTWARE is not a valid directory.  Please make sure it exists"
   exit 1
 fi
+: ${DATA_DIR:?"DATA_DIR is not set in env.sh"}
 : ${FLUO_VERSION:?"FLUO_VERSION is not set in env.sh"}
 : ${HADOOP_VERSION:?"HADOOP_VERSION is not set in env.sh"}
 : ${ZOOKEEPER_VERSION:?"ZOOKEEPER_VERSION is not set in env.sh"}

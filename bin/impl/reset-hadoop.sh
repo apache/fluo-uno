@@ -20,8 +20,7 @@ pkill -f hadoop.yarn.server
 pkill -f accumulo.start
 
 rm -rf $HADOOP_PREFIX/logs/*
-rm -rf /tmp/fluo-dev-data/hadoop/data
-rm -rf /tmp/fluo-dev-data/hadoop/name
+rm -rf $DATA_DIR/hadoop
 
 $HADOOP_PREFIX/bin/hdfs namenode -format
 
