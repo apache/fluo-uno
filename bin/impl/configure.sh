@@ -25,6 +25,23 @@ impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 script=$( basename "$SOURCE" )
 # Stop: Resolve Script Directory
 
+function config_hadoop() {
+  cp $FLUO_DEV/conf/hadoop/* $HADOOP_PREFIX/etc/hadoop/
+  sed -i "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
+  sed -i "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+  sed -i "s#YARN_LOGS#$HADOOP_PREFIX/logs#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+}
+
+function config_zookeeper() {
+  cp $FLUO_DEV/conf/zookeeper/* $ZOOKEEPER_HOME/conf/
+  sed -i "s#DATA_DIR#$DATA_DIR#g" $ZOOKEEPER_HOME/conf/zoo.cfg
+}
+
+function config_accumulo() {
+  cp $ACCUMULO_HOME/conf/examples/2GB/standalone/* $ACCUMULO_HOME/conf/
+  cp $FLUO_DEV/conf/accumulo/* $ACCUMULO_HOME/conf/
+}
+
 function config_fluo() {
   cp $FLUO_REPO/modules/distribution/src/main/config/* $FLUO_DEV/conf/fluo/
   FLUO_PROPS=$FLUO_DEV/conf/fluo/fluo.properties
@@ -36,17 +53,12 @@ function config_fluo() {
   sed -i "s/# io.fluo.observer.0=com.foo.Observer1/io.fluo.observer.0=io.fluo.stress.trie.NodeObserver/g" $FLUO_PROPS
 }
 
-function config_accumulo() {
-  cp $ACCUMULO_HOME/conf/examples/2GB/standalone/* $ACCUMULO_HOME/conf/
-  cp $FLUO_DEV/conf/accumulo/* $ACCUMULO_HOME/conf/
-}
-
 case "$1" in
 hadoop)
-  cp $FLUO_DEV/conf/hadoop/* $HADOOP_PREFIX/etc/hadoop/
+  config_hadoop
 	;;
 zookeeper)
-  cp $FLUO_DEV/conf/zookeeper/* $ZOOKEEPER_HOME/conf/
+  config_zookeeper
 	;;
 accumulo)
   config_accumulo
@@ -55,8 +67,8 @@ fluo)
   config_fluo
 	;;
 all)
-  cp $FLUO_DEV/conf/hadoop/* $HADOOP_PREFIX/etc/hadoop/
-  cp $FLUO_DEV/conf/zookeeper/* $ZOOKEEPER_HOME/conf/
+  config_hadoop
+  config_zookeeper
   config_accumulo
   config_fluo
   ;;
