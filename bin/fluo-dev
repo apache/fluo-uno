@@ -63,6 +63,14 @@ deploy)
 	;;
 stress)
   check_dirs
+  if [ -z "$STRESS_REPO" ]; then
+    echo "Error - STRESS_REPO is not set in env.sh"
+    exit 1
+  fi
+  if [ ! -d "$STRESS_REPO" ]; then
+    echo "Error - STRESS_REPO=$STRESS_REPO is not a valid directory."
+    exit 1
+  fi
   "$bin"/impl/stress.sh "${*:2}"
 	;;
 kill)

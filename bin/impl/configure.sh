@@ -49,8 +49,6 @@ function config_fluo() {
   sed -i "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
   sed -i "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
   sed -i "s/io.fluo.admin.accumulo.table=/io.fluo.admin.accumulo.table=$ACCUMULO_TABLE/g" $FLUO_PROPS
-  sed -i "s/#io.fluo.app.config1=val1/io.fluo.app.trie.nodeSize=8\nio.fluo.app.trie.stopLevel=6/g" $FLUO_PROPS
-  sed -i "s/# io.fluo.observer.0=com.foo.Observer1/io.fluo.observer.0=io.fluo.stress.trie.NodeObserver/g" $FLUO_PROPS
 }
 
 case "$1" in

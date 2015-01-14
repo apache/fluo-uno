@@ -17,12 +17,10 @@
 # stop if any command fails
 set -e  
 
-cd $FLUO_REPO
-mvn install -DskipTests
-cd modules/stress
+cd $STRESS_REPO
 mvn package assembly:single
 
-JAR=$FLUO_REPO/modules/stress/target/fluo-stress-$FLUO_VERSION-jar-with-dependencies.jar
+JAR=$STRESS_REPO/target/fluo-stress-*-jar-with-dependencies.jar
 PROPS=$FLUO_HOME/conf/fluo.properties
 
 # create splits
