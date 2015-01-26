@@ -46,8 +46,8 @@ wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.md5
 wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.md5
 
 echo -e "\nPlease confirm that the file hashes below match:"
-echo -e "\nActual hashes generated from files using 'md5sum':\n"
-md5sum $DOWNLOADS/*.tar.gz
+echo -e "\nActual hashes generated from files using '$MD5':\n"
+$MD5 $DOWNLOADS/*.tar.gz
 echo -e "\nExpected hashes from Apache:\n"
 cat $DOWNLOADS/*.md5
 
