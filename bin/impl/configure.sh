@@ -27,14 +27,14 @@ script=$( basename "$SOURCE" )
 
 function config_hadoop() {
   cp $FLUO_DEV/conf/hadoop/* $HADOOP_PREFIX/etc/hadoop/
-  sed -i "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
-  sed -i "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
-  sed -i "s#YARN_LOGS#$HADOOP_PREFIX/logs#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+  $SED "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
+  $SED "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+  $SED "s#YARN_LOGS#$HADOOP_PREFIX/logs#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 }
 
 function config_zookeeper() {
   cp $FLUO_DEV/conf/zookeeper/* $ZOOKEEPER_HOME/conf/
-  sed -i "s#DATA_DIR#$DATA_DIR#g" $ZOOKEEPER_HOME/conf/zoo.cfg
+  $SED "s#DATA_DIR#$DATA_DIR#g" $ZOOKEEPER_HOME/conf/zoo.cfg
 }
 
 function config_accumulo() {
@@ -45,10 +45,10 @@ function config_accumulo() {
 function config_fluo() {
   cp $FLUO_REPO/modules/distribution/src/main/config/* $FLUO_DEV/conf/fluo/
   FLUO_PROPS=$FLUO_DEV/conf/fluo/fluo.properties
-  sed -i "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
-  sed -i "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
-  sed -i "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
-  sed -i "s/io.fluo.admin.accumulo.table=/io.fluo.admin.accumulo.table=$ACCUMULO_TABLE/g" $FLUO_PROPS
+  $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
+  $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
+  $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
+  $SED "s/io.fluo.admin.accumulo.table=/io.fluo.admin.accumulo.table=$ACCUMULO_TABLE/g" $FLUO_PROPS
 }
 
 case "$1" in

@@ -89,3 +89,11 @@ fi
 : ${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}
 : ${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}
 : ${ACCUMULO_TABLE:?"ACCUMULO_TABLE is not set in env.sh"}
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export MD5=md5
+  export SED="sed -i .bak"
+else
+  export MD5=md5sum
+  export SED="sed -i"
+fi
