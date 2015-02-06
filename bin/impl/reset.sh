@@ -35,7 +35,7 @@ hadoop)
   "$impl"/reset-hadoop.sh
 	;;
 zookeeper)
-  "$impl"/reset-zookepeer.sh
+  "$impl"/reset-zookeeper.sh
 	;;
 accumulo)
   "$impl"/reset-accumulo.sh
