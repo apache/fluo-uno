@@ -39,7 +39,7 @@ rm -f $TARBALL
 echo "Rebuilding Fluo" 
 # Create new tarball
 cd $FLUO_REPO
-mvn package -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
+mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
 
 # Deploy new tarball
 tar xzf $TARBALL -C $SOFTWARE/
