@@ -18,7 +18,15 @@
 
 <configuration>
   <property>
-    <name>fs.defaultFS</name> 
-    <value>hdfs://localhost:10000</value>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <property>
+    <name>mapreduce.cluster.temp.dir</name>
+    <value>DATA_DIR/hadoop/mapred/temp</value>
+  </property>
+  <property>
+    <name>mapreduce.cluster.local.dir</name>
+    <value>DATA_DIR/hadoop/mapred/local</value>
   </property>
 </configuration>

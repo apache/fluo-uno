@@ -46,16 +46,8 @@ case "$1" in
 download)
   "$bin"/impl/download.sh ${*:2}
 	;;
-install)
-  "$bin"/impl/install.sh ${*:2}
-	;;
-configure)
-  check_dirs
-  "$bin"/impl/configure.sh "${*:2}"
-	;;
-reset)
-  check_dirs
-  "$bin"/impl/reset.sh "${*:2}"
+setup)
+  "$bin"/impl/setup.sh ${*:2}
 	;;
 deploy)
   check_dirs
@@ -92,10 +84,8 @@ fluo)
 	echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
 	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper) into downloads directory"
-	echo "  install     Installs Fluo dependencies in downloads directory"
-	echo "  configure   Configures Fluo dependencies"
-	echo "  reset       Stops, clears data, and restarts Fluo dependencies"
-	echo "  deploy      Stops/removes existing Fluo deployment, builds fluo from local repo, and deploys it"
+	echo "  setup       Sets up and starts Fluo dependencies using tarballs in downloads directory"
+	echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and redeploys it"
 	echo "  stress      Runs Fluo stress test"
 	echo "  kill        Kills Fluo and its depenedencies"
 	echo "  ashell      Runs the Accumulo shell"

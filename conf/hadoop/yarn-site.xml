@@ -19,7 +19,7 @@
 <configuration>
   <property>
     <name>yarn.nodemanager.local-dirs</name>
-    <value>DATA_DIR/yarn</value>
+    <value>DATA_DIR/hadoop/yarn/local</value>
   </property>
   <property>
     <name>yarn.nodemanager.remote-app-log-dir</name>
