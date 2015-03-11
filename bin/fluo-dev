@@ -83,9 +83,9 @@ fluo)
 *)
 	echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper) into downloads directory"
-	echo "  setup       Sets up and starts Fluo dependencies using tarballs in downloads directory"
-	echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and redeploys it"
+	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
+	echo "  setup       Sets up and starts Fluo dependencies (clearing any existing data)"
+	echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
 	echo "  stress      Runs Fluo stress test"
 	echo "  kill        Kills Fluo and its depenedencies"
 	echo "  ashell      Runs the Accumulo shell"
