@@ -27,7 +27,7 @@ PROPS=$FLUO_HOME/conf/fluo.properties
 java -cp $JAR io.fluo.stress.trie.Split $PROPS 10 1000000
 
 # gen numbers
-$HADOOP_PREFIX/bin/hdfs dfs -rm -r /trie1 || true
+$HADOOP_PREFIX/bin/hdfs dfs -rm -r /trie1 || true 2> /dev/null
 
 YARN=$HADOOP_PREFIX/bin/yarn
 $YARN jar $JAR io.fluo.stress.trie.Generate 1 50000 1000000 /trie1
@@ -39,4 +39,8 @@ $YARN jar $JAR io.fluo.stress.trie.Unique /trie1
 $YARN jar $JAR io.fluo.stress.trie.Load $PROPS /trie1
 
 # print
-java -cp $JAR io.fluo.stress.trie.Print $PROPS
+while true; do
+  java -cp $JAR io.fluo.stress.trie.Print $PROPS
+  echo "Will print again in 5 sec.  Use ctrl-c to stop."
+  sleep 5
+done

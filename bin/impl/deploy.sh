@@ -48,21 +48,18 @@ echo "Configuring Fluo"
 # Copy example config to deployment
 cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
 
-# Copy repo config to dev and replace necessary values
-cp $FLUO_REPO/modules/distribution/src/main/config/* $FLUO_DEV/conf/fluo/
-FLUO_PROPS=$FLUO_DEV/conf/fluo/fluo.properties
+# Update fluo.properties with your configuration
+FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
 $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
 $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
 $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
 $SED "s/io.fluo.admin.accumulo.table=/io.fluo.admin.accumulo.table=$ACCUMULO_TABLE/g" $FLUO_PROPS
 
-# Overwrite with your config
-cp $FLUO_DEV/conf/fluo/* $FLUO_HOME/conf/ 2>/dev/null || true
-
+# Update fluo.properites with your observer configuration
 OBSERVER_PROPS=$FLUO_DEV/conf/observer.props
 if [ -f "$OBSERVER_PROPS" ]; then
-  cat $OBSERVER_PROPS >> $FLUO_HOME/conf/fluo.properties
-fi 
+  cat $OBSERVER_PROPS >> $FLUO_PROPS
+fi
 
 # Copy your observers to deployment
 cp $FLUO_DEV/conf/fluo/observers/* $FLUO_HOME/lib/observers/ || true
