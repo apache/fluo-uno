@@ -53,18 +53,6 @@ deploy)
   check_dirs
   "$bin"/impl/deploy.sh "${*:2}"
 	;;
-stress)
-  check_dirs
-  if [ -z "$STRESS_REPO" ]; then
-    echo "Error - STRESS_REPO is not set in env.sh"
-    exit 1
-  fi
-  if [ ! -d "$STRESS_REPO" ]; then
-    echo "Error - STRESS_REPO=$STRESS_REPO is not a valid directory."
-    exit 1
-  fi
-  "$bin"/impl/stress.sh "${*:2}"
-	;;
 kill)
   "$bin"/impl/kill.sh "${*:2}"
 	;;
@@ -72,24 +60,14 @@ ashell)
   check_dirs
   $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD
 	;;
-fluo)
-  check_dirs
-  if [ -d "$FLUO_HOME" ]; then
-    $FLUO_HOME/bin/fluo ${*:2}
-  else 
-    echo "Fluo has not be deployed yet!  Run 'fluo-dev deploy' first."
-  fi
-	;;
 *)
 	echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
 	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
 	echo "  setup       Sets up and starts Fluo dependencies (clearing any existing data)"
 	echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
-	echo "  stress      Runs Fluo stress test"
 	echo "  kill        Kills Fluo and its depenedencies"
 	echo "  ashell      Runs the Accumulo shell"
-	echo "  fluo        Runs fluo script"
   echo " " 
 	exit 1
 esac

@@ -29,17 +29,17 @@ if [ ! -f "$DOWNLOADS/$ZOOKEEPER_TARBALL" ]; then
   exit 1
 fi
 
-$FLUO_DEV/bin/impl/kill.sh all
+$FLUO_DEV/bin/impl/kill.sh
 
 echo "Removing previous versions of Hadoop, Zookeeper & Accumulo"
-rm -rf $SOFTWARE/accumulo-*
-rm -rf $SOFTWARE/hadoop-*
-rm -rf $SOFTWARE/zookeeper-*
+rm -rf $INSTALL/accumulo-*
+rm -rf $INSTALL/hadoop-*
+rm -rf $INSTALL/zookeeper-*
 
-echo "Installing Hadoop, Zookeeper & Accumulo to $SOFTWARE"
-tar xzf $DOWNLOADS/$ACCUMULO_TARBALL -C $SOFTWARE
-tar xzf $DOWNLOADS/$HADOOP_TARBALL -C $SOFTWARE
-tar xzf $DOWNLOADS/$ZOOKEEPER_TARBALL -C $SOFTWARE
+echo "Installing Hadoop, Zookeeper & Accumulo to $INSTALL"
+tar xzf $DOWNLOADS/$ACCUMULO_TARBALL -C $INSTALL
+tar xzf $DOWNLOADS/$HADOOP_TARBALL -C $INSTALL
+tar xzf $DOWNLOADS/$ZOOKEEPER_TARBALL -C $INSTALL
 
 echo "Configuring..."
 # configure hadoop

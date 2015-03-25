@@ -66,11 +66,15 @@ then
   echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
-if [ -z "$SOFTWARE" -o ! -d "$SOFTWARE" ]
-then
-  echo "SOFTWARE=$SOFTWARE is not a valid directory.  Please make sure it exists"
+if [ -z "$INSTALL" ]; then
+  echo "INSTALL=$INSTALL needs to be set in env.sh"
   exit 1
 fi
+
+if [ ! -d $INSTALL ]; then
+  mkdir -p $INSTALL
+fi
+
 : ${DATA_DIR:?"DATA_DIR is not set in env.sh"}
 : ${FLUO_VERSION:?"FLUO_VERSION is not set in env.sh"}
 : ${HADOOP_VERSION:?"HADOOP_VERSION is not set in env.sh"}
@@ -88,7 +92,6 @@ fi
 : ${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in env.sh"}
 : ${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}
 : ${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}
-: ${ACCUMULO_TABLE:?"ACCUMULO_TABLE is not set in env.sh"}
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export MD5=md5

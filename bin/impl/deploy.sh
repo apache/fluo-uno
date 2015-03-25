@@ -15,10 +15,7 @@
 # limitations under the License.
 
 # Stop current processes
-echo "Stopping current deployment"
-if [ -d "$FLUO_HOME" ]; then
-  $FLUO_HOME/bin/fluo yarn stop
-fi
+echo "Killing current deployment"
 pkill -f fluo.yarn
 pkill -f MiniFluo
 pkill -f twill.launcher
@@ -42,38 +39,17 @@ cd $FLUO_REPO
 mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
 
 # Deploy new tarball
-tar xzf $TARBALL -C $SOFTWARE/
+tar xzf $TARBALL -C $INSTALL/
 
-echo "Configuring Fluo"
+echo "Copying conf/examples to conf/"
 # Copy example config to deployment
 cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
 
-# Update fluo.properties with your configuration
 FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+echo "Configuring conf/fluo.properties"
 $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
 $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
 $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
-$SED "s/io.fluo.admin.accumulo.table=/io.fluo.admin.accumulo.table=$ACCUMULO_TABLE/g" $FLUO_PROPS
 
-# Update fluo.properites with your observer configuration
-OBSERVER_PROPS=$FLUO_DEV/conf/observer.props
-if [ -f "$OBSERVER_PROPS" ]; then
-  cat $OBSERVER_PROPS >> $FLUO_PROPS
-fi
-
-# Copy your observers to deployment
-cp $FLUO_DEV/conf/fluo/observers/* $FLUO_HOME/lib/observers/ || true
-
-# after this allow commands to fail
-set +e
-
-echo "Starting Fluo"
-# Start fluo
-$FLUO_HOME/bin/fluo init --force
-while [ $? -ne 0 ]; do
-  echo "Will try again in 5 sec"
-  sleep 5
-  $FLUO_HOME/bin/fluo init --force
-done
-
-$FLUO_HOME/bin/fluo yarn start
+echo "Configuring conf/fluo-env.sh"
+$SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
