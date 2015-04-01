@@ -37,14 +37,6 @@ any directory, you can optionally add the following to your `~/.bashrc`:
 export PATH=/path/to/fluo-dev/bin:$PATH
 ```
 
-You will need to invoke the `fluo` command using `fluo-dev fluo` as `fluo-dev` will set up
-the correct Hadoop environment variables for the `fluo` command.  To avoid using `fluo-dev fluo`
-every time, add the following alias to your `~/.bashrc`:
-
-```
-alias fluo='fluo-dev fluo'
-```
-
 Running Fluo dependencies
 -------------------------
 
@@ -67,7 +59,7 @@ Next, run the following command to setup Fluo's dependencies (Hadoop, Zookeeper,
 fluo-dev setup
 ```
 
-The `setup` command will install the downloaded tarballs to the directory set by `SOFTWARE` in 
+The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in
 your env.sh.  It will then configure and run Hadoop, Zookeeper, & Accumulo.  
 
 Confirm that everything started by checking the monitoring pages of Hadoop & Accumulo:
@@ -78,79 +70,37 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
 If you run some tests and then want a fresh cluster, run `setup` command again which kill all
 running processes, clear any data and logs, and restart your cluster.
 
-Running Fluo
-------------
+Deploying Fluo
+--------------
 
-With its dependencies running, Fluo can now be started.  If you want to run Fluo with observers,
-you should create a file called `observer.props` in `conf/` by copying the example:
-
-```
-cp conf/observer.props.example conf/observer.props
-vim conf/observer.props
-```
-
-The example `observer.props` file is configured to run the [fluo-stress][stress] example application.  
-The observer jar for [fluo-stress][stress] can be obtained by cloning and building its repo using the
-the steps below:
-
-```
-git clone https://github.com/fluo-io/fluo-stress.git
-cd fluo-stress/
-mvn package
-ls target/fluo-stress-*.jar
-```
-
-Copy your observer JAR for your application to `conf/fluo/observers`.  All jars in this directory will
-be include on the classpath when you deploy Fluo.
-
-```
-cp /path/to/observer.jar conf/fluo/observers/
-```
-
-Deploy Fluo using the command below which will remove any existing install, rebuild fluo, install it, 
-and configure it using your configuration in `conf/fluo`:
+With its dependencies running, Fluo can be be built and deployed to your `install/` directory
+using the command below:
 
 ```
 fluo-dev deploy
 ```
 
-Finally, run the command below to confirm that Fluo is running:
+This command will modify the configuration of your Fluo installation to work with the Accumulo cluster
+created by the `setup` command.  The `deploy` can be run again if you want to test out changes made to
+your Fluo repo or if you just want just want a fresh install.  To view your installation:
 
 ```
-fluo yarn status
+cd install/fluo-1.0.0-beta-1-SNAPSHOT
 ```
+
+From here you can run the `fluo` command to administer Fluo.
+
+```
+bin/fluo
+```
+
+With Fluo deployed, you can now follow the Fluo production installation [instructions][2] to set
+up Fluo.
 
 The commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
-`fluo-dev setup` and then `fluo-dev deploy` to setup Hadoop/Accumulo again and redeploy Fluo.
+`fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
 If you make any code changes to Fluo and want to test them, run `fluo-dev deploy` which builds 
 the latest in your cloned Fluo repo and deploys it.
 
-Updating observers
-------------------
-
-If you want to update your obsever code, remove any old jars from `fluo-dev/conf/fluo/observers`
-and copy your updated jar to the directory:
-
-```
-rm conf/fluo/observers/*.jar
-cp /path/to/observer.jar conf/fluo/observers/
-```
-
-If it is OK to clear your cluster, run the command below to redeploy fluo:
-
-```
-fluo-dev deploy
-```
-
-If you want to save the data on your cluster, follow the commands below to update the observers in 
-your deployment and start/stop fluo without losing data:
-
-```
-rm software/fluo-1.0.0-beta-1-SNAPSHOT/lib/observers/*.jar
-cp /path/to/observer.jar software/fluo-1.0.0-beta-1-SNAPSHOT/lib/observers
-fluo yarn stop
-fluo yarn start
-```
-
 [1]: http://www.apache.org/dyn/closer.cgi
-[stress]: https://github.com/fluo-io/fluo-stress
+[2]: https://github.com/fluo-io/fluo/blob/master/docs/production-install.md

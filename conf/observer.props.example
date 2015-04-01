@@ -1,3 +1,0 @@
-io.fluo.observer.0=io.fluo.stress.trie.NodeObserver
-io.fluo.app.trie.nodeSize=8
-io.fluo.app.trie.stopLevel=6
