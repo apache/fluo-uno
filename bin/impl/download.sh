@@ -43,6 +43,7 @@ APACHE=https://www.apache.org/dist
 echo -e "\nDownloading files hashes from Apache:"
 wget -nv -O $DOWNLOADS/$ACCUMULO_TARBALL.md5 $APACHE/$ACCUMULO_PATH/MD5SUM
 wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.md5
+wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.mds
 wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.md5
 
 echo -e "\nPlease confirm that the file hashes below match:"
@@ -50,6 +51,7 @@ echo -e "\nActual hashes generated from files using '$MD5':\n"
 $MD5 $DOWNLOADS/*.tar.gz
 echo -e "\nExpected hashes from Apache:\n"
 cat $DOWNLOADS/*.md5
+cat $DOWNLOADS/*.mds
 
 if hash gpg 2>/dev/null; then
   echo -e "\nDownloading signatures from Apache:"
