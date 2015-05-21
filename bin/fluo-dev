@@ -44,21 +44,21 @@ function check_dirs() {
 
 case "$1" in
 download)
-  "$bin"/impl/download.sh ${*:2}
+  "$bin"/impl/download.sh "${@:2}"
 	;;
 setup)
-  "$bin"/impl/setup.sh ${*:2}
+  "$bin"/impl/setup.sh "${@:2}"
 	;;
 deploy)
   check_dirs
-  "$bin"/impl/deploy.sh "${*:2}"
+  "$bin"/impl/deploy.sh "${@:2}"
 	;;
 kill)
-  "$bin"/impl/kill.sh "${*:2}"
+  "$bin"/impl/kill.sh "${@:2}"
 	;;
 ashell)
   check_dirs
-  $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD
+  $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD "${@:2}"
 	;;
 *)
 	echo -e "Usage: fluo-dev <command> (<argument>)\n"
