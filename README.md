@@ -1,14 +1,14 @@
 fluo-dev
-==========
+========
 
-Scripts and configuration designed to simplify the running of Fluo infrastructure
-during development.  While these scripts make it easy to deploy Fluo, they can wipe
-the underlying data off your cluster.  Therefore, they should not be used in production.
-They are designed for developers who need to frequently upgrade Fluo, test their code,
-and do not care about preserving data.
+Command-line tool for running Fluo on a single machine for development.  This tool is designed for 
+developers who need to frequently upgrade Fluo, test their code, and do not care about preserving 
+data.  While fluo-dev makes it easy to setup a cluster running Fluo, it also makes it easy clear 
+your data and setup a new cluster.  To avoid inadvertent data loss, the fluo-dev tool should not 
+be used in production. 
 
-Installing fluo-dev
--------------------
+Installation
+------------
 
 First, clone the fluo-dev repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
@@ -94,13 +94,13 @@ From here you can run the `fluo` command to administer Fluo.
 bin/fluo
 ```
 
-With Fluo deployed, you can now follow the Fluo production installation [instructions][2] to set
-up Fluo.
+Next, follow the instructions starting at the [Configure a Fluo application][2] section of the 
+Fluo production setup instructions to configure, initialize, and start a Fluo application
 
-The commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
+The `fluo-dev` commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
 `fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
 If you make any code changes to Fluo and want to test them, run `fluo-dev deploy` which builds 
 the latest in your cloned Fluo repo and deploys it.
 
 [1]: http://www.apache.org/dyn/closer.cgi
-[2]: https://github.com/fluo-io/fluo/blob/master/docs/production-install.md
+[2]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application
