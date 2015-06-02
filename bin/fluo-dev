@@ -53,6 +53,9 @@ deploy)
   check_dirs
   "$bin"/impl/deploy.sh "${@:2}"
 	;;
+run)
+  "$bin"/impl/run.sh "${@:2}"
+	;;
 kill)
   "$bin"/impl/kill.sh "${@:2}"
 	;;
@@ -61,13 +64,15 @@ ashell)
   $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD "${@:2}"
 	;;
 *)
-	echo -e "Usage: fluo-dev <command> (<argument>)\n"
+  echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-	echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
-	echo "  setup       Sets up and starts Fluo dependencies (clearing any existing data)"
-	echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
-	echo "  kill        Kills Fluo and its depenedencies"
-	echo "  ashell      Runs the Accumulo shell"
+  echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
+  echo "  setup       Sets up and starts Fluo dependencies (clearing any existing data)"
+  echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
+  echo "  run <app>   Runs the specified application configured in env.sh.  Arguments can be added"
+  echo "              after <app> and will be passed to commands specified in applications.props"
+  echo "  kill        Kills Fluo and its depenedencies"
+  echo "  ashell      Runs the Accumulo shell"
   echo " " 
-	exit 1
+  exit 1
 esac

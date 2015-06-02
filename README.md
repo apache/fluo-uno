@@ -88,14 +88,37 @@ your Fluo repo or if you just want just want a fresh install.  To view your inst
 cd install/fluo-1.0.0-beta-1-SNAPSHOT
 ```
 
-From here you can run the `fluo` command to administer Fluo.
+Verify your installation by running the `fluo` command which you can use to administer Fluo.
 
 ```
 bin/fluo
 ```
 
-Next, follow the instructions starting at the [Configure a Fluo application][2] section of the 
-Fluo production setup instructions to configure, initialize, and start a Fluo application
+Running Fluo applications
+-------------------------
+
+There are two ways to run Fluo applications using `fluo-dev`:
+
+1. Run pre-built Fluo applications like [fluo-stress] that are listed and configured 
+   in `conf/applications.props` and can be run by a single command.
+
+    ```
+    fluo-dev run stress
+    ```
+
+   The `run` command will clone the application's repo to `install/fluo-app-repos/`.  It will
+   run the commands specified in `applications.props` to initialize and run the application 
+   which will remain running unless you stop it using `fluo stop <app>`.  The run command will
+   pass any additional arguments after the application name to the commands specified in 
+   `applications.props`.  For example, you could pass a path to a document directory if you 
+   were running a wordcount application:
+
+    ```
+    fluo-dev run wordcount /path/to/docs
+    ```
+
+2. Configure, initialize, and start your own Fluo application by following instructions starting at
+   the [Configure a Fluo application][2] section of the Fluo production setup instructions.
 
 The `fluo-dev` commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
 `fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
@@ -104,3 +127,4 @@ the latest in your cloned Fluo repo and deploys it.
 
 [1]: http://www.apache.org/dyn/closer.cgi
 [2]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application
+[fluo-stress]: https://github.com/fluo-io/fluo-stress
