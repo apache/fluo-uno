@@ -1,0 +1,20 @@
+# Applications
+# ------------
+# This section is used to configure Fluo applications which are indentified by a unique application 
+# name (which replaces <app> below).  Each application has the following configuration settings:
+#
+# <app>.repo                # Git repo containing code for application. It is cloned when the app is run.
+#                           # A local git repo can be specified by a path (i.e. /path/to/local/repo)
+# <app>.branch              # Branch to checkout in git repo
+# <app>.command.pre.init    # Command in application repo to run before initializing and starting Fluo.
+#                           # FLUO_HOME & FLUO_APP_NAME will be set in env when run.  This command
+#                           # can do things like change fluo config and copy observers
+# <app>.command.post.start  # Script to run from application repo after Fluo is started
+#
+# Applications can be run using the following command 'fluo-dev run <app>`.  Below is configuration for
+# a 'stress' application which can be run using 'fluo-dev run stress':
+
+stress.repo=https://github.com/fluo-io/fluo-stress
+stress.branch=master
+stress.command.pre.init=bin/configure-fluo.sh
+stress.command.post.start=bin/run-test.sh
