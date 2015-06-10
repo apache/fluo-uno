@@ -1,7 +1,7 @@
 fluo-dev
 ========
 
-Command-line tool for running Fluo on a single machine for development.  This tool is designed for 
+A command-line tool for running Fluo on a single machine for development.  This tool is designed for 
 developers who need to frequently upgrade Fluo, test their code, and do not care about preserving 
 data.  While fluo-dev makes it easy to setup a cluster running Fluo, it also makes it easy clear 
 your data and setup a new cluster.  To avoid inadvertent data loss, the fluo-dev tool should not 
@@ -12,29 +12,25 @@ Installation
 
 First, clone the fluo-dev repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
-```
-git clone https://github.com/fluo-io/fluo-dev.git
-```
-
-Create `env.sh` from the example.  This file is used to configure fluo-dev for your environment.
-
-```
-cd conf/
-cp env.sh.example env.sh
-vim env.sh
-```
-
-If you have not already, clone the Fluo repo and set `FLUO_REPO` in env.sh to this directory:
-
-```
-git clone https://github.com/fluo-io/fluo.git
-```
+    git clone https://github.com/fluo-io/fluo-dev.git
 
 All commands are run using the `fluo-dev` script in `bin/`.  If want to run this script from 
 any directory, you can optionally add the following to your `~/.bashrc`:
 
-```
+```bash
 export PATH=/path/to/fluo-dev/bin:$PATH
+```
+
+The `fluo-dev` command uses `conf/env.sh.example` for its default configuration which should
+be sufficient for most users.
+
+Optionally, you can customize this configuration by creating an `env.sh` file and modifying it
+for your environment:
+
+```bash
+cd conf/
+cp env.sh.example env.sh
+vim env.sh
 ```
 
 Running Fluo dependencies
@@ -49,15 +45,11 @@ mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from
 This command will also output hashes and signatures (if you have `gpg` installed) of the downloaded
 software. It is important to inspect this output before installing the software.
 
-```
-fluo-dev download
-```
+    fluo-dev download
 
 Next, run the following command to setup Fluo's dependencies (Hadoop, Zookeeper, & Accumulo):
 
-```
-fluo-dev setup
-```
+    fluo-dev setup
 
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in
 your env.sh.  It will then configure and run Hadoop, Zookeeper, & Accumulo.  
@@ -73,26 +65,26 @@ running processes, clear any data and logs, and restart your cluster.
 Deploying Fluo
 --------------
 
-With its dependencies running, Fluo can be be built and deployed to your `install/` directory
-using the command below:
+With its dependencies running, Fluo can be deployed to your `install/` directory using the command below:
 
-```
-fluo-dev deploy
-```
+    fluo-dev deploy
 
-This command will modify the configuration of your Fluo installation to work with the Accumulo cluster
-created by the `setup` command.  The `deploy` can be run again if you want to test out changes made to
-your Fluo repo or if you just want just want a fresh install.  To view your installation:
+This command will download, install, and configure the latest Fluo release to work with the Accumulo cluster
+created by the `setup` command.  The `deploy` command can be run again if want a fresh install.  To view 
+your installation:
 
-```
-cd install/fluo-1.0.0-beta-1-SNAPSHOT
-```
+    cd install/fluo-1.0.0-beta-1
 
 Verify your installation by running the `fluo` command which you can use to administer Fluo.
 
-```
-bin/fluo
-```
+    bin/fluo
+
+Optionally, you can have the `deploy` command build a Fluo tarball from a local Fluo git repo by creating
+a custom `conf/env.sh` and setting `FLUO_TARBALL_REPO` to the location of your local Fluo clone.  You should 
+also modify `FLUO_VERSION` to use the version in the checked out branch of your local Fluo clone
+(i.e `1.0.0-beta-2-SNAPSHOT`) rather than the last release version (i.e `1.0.0-beta-1`).  This option 
+lets users build and run the latest Fluo code from master or lets Fluo developers test their changes made to
+their local clone before submitting pull requests.
 
 Running Fluo applications
 -------------------------
@@ -122,8 +114,6 @@ There are two ways to run Fluo applications using `fluo-dev`:
 
 The `fluo-dev` commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
 `fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
-If you make any code changes to Fluo and want to test them, run `fluo-dev deploy` which builds 
-the latest in your cloned Fluo repo and deploys it.
 
 [1]: http://www.apache.org/dyn/closer.cgi
 [2]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application

@@ -53,19 +53,29 @@ if [ -n "$FLUO_HOME" ]; then
   exit 1
 fi
 
-# Load env.sh if it exists
-if [ ! -f "$FLUO_DEV/conf/env.sh" ]; then
-  echo "The fluo-dev env.sh needs to be created at $FLUO_DEV/conf/env.sh"
-  exit 1
+# Load env configuration
+if [ -f "$FLUO_DEV/conf/env.sh" ]; then
+  echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"
+  . $FLUO_DEV/conf/env.sh
+else
+  echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"
+  . $FLUO_DEV/conf/env.sh.example
 fi
-. $FLUO_DEV/conf/env.sh
 
 # Confirm that env variables were set correctly
-if [ -z "$FLUO_REPO" -o ! -d "$FLUO_REPO" ]
-then
-  echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
+if [ -z "$FLUO_TARBALL_PATH" -a -z "$FLUO_TARBALL_REPO" -a -z "$FLUO_TARBALL_URL" ]; then
+  echo "You must set one of FLUO_TARBALL_PATH, FLUO_TARBALL_REPO or FLUO_TARBALL_URL!"
   exit 1
 fi
+if [ -n "$FLUO_TARBALL_PATH" -a ! -f "$FLUO_TARBALL_PATH" ]; then
+  echo "FLUO_TARBALL_PATH=$FLUO_TARBALL_PATH is not a valid file.  Please make sure it exists"
+  exit 1
+fi
+if [ -n "$FLUO_TARBALL_REPO" -a ! -d "$FLUO_TARBALL_REPO" ]; then
+  echo "FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO is not a valid directory.  Please make sure it exists"
+  exit 1
+fi
+
 if [ -z "$INSTALL" ]; then
   echo "INSTALL=$INSTALL needs to be set in env.sh"
   exit 1
