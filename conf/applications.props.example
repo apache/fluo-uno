@@ -11,10 +11,19 @@
 #                           # can do things like change fluo config and copy observers
 # <app>.command.post.start  # Script to run from application repo after Fluo is started
 #
-# Applications can be run using the following command 'fluo-dev run <app>`.  Below is configuration for
-# a 'stress' application which can be run using 'fluo-dev run stress':
+# Applications can be run using the following command 'fluo-dev run <app>`
+# Arguments can be added after <app> and will be passed to configured commands for that app.
 
+# Stress test application
+# Usage: fluo-dev run stress
 stress.repo=https://github.com/fluo-io/fluo-stress
 stress.branch=master
 stress.command.pre.init=bin/configure-fluo.sh
 stress.command.post.start=bin/run-test.sh
+
+# Phrasecount application
+# Usage: fluo-dev run phrasecount <txtDocsDir>
+phrasecount.repo=https://github.com/fluo-io/phrasecount
+phrasecount.branch=master
+phrasecount.command.pre.init=bin/configure.sh
+phrasecount.command.post.start=bin/run.sh

@@ -13,6 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific 
 
+# stop if any command fails
+set -e
+
 function echo_prop() {
   prop=$1
   APP_PROPS=$FLUO_DEV/conf/applications.props
@@ -37,7 +40,7 @@ if [ ! -d $FLUO_HOME/apps/$FLUO_APP_NAME ]; then
   $FLUO_HOME/bin/fluo new $FLUO_APP_NAME
 else
   echo "Restarting '$FLUO_APP_NAME' application.  Errors may be printed if it's not running..."
-  $FLUO_HOME/bin/fluo kill $FLUO_APP_NAME
+  $FLUO_HOME/bin/fluo kill $FLUO_APP_NAME || true
   rm -rf $FLUO_HOME/apps/$FLUO_APP_NAME
   $FLUO_HOME/bin/fluo new $FLUO_APP_NAME
 fi

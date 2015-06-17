@@ -102,11 +102,11 @@ There are two ways to run Fluo applications using `fluo-dev`:
    run the commands specified in `applications.props` to initialize and run the application 
    which will remain running unless you stop it using `fluo stop <app>`.  The run command will
    pass any additional arguments after the application name to the commands specified in 
-   `applications.props`.  For example, you could pass a path to a document directory if you 
-   were running a wordcount application:
+   `applications.props`.  For example, the phrasecount application requires an additional
+   argument that specifies a directory containing text documents to index:
 
     ```
-    fluo-dev run wordcount /path/to/docs
+    fluo-dev run phrasecount /path/to/txt/docs
     ```
 
 2. Configure, initialize, and start your own Fluo application by following instructions starting at
