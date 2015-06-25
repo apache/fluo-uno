@@ -56,6 +56,8 @@ $SED "s#DATA_DIR#$DATA_DIR#g" $ZOOKEEPER_HOME/conf/zoo.cfg
 # configure accumulo
 cp $ACCUMULO_HOME/conf/examples/2GB/standalone/* $ACCUMULO_HOME/conf/
 cp $FLUO_DEV/conf/accumulo/* $ACCUMULO_HOME/conf/
+$SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" $ACCUMULO_HOME/conf/accumulo-env.sh
+$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" $ACCUMULO_HOME/conf/accumulo-env.sh
 
 echo "Starting Hadoop..."
 rm -rf $HADOOP_PREFIX/logs/*
