@@ -18,10 +18,6 @@
 
 <configuration>
   <property>
-    <name>dfs.namenode.replication.min</name>
-    <value>1</value>
-  </property>
-  <property>
     <name>dfs.datanode.synconclose</name>
     <value>true</value>
   </property>
