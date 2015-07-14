@@ -17,8 +17,28 @@
 rm -f $DOWNLOADS/*.asc
 rm -f $DOWNLOADS/*.md5
 
-ACCUMULO_PATH=accumulo/$ACCUMULO_VERSION
-wget -c -P $DOWNLOADS $APACHE_MIRROR/$ACCUMULO_PATH/$ACCUMULO_TARBALL
+if [ -n "$ACCUMULO_TARBALL_REPO" ]; then
+  rm -f $DOWNLOADS/$ACCUMULO_TARBALL
+  pushd .
+  cd $ACCUMULO_TARBALL_REPO
+  mvn clean package -Passemble -DskipTests
+  ACCUMULO_BUILT_TAR=$ACCUMULO_TARBALL_REPO/assemble/target/accumulo-$ACCUMULO_VERSION-bin.tar.gz
+  if [ ! -f $ACCUMULO_BUILT_TAR ]; then
+    echo
+    echo "The following file does not exist :"
+    echo "    $ACCUMULO_BUILT_TAR"
+    echo "after building from :"
+    echo "    ACCUMULO_TARBALL_REPO=$ACCUMULO_TARBALL_REPO"
+    echo "ensure ACCUMULO_VERSION=$ACCUMULO_VERSION is correct."
+    echo
+    exit 1
+  fi
+  popd
+  cp $ACCUMULO_BUILT_TAR $DOWNLOADS/
+else
+  ACCUMULO_PATH=accumulo/$ACCUMULO_VERSION
+  wget -c -P $DOWNLOADS $APACHE_MIRROR/$ACCUMULO_PATH/$ACCUMULO_TARBALL
+fi
 
 HADOOP_PATH=hadoop/common/hadoop-$HADOOP_VERSION
 wget -c -P $DOWNLOADS $APACHE_MIRROR/$HADOOP_PATH/$HADOOP_TARBALL
@@ -29,7 +49,10 @@ wget -c -P $DOWNLOADS $APACHE_MIRROR/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL
 APACHE=https://www.apache.org/dist
 
 echo -e "\nDownloading files hashes from Apache:"
-wget -nv -O $DOWNLOADS/$ACCUMULO_TARBALL.md5 $APACHE/$ACCUMULO_PATH/MD5SUM
+if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
+  wget -nv -O $DOWNLOADS/$ACCUMULO_TARBALL.md5 $APACHE/$ACCUMULO_PATH/MD5SUM
+fi
+
 wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.md5
 wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.mds
 wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.md5
@@ -43,13 +66,17 @@ cat $DOWNLOADS/*.mds
 
 if hash gpg 2>/dev/null; then
   echo -e "\nDownloading signatures from Apache:"
-  wget -nv -P $DOWNLOADS $APACHE/$ACCUMULO_PATH/$ACCUMULO_TARBALL.asc
+  if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
+    wget -nv -P $DOWNLOADS $APACHE/$ACCUMULO_PATH/$ACCUMULO_TARBALL.asc
+  fi
   wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.asc
   wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.asc
 
   echo -e "\nVerifying the authenticity of tarballs using gpg and downloaded signatures:"
-  echo -e "\nVerifying $ACCUMULO_TARBALL" 
-  gpg --verify $DOWNLOADS/$ACCUMULO_TARBALL.asc $DOWNLOADS/$ACCUMULO_TARBALL
+  if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
+    echo -e "\nVerifying $ACCUMULO_TARBALL" 
+    gpg --verify $DOWNLOADS/$ACCUMULO_TARBALL.asc $DOWNLOADS/$ACCUMULO_TARBALL
+  fi
   echo -e "\nverifying $HADOOP_TARBALL" 
   gpg --verify $DOWNLOADS/$HADOOP_TARBALL.asc $DOWNLOADS/$HADOOP_TARBALL
   echo -e "\nVerifying $ZOOKEEPER_TARBALL" 
