@@ -46,6 +46,9 @@ wget -c -P $DOWNLOADS $APACHE_MIRROR/$HADOOP_PATH/$HADOOP_TARBALL
 ZOOKEEPER_PATH=zookeeper/zookeeper-$ZOOKEEPER_VERSION
 wget -c -P $DOWNLOADS $APACHE_MIRROR/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL
 
+SPARK_PATH=spark/spark-$SPARK_VERSION
+wget -c -P $DOWNLOADS $APACHE_MIRROR/$SPARK_PATH/$SPARK_TARBALL
+
 APACHE=https://www.apache.org/dist
 
 echo -e "\nDownloading files hashes from Apache:"
@@ -56,10 +59,11 @@ fi
 wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.md5
 wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.mds
 wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.md5
+wget -nv -P $DOWNLOADS $APACHE/$SPARK_PATH/$SPARK_TARBALL.md5
 
 echo -e "\nPlease confirm that the file hashes below match:"
 echo -e "\nActual hashes generated from files using '$MD5':\n"
-$MD5 $DOWNLOADS/*.tar.gz
+$MD5 $DOWNLOADS/*gz
 echo -e "\nExpected hashes from Apache:\n"
 cat $DOWNLOADS/*.md5
 cat $DOWNLOADS/*.mds
@@ -71,6 +75,7 @@ if hash gpg 2>/dev/null; then
   fi
   wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.asc
   wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.asc
+  wget -nv -P $DOWNLOADS $APACHE/$SPARK_PATH/$SPARK_TARBALL.asc
 
   echo -e "\nVerifying the authenticity of tarballs using gpg and downloaded signatures:"
   if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
@@ -81,6 +86,8 @@ if hash gpg 2>/dev/null; then
   gpg --verify $DOWNLOADS/$HADOOP_TARBALL.asc $DOWNLOADS/$HADOOP_TARBALL
   echo -e "\nVerifying $ZOOKEEPER_TARBALL" 
   gpg --verify $DOWNLOADS/$ZOOKEEPER_TARBALL.asc $DOWNLOADS/$ZOOKEEPER_TARBALL
+  echo -e "\nVerifying $SPARK_TARBALL" 
+  gpg --verify $DOWNLOADS/$SPARK_TARBALL.asc $DOWNLOADS/$SPARK_TARBALL
 else
   echo -e "\nERROR - The command 'gpg' is NOT installed!  Please install to verify signatures of downloaded tarballs."
 fi

@@ -40,19 +40,20 @@ With `fluo-dev` script set up, you can now use it to download, configure, and ru
 its dependencies.
 
 First, run the command below to download the binary tarballs of Fluo's dependencies (i.e Accumulo, Hadoop, 
-and Zookeeper) and their corresponding file hashes and signatures. It will use the Apache download 
+Zookeeper and Spark) and their corresponding file hashes and signatures. It will use the Apache download 
 mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from [this website][1].
 This command will also output hashes and signatures (if you have `gpg` installed) of the downloaded
 software. It is important to inspect this output before installing the software.
 
     fluo-dev download
 
-Next, run the following command to setup Fluo's dependencies (Hadoop, Zookeeper, & Accumulo):
+Next, run the following command to setup Fluo's dependencies (Hadoop, Zookeeper, & Accumulo) as
+well as Spark:
 
     fluo-dev setup
 
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in
-your env.sh.  It will then configure and run Hadoop, Zookeeper, & Accumulo.  
+your env.sh.  It will then configure and run Hadoop, Zookeeper and Accumulo.  
 
 Confirm that everything started by checking the monitoring pages of Hadoop & Accumulo:
  * [Hadoop NameNode](http://localhost:50070/)

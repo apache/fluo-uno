@@ -31,23 +31,28 @@ fi
 
 $FLUO_DEV/bin/impl/kill.sh
 
-echo "Removing previous versions of Hadoop, Zookeeper & Accumulo"
+echo "Removing previous versions of Hadoop, Zookeeper, Accumulo & Spark"
 rm -rf $INSTALL/accumulo-*
 rm -rf $INSTALL/hadoop-*
 rm -rf $INSTALL/zookeeper-*
+rm -rf $INSTALL/spark-*
 
-echo "Installing Hadoop, Zookeeper & Accumulo to $INSTALL"
+echo "Installing Hadoop, Zookeeper, Accumulo & Spark to $INSTALL"
 tar xzf $DOWNLOADS/$ACCUMULO_TARBALL -C $INSTALL
 tar xzf $DOWNLOADS/$HADOOP_TARBALL -C $INSTALL
 tar xzf $DOWNLOADS/$ZOOKEEPER_TARBALL -C $INSTALL
+tar xzf $DOWNLOADS/$SPARK_TARBALL -C $INSTALL
 
 echo "Configuring..."
 # configure hadoop
 cp $FLUO_DEV/conf/hadoop/* $HADOOP_PREFIX/etc/hadoop/
+cp $SPARK_HOME/lib/spark-$SPARK_VERSION-yarn-shuffle.jar $HADOOP_PREFIX/share/hadoop/yarn/lib/
 $SED "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
 $SED "s#YARN_LOGS#$HADOOP_PREFIX/logs#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+$SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
+$SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 
 # configure zookeeper
 cp $FLUO_DEV/conf/zookeeper/* $ZOOKEEPER_HOME/conf/
