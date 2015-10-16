@@ -64,6 +64,10 @@ cp $FLUO_DEV/conf/accumulo/* $ACCUMULO_HOME/conf/
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" $ACCUMULO_HOME/conf/accumulo-env.sh
 $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" $ACCUMULO_HOME/conf/accumulo-env.sh
 
+# configure spark
+cp $FLUO_DEV/conf/spark/spark-defaults.conf $SPARK_HOME/conf
+$SED "s#DATA_DIR#$DATA_DIR#g" $SPARK_HOME/conf/spark-defaults.conf
+
 echo "Starting Hadoop..."
 rm -rf $HADOOP_PREFIX/logs/*
 rm -rf $DATA_DIR/hadoop
@@ -82,3 +86,8 @@ rm -f $ACCUMULO_HOME/logs/*
 $HADOOP_PREFIX/bin/hadoop fs -rm -r /accumulo 2> /dev/null
 $ACCUMULO_HOME/bin/accumulo init --clear-instance-name --instance-name $ACCUMULO_INSTANCE --password $ACCUMULO_PASSWORD
 $ACCUMULO_HOME/bin/start-all.sh
+
+echo "Starting Spark HistoryServer..."
+rm -rf $DATA_DIR/spark
+mkdir -p $DATA_DIR/spark/events
+$SPARK_HOME/sbin/start-history-server.sh
