@@ -59,6 +59,7 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
  * [Hadoop NameNode](http://localhost:50070/)
  * [Hadoop ResourceManager](http://localhost:8088/)
  * [Accumulo Monitor](http://localhost:50095/)
+ * [Spark HistoryServer](http://localhost:18080/)
 
 If you run some tests and then want a fresh cluster, run `setup` command again which kill all
 running processes, clear any data and logs, and restart your cluster.
