@@ -65,8 +65,9 @@ $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" $ACC
 $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" $ACCUMULO_HOME/conf/accumulo-env.sh
 
 # configure spark
-cp $FLUO_DEV/conf/spark/spark-defaults.conf $SPARK_HOME/conf
+cp $FLUO_DEV/conf/spark/* $SPARK_HOME/conf
 $SED "s#DATA_DIR#$DATA_DIR#g" $SPARK_HOME/conf/spark-defaults.conf
+$SED "s#HADOOP_PREFIX#$HADOOP_PREFIX#g" $SPARK_HOME/conf/spark-env.sh
 
 echo "Starting Hadoop..."
 rm -rf $HADOOP_PREFIX/logs/*
