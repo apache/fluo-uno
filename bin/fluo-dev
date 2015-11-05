@@ -25,7 +25,7 @@ bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 script=$( basename "$SOURCE" )
 # Stop: Resolve Script Directory
 
-. "$bin"/impl/load-env.sh
+. "$bin"/impl/load-env.sh "$1"
 
 function check_dirs() {
   if [ ! -d "$HADOOP_PREFIX" ]; then
@@ -63,6 +63,9 @@ ashell)
   check_dirs
   $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD "${@:2}"
 	;;
+paths)
+  "$bin"/impl/paths.sh "${@:2}"
+        ;;
 *)
   echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
@@ -73,6 +76,8 @@ ashell)
   echo "              after <app> and will be passed to commands specified in applications.props"
   echo "  kill        Kills Fluo and its depenedencies"
   echo "  ashell      Runs the Accumulo shell"
+  echo "  paths       Prints out paths for all executables.  Can be used to add everything setup by"
+  echo "              fluo-dev to PATH."
   echo " " 
   exit 1
 esac
