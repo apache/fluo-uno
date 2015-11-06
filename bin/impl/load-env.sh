@@ -55,10 +55,10 @@ fi
 
 # Load env configuration
 if [ -f "$FLUO_DEV/conf/env.sh" ]; then
-  echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"
+  if [ "$1" != "paths" ]; then echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"; fi
   . $FLUO_DEV/conf/env.sh
 else
-  echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"
+  if [ "$1" != "paths" ]; then echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
   . $FLUO_DEV/conf/env.sh.example
 fi
 

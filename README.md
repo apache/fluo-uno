@@ -14,13 +14,6 @@ First, clone the fluo-dev repo on a local disk with enough space to run Hadoop, 
 
     git clone https://github.com/fluo-io/fluo-dev.git
 
-All commands are run using the `fluo-dev` script in `bin/`.  If want to run this script from 
-any directory, you can optionally add the following to your `~/.bashrc`:
-
-```bash
-export PATH=/path/to/fluo-dev/bin:$PATH
-```
-
 The `fluo-dev` command uses `conf/env.sh.example` for its default configuration which should
 be sufficient for most users.
 
@@ -31,6 +24,14 @@ for your environment:
 cd conf/
 cp env.sh.example env.sh
 vim env.sh
+```
+
+All commands are run using the `fluo-dev` script in `bin/`.  If want to run fluo-dev, accumulo, 
+hadoop, zookeeper, fluo, and spark commands from any directory, you can optionally execute the 
+following command :
+
+```bash
+export PATH=`./bin/fluo-dev paths`:$PATH
 ```
 
 Running Fluo dependencies
