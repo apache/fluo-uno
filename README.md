@@ -26,6 +26,10 @@ cp env.sh.example env.sh
 vim env.sh
 ```
 
+Fluo-dev can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) that can be used 
+to monitor your Fluo applications.  This setup does not occur with the default configuration. You 
+must set `SETUP_METRICS` to `true` in your `env.sh`.
+
 All commands are run using the `fluo-dev` script in `bin/`.  If want to run fluo-dev, accumulo, 
 hadoop, zookeeper, fluo, and spark commands from any directory, you can optionally execute the 
 following command :
@@ -61,6 +65,7 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
  * [Hadoop ResourceManager](http://localhost:8088/)
  * [Accumulo Monitor](http://localhost:50095/)
  * [Spark HistoryServer](http://localhost:18080/)
+ * [Grafana](http://localhost:3000/) (optional)
 
 If you run some tests and then want a fresh cluster, run `setup` command again which kill all
 running processes, clear any data and logs, and restart your cluster.

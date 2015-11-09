@@ -40,6 +40,76 @@ else
   wget -c -P $DOWNLOADS $APACHE_MIRROR/$ACCUMULO_PATH/$ACCUMULO_TARBALL
 fi
 
+if [ $SETUP_METRICS = "true" ]; then
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    BUILD_INFLUXDB=true
+    BUILD_GRAFANA=true
+  fi
+
+  BUILD=$DOWNLOADS/build
+  GOPATH=$BUILD/go
+  rm -rf $BUILD
+  mkdir -p $BUILD
+  mkdir -p $GOPATH
+  IF_DIR=influxdb-$INFLUXDB_VERSION
+  IF_PATH=$BUILD/$IF_DIR
+  GF_DIR=grafana-$GRAFANA_VERSION
+  GF_PATH=$BUILD/$GF_DIR
+
+  echo "Downloading InfluxDB tarball"
+  INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
+  wget -c -P $DOWNLOADS https://s3.amazonaws.com/influxdb/$INFLUXDB_TARBALL
+  tar xzf $DOWNLOADS/$INFLUXDB_TARBALL -C $BUILD
+  mv $BUILD/influxdb_"$INFLUXDB_VERSION"_x86_64 $IF_PATH
+  mkdir $IF_PATH/bin
+  mv $IF_PATH/opt/influxdb/versions/$INFLUXDB_VERSION/* $IF_PATH/bin
+  rm -rf $IF_PATH/opt
+
+  if [[ "$BUILD_INFLUXDB" == "true" ]]; then
+    echo "Downloading InfluxDB source"
+    hash go 2>/dev/null || { echo >&2 "Go lang must be installed & go command must be on path to build.  Aborting."; exit 1; }
+    go get github.com/influxdb/influxdb
+    echo "Building InfluxDB"
+    cd $GOPATH/src/github.com/influxdb/influxdb
+    git checkout tags/v"$INFLUXDB_VERSION"
+    cd $GOPATH/src/github.com/influxdb
+    go get -u -f -t ./...
+    go build ./...
+    go install ./...
+    echo "Replacing influx & influxd executables"
+    cp $GOPATH/bin/influx $IF_PATH/bin
+    cp $GOPATH/bin/influxd $IF_PATH/bin
+  fi
+
+  cd $BUILD
+  tar czf influxdb-"$INFLUXDB_VERSION".tar.gz $IF_DIR
+  rm -rf $IF_PATH
+
+  echo "Downloading Grafana tarball"
+  GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
+  wget -c -P $DOWNLOADS https://grafanarel.s3.amazonaws.com/builds/$GRAFANA_TARBALL
+  tar xzf $DOWNLOADS/$GRAFANA_TARBALL -C $BUILD
+
+  if [[ "$BUILD_GRAFANA" == "true" ]]; then
+    echo "Downloading Grafana source"
+    hash go 2>/dev/null || { echo >&2 "Go lang must be installed & go command must be on path to build.  Aborting."; exit 1; }
+    go get github.com/grafana/grafana
+    echo "Building Grafana"
+    cd $GOPATH/src/github.com/grafana/grafana
+    git checkout tags/v"$GRAFANA_VERSION"
+    go run build.go setup
+    $GOPATH/bin/godep restore
+    go run build.go build
+    echo "Replacing grafana-server executable"
+    cp $GOPATH/src/github.com/grafana/grafana/bin/grafana-server $GF_PATH/bin
+  fi
+
+  cd $BUILD
+  tar czf grafana-"$GRAFANA_VERSION".tar.gz $GF_DIR
+  rm -rf $GF_PATH
+fi
+
 HADOOP_PATH=hadoop/common/hadoop-$HADOOP_VERSION
 wget -c -P $DOWNLOADS $APACHE_MIRROR/$HADOOP_PATH/$HADOOP_TARBALL
 

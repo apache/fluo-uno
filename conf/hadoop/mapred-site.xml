@@ -23,10 +23,10 @@
   </property>
   <property>
     <name>mapreduce.cluster.temp.dir</name>
-    <value>DATA_DIR/hadoop/mapred/temp</value>
+    <value>file://DATA_DIR/hadoop/mapred/temp</value>
   </property>
   <property>
     <name>mapreduce.cluster.local.dir</name>
-    <value>DATA_DIR/hadoop/mapred/local</value>
+    <value>file://DATA_DIR/hadoop/mapred/local</value>
   </property>
 </configuration>

@@ -1,0 +1,5 @@
+frequency: 10 seconds
+reporters:
+    - type: graphite
+      host: localhost
+      port: 2003

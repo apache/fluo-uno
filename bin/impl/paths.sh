@@ -14,5 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo $FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin
+echo -n $FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin
 
+if [ $SETUP_METRICS == "true" ]; then
+  echo -n :$INFLUXDB_HOME/bin:$GRAFANA_HOME/bin
+fi
+echo ""
