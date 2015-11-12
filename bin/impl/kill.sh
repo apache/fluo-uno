@@ -21,3 +21,5 @@ pkill -f hadoop.hdfs
 pkill -f hadoop.yarn
 pkill -f QuorumPeerMain
 pkill -f org.apache.spark.deploy.history.HistoryServer
+pkill -f influxdb
+pkill -f grafana-server

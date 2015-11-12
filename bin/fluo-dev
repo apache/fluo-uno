@@ -65,19 +65,23 @@ ashell)
 	;;
 paths)
   "$bin"/impl/paths.sh "${@:2}"
-        ;;
+  ;;
+version)
+  "$bin"/impl/version.sh "${@:2}"
+  ;;
 *)
   echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-  echo "  download    Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
-  echo "  setup       Sets up and starts Fluo dependencies (clearing any existing data)"
-  echo "  deploy      Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
-  echo "  run <app>   Runs the specified application configured in env.sh.  Arguments can be added"
-  echo "              after <app> and will be passed to commands specified in applications.props"
-  echo "  kill        Kills Fluo and its depenedencies"
-  echo "  ashell      Runs the Accumulo shell"
-  echo "  paths       Prints out paths for all executables.  Can be used to add everything setup by"
-  echo "              fluo-dev to PATH."
+  echo "  download      Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
+  echo "  setup         Sets up and starts Fluo dependencies (clearing any existing data)"
+  echo "  deploy        Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
+  echo "  run <app>     Runs the specified application configured in env.sh.  Arguments can be added"
+  echo "                after <app> and will be passed to commands specified in applications.props"
+  echo "  kill          Kills Fluo and its depenedencies"
+  echo "  ashell        Runs the Accumulo shell"
+  echo "  paths         Prints out paths for all executables.  Can be used to add everything setup by"
+  echo "                  fluo-dev to PATH."
+  echo "  version <dep> Prints out configured version for dependency"
   echo " " 
   exit 1
 esac

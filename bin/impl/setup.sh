@@ -18,15 +18,29 @@ if [ ! -f "$DOWNLOADS/$ACCUMULO_TARBALL" ]; then
   echo "Accumulo tarball $ACCUMULO_TARBALL does not exists in downloads/"
   exit 1
 fi
-
 if [ ! -f "$DOWNLOADS/$HADOOP_TARBALL" ]; then
   echo "Hadoop tarball $HADOOP_TARBALL does not exists in downloads/"
   exit 1
 fi
-
 if [ ! -f "$DOWNLOADS/$ZOOKEEPER_TARBALL" ]; then
   echo "Zookeeper tarball $ZOOKEEPER_TARBALL does not exists in downloads/"
   exit 1
+fi
+if [ ! -f "$DOWNLOADS/$SPARK_TARBALL" ]; then
+  echo "Spark tarball $SPARK_TARBALL does not exists in downloads/"
+  exit 1
+fi
+INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz
+GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".tar.gz
+if [ $SETUP_METRICS = "true" ]; then
+  if [ ! -f "$DOWNLOADS/build/$INFLUXDB_TARBALL" ]; then
+    echo "InfluxDB tarball $INFLUXDB_TARBALL does not exists in downloads/build/"
+    exit 1
+  fi
+  if [ ! -f "$DOWNLOADS/build/$GRAFANA_TARBALL" ]; then
+    echo "Grafana tarball $GRAFANA_TARBALL does not exists in downloads/build"
+    exit 1
+  fi
 fi
 
 $FLUO_DEV/bin/impl/kill.sh
@@ -36,6 +50,8 @@ rm -rf $INSTALL/accumulo-*
 rm -rf $INSTALL/hadoop-*
 rm -rf $INSTALL/zookeeper-*
 rm -rf $INSTALL/spark-*
+rm -rf $INSTALL/influxdb-*
+rm -rf $INSTALL/grafana-*
 
 echo "Installing Hadoop, Zookeeper, Accumulo & Spark to $INSTALL"
 tar xzf $DOWNLOADS/$ACCUMULO_TARBALL -C $INSTALL
@@ -69,6 +85,11 @@ cp $FLUO_DEV/conf/spark/* $SPARK_HOME/conf
 $SED "s#DATA_DIR#$DATA_DIR#g" $SPARK_HOME/conf/spark-defaults.conf
 $SED "s#HADOOP_PREFIX#$HADOOP_PREFIX#g" $SPARK_HOME/conf/spark-env.sh
 
+echo "Starting Spark HistoryServer..."
+rm -rf $DATA_DIR/spark
+mkdir -p $DATA_DIR/spark/events
+$SPARK_HOME/sbin/start-history-server.sh
+
 echo "Starting Hadoop..."
 rm -rf $HADOOP_PREFIX/logs/*
 rm -rf $DATA_DIR/hadoop
@@ -88,7 +109,42 @@ $HADOOP_PREFIX/bin/hadoop fs -rm -r /accumulo 2> /dev/null
 $ACCUMULO_HOME/bin/accumulo init --clear-instance-name --instance-name $ACCUMULO_INSTANCE --password $ACCUMULO_PASSWORD
 $ACCUMULO_HOME/bin/start-all.sh
 
-echo "Starting Spark HistoryServer..."
-rm -rf $DATA_DIR/spark
-mkdir -p $DATA_DIR/spark/events
-$SPARK_HOME/sbin/start-history-server.sh
+if [ $SETUP_METRICS = "true" ]; then
+  echo "Setting up metrics (influxdb + grafana)..."
+  tar xzf $DOWNLOADS/build/$INFLUXDB_TARBALL -C $INSTALL
+  $INFLUXDB_HOME/bin/influxd config -config $FLUO_DEV/conf/influxdb/influxdb.conf > $INFLUXDB_HOME/influxdb.conf
+  if [ ! -f $INFLUXDB_HOME/influxdb.conf ]; then
+    echo "Failed to create $INFLUXDB_HOME/influxdb.conf"
+    exit 1
+  fi
+  $SED "s#DATA_DIR#$DATA_DIR#g" $INFLUXDB_HOME/influxdb.conf
+  rm -rf $DATA_DIR/influxdb
+  $INFLUXDB_HOME/bin/influxd -config $INFLUXDB_HOME/influxdb.conf &> $INFLUXDB_HOME/influxdb.log &
+
+  tar xzf $DOWNLOADS/build/$GRAFANA_TARBALL -C $INSTALL
+  cp $FLUO_DEV/conf/grafana/custom.ini $GRAFANA_HOME/conf/
+  $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" $GRAFANA_HOME/conf/custom.ini
+  mkdir $GRAFANA_HOME/dashboards
+  cp $FLUO_DEV/conf/grafana/dashboards/* $GRAFANA_HOME/dashboards/
+  $GRAFANA_HOME/bin/grafana-server -homepath=$GRAFANA_HOME &> $GRAFANA_HOME/grafana.log &
+
+  echo "Configuring InfluxDB..."
+  sleep 10
+  $INFLUXDB_HOME/bin/influx -execute "CREATE USER fluo WITH PASSWORD 'secret' WITH ALL PRIVILEGES"
+
+  echo "Configuring Grafana..."
+  echo "Adding InfluxDB as datasource"
+  sleep 10
+  retcode=1
+  while [ $retcode != 0 ];  do
+    curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
+      --data-binary '{"name":"influxdb","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+    retcode=$?
+    if [ $retcode != 0 ]; then
+      echo "Failed to add Grafana data source.  Retrying in 5 sec.."
+      sleep 5
+    fi
+  done 
+fi
+
+echo -e "\nSetup is finished!"
