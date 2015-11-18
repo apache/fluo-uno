@@ -49,9 +49,9 @@ download)
 setup)
   "$bin"/impl/setup.sh "${@:2}"
 	;;
-deploy)
+redeploy)
   check_dirs
-  "$bin"/impl/deploy.sh "${@:2}"
+  "$bin"/impl/redeploy.sh "${@:2}"
 	;;
 run)
   "$bin"/impl/run.sh "${@:2}"
@@ -73,8 +73,8 @@ version)
   echo -e "Usage: fluo-dev <command> (<argument>)\n"
   echo -e "Possible commands:\n"
   echo "  download      Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
-  echo "  setup         Sets up and starts Fluo dependencies (clearing any existing data)"
-  echo "  deploy        Stops existing Fluo instance, rebuilds Fluo from local repo, and deploys it"
+  echo "  setup         Sets up development cluster as configured by env.sh (clearing any existing data)"
+  echo "  redeploy      Redeploys Fluo code after stopping any running Fluo applications"
   echo "  run <app>     Runs the specified application configured in env.sh.  Arguments can be added"
   echo "                after <app> and will be passed to commands specified in applications.props"
   echo "  kill          Kills Fluo and its depenedencies"

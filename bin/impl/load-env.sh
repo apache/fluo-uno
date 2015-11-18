@@ -63,10 +63,6 @@ else
 fi
 
 # Confirm that env variables were set correctly
-if [ -z "$FLUO_TARBALL_PATH" -a -z "$FLUO_TARBALL_REPO" -a -z "$FLUO_TARBALL_URL" ]; then
-  echo "You must set one of FLUO_TARBALL_PATH, FLUO_TARBALL_REPO or FLUO_TARBALL_URL!"
-  exit 1
-fi
 if [ -n "$FLUO_TARBALL_PATH" -a ! -f "$FLUO_TARBALL_PATH" ]; then
   echo "FLUO_TARBALL_PATH=$FLUO_TARBALL_PATH is not a valid file.  Please make sure it exists"
   exit 1
