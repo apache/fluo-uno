@@ -109,6 +109,9 @@ $HADOOP_PREFIX/bin/hadoop fs -rm -r /accumulo 2> /dev/null
 $ACCUMULO_HOME/bin/accumulo init --clear-instance-name --instance-name $ACCUMULO_INSTANCE --password $ACCUMULO_PASSWORD
 $ACCUMULO_HOME/bin/start-all.sh
 
+echo "Setting up Fluo"
+$FLUO_DEV/bin/impl/redeploy.sh
+
 if [ $SETUP_METRICS = "true" ]; then
   echo "Setting up metrics (influxdb + grafana)..."
   tar xzf $DOWNLOADS/build/$INFLUXDB_TARBALL -C $INSTALL
@@ -125,7 +128,7 @@ if [ $SETUP_METRICS = "true" ]; then
   cp $FLUO_DEV/conf/grafana/custom.ini $GRAFANA_HOME/conf/
   $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" $GRAFANA_HOME/conf/custom.ini
   mkdir $GRAFANA_HOME/dashboards
-  cp $FLUO_DEV/conf/grafana/dashboards/* $GRAFANA_HOME/dashboards/
+  cp $FLUO_HOME/contrib/grafana/* $GRAFANA_HOME/dashboards/
   $GRAFANA_HOME/bin/grafana-server -homepath=$GRAFANA_HOME &> $GRAFANA_HOME/grafana.log &
 
   echo "Configuring InfluxDB..."

@@ -14,20 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Stop current processes
-echo "Killing current deployment"
-pkill -f fluo.yarn
-pkill -f MiniFluo
-pkill -f twill.launcher
-
-# after this stop if any command fails
+# stop if any command fails
 set -e  
-
-echo "Removing current deployment" 
-rm -rf $HADOOP_PREFIX/logs/application_*
-
-# Remove old deployment
-rm -rf $FLUO_HOME
 
 if [ -n "$FLUO_TARBALL_PATH" ]; then
   TARBALL=$FLUO_TARBALL_PATH
@@ -42,8 +30,7 @@ elif [ -n "$FLUO_TARBALL_REPO" ]; then
     echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
     exit 1
   fi
-  
-else
+elif [ -n "$FLUO_TARBALL_URL" ]; then
   TARBALL_FILENAME=fluo-distribution-$FLUO_VERSION-bin.tar.gz
   if [ -f "$DOWNLOADS/$TARBALL_FILENAME" ]; then
     echo "$TARBALL_FILENAME already exists in downloads/"
@@ -51,24 +38,35 @@ else
     wget -P $DOWNLOADS $FLUO_TARBALL_URL
   fi
   TARBALL=$DOWNLOADS/$TARBALL_FILENAME
+else
+  echo "Fluo tarball location was not set in conf/env.sh.  Fluo will not be set up."
 fi
 
-# Deploy new tarball
-tar xzf $TARBALL -C $INSTALL/
+if [ -n "$TARBALL" ]; then
+  echo "Killing Fluo (if running)"
+  # Don't stop if pkills fail
+  set +e
+  pkill -f fluo.yarn
+  pkill -f MiniFluo
+  pkill -f twill.launcher
+  set -e
 
-echo "Copying conf/examples to conf/"
-# Copy example config to deployment
-cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
+  echo "Removing old Fluo deployment" 
+  rm -rf $FLUO_HOME
 
-FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
-echo "Configuring conf/fluo.properties"
-$SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
-$SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
-$SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
+  echo "Deploying new Fluo tarball"
+  tar xzf $TARBALL -C $INSTALL/
 
-echo "Configuring conf/fluo-env.sh"
-$SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
+  echo "Configuring Fluo"
+  # Copy example config to deployment
+  cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
+  FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+  $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
+  $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
+  $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
+  $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
 
-if [ $SETUP_METRICS = "true" ]; then
-  cp $FLUO_DEV/conf/fluo/metrics.yaml $FLUO_HOME/conf/
+  if [ $SETUP_METRICS = "true" ]; then
+    cp $FLUO_DEV/conf/fluo/metrics.yaml $FLUO_HOME/conf/
+  fi
 fi

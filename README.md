@@ -30,6 +30,13 @@ Fluo-dev can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) t
 to monitor your Fluo applications.  This setup does not occur with the default configuration. You 
 must set `SETUP_METRICS` to `true` in your `env.sh`.
 
+Fluo-dev can build a Fluo tarball from a local Fluo git repo by setting `FLUO_TARBALL_REPO` in 
+`env.sh` to the location of your local Fluo clone.  You should  also modify `FLUO_VERSION` to 
+use the version in the checked out branch of your local Fluo clone (i.e `1.0.0-beta-2-SNAPSHOT`) 
+rather than the last release version (i.e `1.0.0-beta-1`).  This option lets users build and 
+run the latest Fluo code from master or lets Fluo developers test their changes made to their 
+local clone before submitting pull requests.
+
 All commands are run using the `fluo-dev` script in `bin/`.  If want to run fluo-dev, accumulo, 
 hadoop, zookeeper, fluo, and spark commands from any directory, you can optionally execute the 
 following command :
@@ -38,27 +45,34 @@ following command :
 export PATH=`./bin/fluo-dev paths`:$PATH
 ```
 
-Running Fluo dependencies
--------------------------
-
 With `fluo-dev` script set up, you can now use it to download, configure, and run Fluo and 
 its dependencies.
 
-First, run the command below to download the binary tarballs of Fluo's dependencies (i.e Accumulo, Hadoop, 
-Zookeeper and Spark) and their corresponding file hashes and signatures. It will use the Apache download 
-mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from [this website][1].
-This command will also output hashes and signatures (if you have `gpg` installed) of the downloaded
-software. It is important to inspect this output before installing the software.
+Download command
+----------------
+
+The `download` command needs to be run first.  It will download the binary tarballs of Fluo's dependencies 
+(i.e Accumulo, Hadoop, Zookeeper and Spark) and their corresponding file hashes and signatures. It will use 
+the Apache download mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from 
+[this website][1].  This command will also output hashes and signatures (if you have `gpg` installed) of 
+the downloaded software. It is important to inspect this output before installing the software.
 
     fluo-dev download
 
-Next, run the following command to setup Fluo's dependencies (Hadoop, Zookeeper, & Accumulo) as
-well as Spark:
+After this command is run for the first time, it only needs to run again if you upgrade software and need 
+to download the latest version.
 
-    fluo-dev setup
+Setup command
+-------------
 
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in
-your env.sh.  It will then configure and run Hadoop, Zookeeper and Accumulo.  
+your env.sh and run you local development cluster.  It will always configure and run Hadoop, Zookeeper 
+and Accumulo.  If you have a Fluo tarball location specified in `conf/env.sh`, it will setup Fluo but not 
+run an application.  If you don't want Fluo set up, you should make sure all the bash variables in the 
+'Fluo Tarball' section are commented out. If you have `SETUP_METRICS` set to `true`, this command will 
+also set up InfluxDB and Grafana.
+
+    fluo-dev setup
 
 Confirm that everything started by checking the monitoring pages of Hadoop & Accumulo:
  * [Hadoop NameNode](http://localhost:50070/)
@@ -67,32 +81,21 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
  * [Spark HistoryServer](http://localhost:18080/)
  * [Grafana](http://localhost:3000/) (optional)
 
+You can verify that Fluo was installed by correctly by running the `fluo` command which you can use
+to adminster Fluo:
+
+    ./install/fluo-1.0.0-beta-1/bin/fluo
+
 If you run some tests and then want a fresh cluster, run `setup` command again which kill all
 running processes, clear any data and logs, and restart your cluster.
 
-Deploying Fluo
---------------
+Redeploy command
+----------------
 
-With its dependencies running, Fluo can be deployed to your `install/` directory using the command below:
+The 'redeploy' command allows you to make changes to the Fluo codebase and redeploy Fluo without 
+setting up a new cluster:
 
-    fluo-dev deploy
-
-This command will download, install, and configure the latest Fluo release to work with the Accumulo cluster
-created by the `setup` command.  The `deploy` command can be run again if want a fresh install.  To view 
-your installation:
-
-    cd install/fluo-1.0.0-beta-1
-
-Verify your installation by running the `fluo` command which you can use to administer Fluo.
-
-    bin/fluo
-
-Optionally, you can have the `deploy` command build a Fluo tarball from a local Fluo git repo by creating
-a custom `conf/env.sh` and setting `FLUO_TARBALL_REPO` to the location of your local Fluo clone.  You should 
-also modify `FLUO_VERSION` to use the version in the checked out branch of your local Fluo clone
-(i.e `1.0.0-beta-2-SNAPSHOT`) rather than the last release version (i.e `1.0.0-beta-1`).  This option 
-lets users build and run the latest Fluo code from master or lets Fluo developers test their changes made to
-their local clone before submitting pull requests.
+    fluo-dev redeploy
 
 Running Fluo applications
 -------------------------
