@@ -67,6 +67,10 @@ if [ -n "$TARBALL" ]; then
   $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
 
   if [ $SETUP_METRICS = "true" ]; then
-    cp $FLUO_DEV/conf/fluo/metrics.yaml $FLUO_HOME/conf/
+    $SED "/io.fluo.metrics.reporter.graphite/d" $FLUO_PROPS
+    echo "io.fluo.metrics.reporter.graphite.enable=true" >> $FLUO_PROPS
+    echo "io.fluo.metrics.reporter.graphite.host=localhost" >> $FLUO_PROPS
+    echo "io.fluo.metrics.reporter.graphite.port=2003" >> $FLUO_PROPS
+    echo "io.fluo.metrics.reporter.graphite.frequency=10" >> $FLUO_PROPS
   fi
 fi
