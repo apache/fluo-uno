@@ -22,7 +22,7 @@ if [ -n "$FLUO_TARBALL_PATH" ]; then
 elif [ -n "$FLUO_TARBALL_REPO" ]; then
   echo "Rebuilding Fluo tarball" 
   cd $FLUO_TARBALL_REPO
-  mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
+  mvn clean install -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION
 
   TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
   if [ ! -f $TARBALL ]; then
