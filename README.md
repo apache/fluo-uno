@@ -80,6 +80,7 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
  * [Accumulo Monitor](http://localhost:50095/)
  * [Spark HistoryServer](http://localhost:18080/)
  * [Grafana](http://localhost:3000/) (optional)
+ * [InfluxDB Admin](http://localhost:8083/) (optional)
 
 You can verify that Fluo was installed by correctly by running the `fluo` command which you can use
 to adminster Fluo:
