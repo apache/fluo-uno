@@ -6,10 +6,8 @@
 # <app>.repo                # Git repo containing code for application. It is cloned when the app is run.
 #                           # A local git repo can be specified by a path (i.e. /path/to/local/repo)
 # <app>.branch              # Branch to checkout in git repo
-# <app>.command.pre.init    # Command in application repo to run before initializing and starting Fluo.
-#                           # FLUO_HOME & FLUO_APP_NAME will be set in env when run.  This command
-#                           # can do things like change fluo config and copy observers
-# <app>.command.post.start  # Script to run from application repo after Fluo is started
+# <app>.command             # Command in application repo to that will initialize and run Fluo application.
+#                           # When the command is run, FLUO_HOME & FLUO_APP_NAME will be set in the env.  
 #
 # Applications can be run using the following command 'fluo-dev run <app>`
 # Arguments can be added after <app> and will be passed to configured commands for that app.
@@ -18,12 +16,16 @@
 # Usage: fluo-dev run stress
 stress.repo=https://github.com/fluo-io/fluo-stress
 stress.branch=master
-stress.command.pre.init=bin/configure-fluo.sh
-stress.command.post.start=bin/run-test.sh
+stress.command=bin/run-test.sh
 
 # Phrasecount application
 # Usage: fluo-dev run phrasecount <txtDocsDir>
 phrasecount.repo=https://github.com/fluo-io/phrasecount
 phrasecount.branch=master
-phrasecount.command.pre.init=bin/configure.sh
-phrasecount.command.post.start=bin/run.sh
+phrasecount.command=bin/run.sh
+
+# Webindex application
+# Usage: fluo-dev run webindex test-id load1 -fg
+webindex.repo=https://github.com/fluo-io/webindex
+webindex.branch=master
+webindex.command=bin/webindex
