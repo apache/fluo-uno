@@ -79,6 +79,10 @@ cp $ACCUMULO_HOME/conf/examples/2GB/standalone/* $ACCUMULO_HOME/conf/
 cp $FLUO_DEV/conf/accumulo/* $ACCUMULO_HOME/conf/
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" $ACCUMULO_HOME/conf/accumulo-env.sh
 $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" $ACCUMULO_HOME/conf/accumulo-env.sh
+$SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" $ACCUMULO_HOME/conf/accumulo-env.sh
+$SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" $ACCUMULO_HOME/conf/accumulo-site.xml
+$SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" $ACCUMULO_HOME/conf/accumulo-site.xml
+$SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" $ACCUMULO_HOME/conf/accumulo-site.xml
 
 # configure spark
 cp $FLUO_DEV/conf/spark/* $SPARK_HOME/conf

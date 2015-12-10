@@ -64,8 +64,11 @@ if [ -n "$TARBALL" ]; then
   $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
   $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
   $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
+  $SED "s/.*io.fluo.worker.num.threads=.*/io.fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" $FLUO_PROPS
+  $SED "s/.*io.fluo.worker.max.memory.mb=.*/io.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" $FLUO_PROPS
+  $SED "s/.*io.fluo.worker.instances=.*/io.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" $FLUO_PROPS
   $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
-
+  
   if [ $SETUP_METRICS = "true" ]; then
     $SED "/io.fluo.metrics.reporter.graphite/d" $FLUO_PROPS
     echo "io.fluo.metrics.reporter.graphite.enable=true" >> $FLUO_PROPS
