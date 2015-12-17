@@ -145,7 +145,7 @@ if [ $SETUP_METRICS = "true" ]; then
   retcode=1
   while [ $retcode != 0 ];  do
     curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
-      --data-binary '{"name":"influxdb","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+      --data-binary '{"name":"fluo_metrics","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
     retcode=$?
     if [ $retcode != 0 ]; then
       echo "Failed to add Grafana data source.  Retrying in 5 sec.."
