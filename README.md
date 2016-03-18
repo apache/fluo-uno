@@ -51,16 +51,17 @@ its dependencies.
 Download command
 ----------------
 
-The `download` command needs to be run first.  It will download the binary tarballs of Fluo's dependencies 
-(i.e Accumulo, Hadoop, Zookeeper and Spark) and their corresponding file hashes and signatures. It will use 
-the Apache download mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from 
-[this website][1].  This command will also output hashes and signatures (if you have `gpg` installed) of 
-the downloaded software. It is important to inspect this output before installing the software.
+The `download` command needs to be run first.  It will download the binary tarballs of software needed
+by fluo-dev (i.e Accumulo, Hadoop, Zookeeper, Spark, etc). If the software is an Apache project, it will
+use the Apache download mirror specified by `APACHE_MIRROR` in env.sh.  Other mirrors can be chosen from
+[this website][1].  This command will verify that the MD5 hashes of the downloaded tarballs match the
+expected MD5 hashes set in your `env.sh`.  If any don't match, the command will fail and error message
+will be printed.  
 
     fluo-dev download
 
-After this command is run for the first time, it only needs to run again if you upgrade software and need 
-to download the latest version.
+After this command is run for the first time, it only needs to run again if you upgrade
+software and need to download the latest version.
 
 Setup command
 -------------

@@ -14,25 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ ! -f "$DOWNLOADS/$ACCUMULO_TARBALL" ]; then
-  echo "Accumulo tarball $ACCUMULO_TARBALL does not exists in downloads/"
-  exit 1
-fi
-if [ ! -f "$DOWNLOADS/$HADOOP_TARBALL" ]; then
-  echo "Hadoop tarball $HADOOP_TARBALL does not exists in downloads/"
-  exit 1
-fi
-if [ ! -f "$DOWNLOADS/$ZOOKEEPER_TARBALL" ]; then
-  echo "Zookeeper tarball $ZOOKEEPER_TARBALL does not exists in downloads/"
-  exit 1
-fi
-if [ ! -f "$DOWNLOADS/$SPARK_TARBALL" ]; then
-  echo "Spark tarball $SPARK_TARBALL does not exists in downloads/"
-  exit 1
-fi
-INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz
-GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".tar.gz
+function verify_exist_hash() {
+  tarball=$1
+  expected_md5=$2
+  actual_md5=`$MD5 $DOWNLOADS/$tarball | awk '{print $1}'`
+
+  if [ ! -f "$DOWNLOADS/$tarball" ]; then
+    echo "The tarball $tarball does not exists in downloads/"
+    exit 1
+  fi
+  if [[ "$actual_md5" != "$expected_md5" ]]; then
+    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
+    exit 1
+  fi
+}
+
+verify_exist_hash $ACCUMULO_TARBALL $ACCUMULO_MD5
+verify_exist_hash $HADOOP_TARBALL $HADOOP_MD5
+verify_exist_hash $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
+verify_exist_hash $SPARK_TARBALL $SPARK_MD5
+
 if [ $SETUP_METRICS = "true" ]; then
+  # verify downloaded tarballs
+  INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
+  GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
+  verify_exist_hash $INFLUXDB_TARBALL $INFLUXDB_MD5
+  verify_exist_hash $GRAFANA_TARBALL $GRAFANA_MD5
+
+  # make sure built tarballs exist
+  INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz
+  GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".tar.gz
   if [ ! -f "$DOWNLOADS/build/$INFLUXDB_TARBALL" ]; then
     echo "InfluxDB tarball $INFLUXDB_TARBALL does not exists in downloads/build/"
     exit 1

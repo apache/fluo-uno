@@ -14,8 +14,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rm -f $DOWNLOADS/*.asc
-rm -f $DOWNLOADS/*.md5
+function download_verify() {
+  url_prefix=$1
+  tarball=$2
+  expected_md5=$3
+
+  exp_md5_len=${#expected_md5}
+  if [ $exp_md5_len != 32 ]; then
+    echo "The expected MD5 checksum ($expected_md5) of $tarball has a length of $exp_md5_len but should be 32"
+    exit 1
+  fi
+  
+  wget -c -P $DOWNLOADS $url_prefix/$tarball
+  actual_md5=`$MD5 $DOWNLOADS/$tarball | awk '{print $1}'`
+
+  if [[ "$actual_md5" != "$expected_md5" ]]; then
+    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
+    exit 1
+  fi
+  echo "$tarball exists in downloads/ and matches expected MD5 ($expected_md5)"
+}
+
+download_verify $APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION $HADOOP_TARBALL $HADOOP_MD5
+download_verify $APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
+download_verify $APACHE_MIRROR/spark/spark-$SPARK_VERSION $SPARK_TARBALL $SPARK_MD5
 
 if [ -n "$ACCUMULO_TARBALL_REPO" ]; then
   rm -f $DOWNLOADS/$ACCUMULO_TARBALL
@@ -36,8 +58,11 @@ if [ -n "$ACCUMULO_TARBALL_REPO" ]; then
   popd
   cp $ACCUMULO_BUILT_TAR $DOWNLOADS/
 else
-  ACCUMULO_PATH=accumulo/$ACCUMULO_VERSION
-  wget -c -P $DOWNLOADS $APACHE_MIRROR/$ACCUMULO_PATH/$ACCUMULO_TARBALL
+  download_verify $APACHE_MIRROR/accumulo/$ACCUMULO_VERSION $ACCUMULO_TARBALL $ACCUMULO_MD5
+fi
+
+if [ -z "$FLUO_TARBALL_PATH" -a -z "$FLUO_TARBALL_REPO" -a -n "$FLUO_TARBALL_URL_PREFIX" ]; then
+  download_verify $FLUO_TARBALL_URL_PREFIX $FLUO_TARBALL $FLUO_MD5
 fi
 
 if [ $SETUP_METRICS = "true" ]; then
@@ -57,9 +82,9 @@ if [ $SETUP_METRICS = "true" ]; then
   GF_DIR=grafana-$GRAFANA_VERSION
   GF_PATH=$BUILD/$GF_DIR
 
-  echo "Downloading InfluxDB tarball"
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
-  wget -c -P $DOWNLOADS https://s3.amazonaws.com/influxdb/$INFLUXDB_TARBALL
+  download_verify https://s3.amazonaws.com/influxdb $INFLUXDB_TARBALL $INFLUXDB_MD5
+
   tar xzf $DOWNLOADS/$INFLUXDB_TARBALL -C $BUILD
   mv $BUILD/influxdb_"$INFLUXDB_VERSION"_x86_64 $IF_PATH
   mkdir $IF_PATH/bin
@@ -87,9 +112,9 @@ if [ $SETUP_METRICS = "true" ]; then
   tar czf influxdb-"$INFLUXDB_VERSION".tar.gz $IF_DIR
   rm -rf $IF_PATH
 
-  echo "Downloading Grafana tarball"
   GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  wget -c -P $DOWNLOADS https://grafanarel.s3.amazonaws.com/builds/$GRAFANA_TARBALL
+  download_verify https://grafanarel.s3.amazonaws.com/builds $GRAFANA_TARBALL $GRAFANA_MD5
+
   tar xzf $DOWNLOADS/$GRAFANA_TARBALL -C $BUILD
 
   if [[ "$BUILD_GRAFANA" == "true" ]]; then
@@ -111,54 +136,4 @@ if [ $SETUP_METRICS = "true" ]; then
   rm -rf $GF_PATH
 fi
 
-HADOOP_PATH=hadoop/common/hadoop-$HADOOP_VERSION
-wget -c -P $DOWNLOADS $APACHE_MIRROR/$HADOOP_PATH/$HADOOP_TARBALL
-
-ZOOKEEPER_PATH=zookeeper/zookeeper-$ZOOKEEPER_VERSION
-wget -c -P $DOWNLOADS $APACHE_MIRROR/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL
-
-SPARK_PATH=spark/spark-$SPARK_VERSION
-wget -c -P $DOWNLOADS $APACHE_MIRROR/$SPARK_PATH/$SPARK_TARBALL
-
-APACHE=https://www.apache.org/dist
-
-echo -e "\nDownloading files hashes from Apache:"
-if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
-  wget -nv -O $DOWNLOADS/$ACCUMULO_TARBALL.md5 $APACHE/$ACCUMULO_PATH/MD5SUM
-fi
-
-wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.md5
-wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.mds
-wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.md5
-wget -nv -P $DOWNLOADS $APACHE/$SPARK_PATH/$SPARK_TARBALL.md5
-
-echo -e "\nPlease confirm that the file hashes below match:"
-echo -e "\nActual hashes generated from files using '$MD5':\n"
-$MD5 $DOWNLOADS/*gz
-echo -e "\nExpected hashes from Apache:\n"
-cat $DOWNLOADS/*.md5
-cat $DOWNLOADS/*.mds
-
-if hash gpg 2>/dev/null; then
-  echo -e "\nDownloading signatures from Apache:"
-  if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
-    wget -nv -P $DOWNLOADS $APACHE/$ACCUMULO_PATH/$ACCUMULO_TARBALL.asc
-  fi
-  wget -nv -P $DOWNLOADS $APACHE/$HADOOP_PATH/$HADOOP_TARBALL.asc
-  wget -nv -P $DOWNLOADS $APACHE/$ZOOKEEPER_PATH/$ZOOKEEPER_TARBALL.asc
-  wget -nv -P $DOWNLOADS $APACHE/$SPARK_PATH/$SPARK_TARBALL.asc
-
-  echo -e "\nVerifying the authenticity of tarballs using gpg and downloaded signatures:"
-  if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
-    echo -e "\nVerifying $ACCUMULO_TARBALL" 
-    gpg --verify $DOWNLOADS/$ACCUMULO_TARBALL.asc $DOWNLOADS/$ACCUMULO_TARBALL
-  fi
-  echo -e "\nverifying $HADOOP_TARBALL" 
-  gpg --verify $DOWNLOADS/$HADOOP_TARBALL.asc $DOWNLOADS/$HADOOP_TARBALL
-  echo -e "\nVerifying $ZOOKEEPER_TARBALL" 
-  gpg --verify $DOWNLOADS/$ZOOKEEPER_TARBALL.asc $DOWNLOADS/$ZOOKEEPER_TARBALL
-  echo -e "\nVerifying $SPARK_TARBALL" 
-  gpg --verify $DOWNLOADS/$SPARK_TARBALL.asc $DOWNLOADS/$SPARK_TARBALL
-else
-  echo -e "\nERROR - The command 'gpg' is NOT installed!  Please install to verify signatures of downloaded tarballs."
-fi
+echo "Success! All tarballs have been downloaded and their checksums verified."
