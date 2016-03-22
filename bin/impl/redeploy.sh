@@ -15,7 +15,22 @@
 # limitations under the License.
 
 # stop if any command fails
-set -e  
+set -e
+
+function verify_exist_hash() {
+  tarball=$1
+  expected_md5=$2
+  actual_md5=`$MD5 $DOWNLOADS/$tarball | awk '{print $1}'`
+
+  if [ ! -f "$DOWNLOADS/$tarball" ]; then
+    echo "The tarball $tarball does not exists in downloads/"
+    exit 1
+  fi
+  if [[ "$actual_md5" != "$expected_md5" ]]; then
+    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
+    exit 1
+  fi
+}
 
 if [ -n "$FLUO_TARBALL_PATH" ]; then
   TARBALL=$FLUO_TARBALL_PATH
@@ -24,20 +39,15 @@ elif [ -n "$FLUO_TARBALL_REPO" ]; then
   cd $FLUO_TARBALL_REPO
   mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION -Dthrift.version=$THRIFT_VERSION
 
-  TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
+  TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/$FLUO_TARBALL
   if [ ! -f $TARBALL ]; then
     echo "The tarball $TARBALL does not exist after building from the FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO"
     echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
     exit 1
   fi
-elif [ -n "$FLUO_TARBALL_URL" ]; then
-  TARBALL_FILENAME=fluo-distribution-$FLUO_VERSION-bin.tar.gz
-  if [ -f "$DOWNLOADS/$TARBALL_FILENAME" ]; then
-    echo "$TARBALL_FILENAME already exists in downloads/"
-  else
-    wget -P $DOWNLOADS $FLUO_TARBALL_URL
-  fi
-  TARBALL=$DOWNLOADS/$TARBALL_FILENAME
+elif [ -n "$FLUO_TARBALL_URL_PREFIX" ]; then
+  verify_exist_hash $FLUO_TARBALL $FLUO_MD5
+  TARBALL=$DOWNLOADS/$FLUO_TARBALL
 else
   echo "Fluo tarball location was not set in conf/env.sh.  Fluo will not be set up."
 fi

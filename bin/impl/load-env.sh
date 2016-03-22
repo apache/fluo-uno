@@ -89,6 +89,7 @@ fi
 : ${DOWNLOADS:?"DOWNLOADS is not set in env.sh"}
 : ${APACHE_MIRROR:?"APACHE_MIRROR is not set in env.sh"}
 : ${ACCUMULO_TARBALL:?"ACCUMULO_TARBALL is not set in env.sh"}
+: ${FLUO_TARBALL:?"FLUO_TARBALL is not set in env.sh"}
 : ${HADOOP_TARBALL:?"HADOOP_TARBALL is not set in env.sh"}
 : ${ZOOKEEPER_TARBALL:?"ZOOKEEPER_TARBALL is not set in env.sh"}
 : ${FLUO_HOME:?"FLUO_HOME is not set in env.sh"}
