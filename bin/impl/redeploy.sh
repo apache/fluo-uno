@@ -39,7 +39,7 @@ elif [ -n "$FLUO_TARBALL_REPO" ]; then
   cd $FLUO_TARBALL_REPO
   mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION -Dthrift.version=$THRIFT_VERSION
 
-  TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/$FLUO_TARBALL
+  TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
   if [ ! -f $TARBALL ]; then
     echo "The tarball $TARBALL does not exist after building from the FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO"
     echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"

@@ -56,6 +56,9 @@ fi
 
 $FLUO_DEV/bin/impl/kill.sh
 
+# stop if any command fails
+set -e
+
 echo "Removing previous versions of Hadoop, Zookeeper, Accumulo & Spark"
 rm -rf $INSTALL/accumulo-*
 rm -rf $INSTALL/hadoop-*
@@ -113,14 +116,14 @@ $HADOOP_PREFIX/sbin/start-dfs.sh
 $HADOOP_PREFIX/sbin/start-yarn.sh
 
 echo "Starting Zookeeper..."
-rm $ZOOKEEPER_HOME/zookeeper.out
+rm -f $ZOOKEEPER_HOME/zookeeper.out
 rm -rf $DATA_DIR/zookeeper
 export ZOO_LOG_DIR=$ZOOKEEPER_HOME
 $ZOOKEEPER_HOME/bin/zkServer.sh start
 
 echo "Starting Accumulo..."
 rm -f $ACCUMULO_HOME/logs/*
-$HADOOP_PREFIX/bin/hadoop fs -rm -r /accumulo 2> /dev/null
+$HADOOP_PREFIX/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 $ACCUMULO_HOME/bin/accumulo init --clear-instance-name --instance-name $ACCUMULO_INSTANCE --password $ACCUMULO_PASSWORD
 $ACCUMULO_HOME/bin/start-all.sh
 
@@ -149,6 +152,9 @@ if [ $SETUP_METRICS = "true" ]; then
   echo "Configuring InfluxDB..."
   sleep 10
   $INFLUXDB_HOME/bin/influx -execute "CREATE USER fluo WITH PASSWORD 'secret' WITH ALL PRIVILEGES"
+
+  # allow commands to fail
+  set +e
 
   echo "Configuring Grafana..."
   echo "Adding InfluxDB as datasource"
