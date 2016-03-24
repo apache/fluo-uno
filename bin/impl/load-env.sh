@@ -101,7 +101,7 @@ fi
 : ${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  export MD5=md5
+  export MD5="md5 -q"
   export SED="sed -i .bak"
 else
   export MD5=md5sum
