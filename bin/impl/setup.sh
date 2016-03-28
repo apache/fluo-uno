@@ -108,7 +108,9 @@ $SED "s#HADOOP_PREFIX#$HADOOP_PREFIX#g" $SPARK_HOME/conf/spark-env.sh
 echo "Starting Spark HistoryServer..."
 rm -rf $DATA_DIR/spark
 mkdir -p $DATA_DIR/spark/events
-$SPARK_HOME/sbin/start-history-server.sh
+if [ $START_SPARK_HIST_SERVER = "true" ]; then
+  $SPARK_HOME/sbin/start-history-server.sh
+fi
 
 echo "Starting Hadoop..."
 rm -rf $HADOOP_PREFIX/logs/*
