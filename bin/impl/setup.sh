@@ -162,7 +162,7 @@ if [ $SETUP_METRICS = "true" ]; then
 
   echo "Configuring InfluxDB..."
   sleep 10
-  $INFLUXDB_HOME/bin/influx -execute "CREATE USER fluo WITH PASSWORD 'secret' WITH ALL PRIVILEGES"
+  $INFLUXDB_HOME/bin/influx -import -path $FLUO_HOME/contrib/influxdb/fluo_metrics_setup.txt
 
   # allow commands to fail
   set +e
