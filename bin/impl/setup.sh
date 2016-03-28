@@ -29,7 +29,9 @@ function verify_exist_hash() {
   fi
 }
 
-verify_exist_hash $ACCUMULO_TARBALL $ACCUMULO_MD5
+if [ -z "$ACCUMULO_TARBALL_REPO" ]; then
+  verify_exist_hash $ACCUMULO_TARBALL $ACCUMULO_MD5
+fi
 verify_exist_hash $HADOOP_TARBALL $HADOOP_MD5
 verify_exist_hash $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
 verify_exist_hash $SPARK_TARBALL $SPARK_MD5
