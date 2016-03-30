@@ -36,6 +36,13 @@ verify_exist_hash $HADOOP_TARBALL $HADOOP_MD5
 verify_exist_hash $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
 verify_exist_hash $SPARK_TARBALL $SPARK_MD5
 
+host `hostname` &> /dev/null
+if [ $? != 0 ]; then
+  echo "ERROR - Your machine failed to do a DNS lookup of your IP given your hostname using 'host `hostname`'.  This is likely a DNS issue"
+  echo "that can cause fluo-dev services (such as Hadoop) to not start up.  You should confirm that /etc/resolv.conf is correct."
+  exit 1
+fi
+
 if [ $SETUP_METRICS = "true" ]; then
   # verify downloaded tarballs
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
