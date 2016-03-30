@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Copyright 2014 Fluo authors (see AUTHORS)
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,9 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo -n $FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin
-
-if [ $SETUP_METRICS == "true" ]; then
-  echo -n :$INFLUXDB_HOME/bin:$GRAFANA_HOME/bin
+if [ -z "$1" -o "$1" == "--vars" ]; then
+  echo "export HADOOP_PREFIX=$HADOOP_PREFIX"
+  echo "export HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
+  echo "export ZOOKEEPER_HOME=$ZOOKEEPER_HOME"
+  echo "export SPARK_HOME=$SPARK_HOME"
+  echo "export ACCUMULO_HOME=$ACCUMULO_HOME"
+  echo "export FLUO_HOME=$FLUO_HOME"
 fi
-echo ""
+
+if [ -z "$1" -o "$1" == "--paths" ]; then
+  echo -n "export PATH=\$PATH:$FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin"
+  if [ $SETUP_METRICS == "true" ]; then
+    echo -n :$INFLUXDB_HOME/bin:$GRAFANA_HOME/bin
+  fi
+  echo ""
+fi
