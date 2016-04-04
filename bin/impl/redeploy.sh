@@ -38,6 +38,8 @@ elif [ -n "$FLUO_TARBALL_REPO" ]; then
   echo "Rebuilding Fluo tarball" 
   cd $FLUO_TARBALL_REPO
   mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION -Dthrift.version=$THRIFT_VERSION
+  # mvn command above puts shell in weird state where commands are not echoed when typed.  command below fixes this.
+  stty echo
 
   TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
   if [ ! -f $TARBALL ]; then
