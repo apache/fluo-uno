@@ -35,31 +35,48 @@ then
   exit 1
 fi
 
-# Confirm that hadoop, accumulo, and zookeeper env variables are not set
-if [ -n "$HADOOP_PREFIX" ]; then
-  echo "HADOOP_PREFIX should only be set in env.sh and not in your ~/.bashrc"
-  exit 1
-fi
-if [ -n "$ZOOKEEPER_HOME" ]; then
-  echo "ZOOKEEPER_HOME should only be set in env.sh and not in your ~/.bashrc"
-  exit 1
-fi
-if [ -n "$ACCUMULO_HOME" ]; then
-  echo "ACCUMULO_HOME should only be set in env.sh and not in your ~/.bashrc"
-  exit 1
-fi
-if [ -n "$FLUO_HOME" ]; then
-  echo "FLUO_HOME should only be set in env.sh and not in your ~/.bashrc"
-  exit 1
-fi
+HP=$HADOOP_PREFIX
+HC=$HADOOP_CONF_DIR
+ZH=$ZOOKEEPER_HOME
+SH=$SPARK_HOME
+AH=$ACCUMULO_HOME
+FH=$FLUO_HOME
 
 # Load env configuration
 if [ -f "$FLUO_DEV/conf/env.sh" ]; then
-  if [[ ! "paths version" =~ $1 ]]; then echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"; fi
+  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"; fi
   . $FLUO_DEV/conf/env.sh
 else
-  if [[ ! "paths version" =~ $1 ]]; then echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
+  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
   . $FLUO_DEV/conf/env.sh.example
+fi
+
+# Confirm that hadoop, accumulo, and zookeeper env variables are not set
+if [[ ! "version env" =~ $1 ]]; then
+  if [ -n "$HP" -a "$HP" != "$HADOOP_PREFIX" ]; then
+    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your fluo-dev env.sh '$HADOOP_PREFIX'"
+    exit 1
+  fi
+  if [ -n "$HC" -a "$HC" != "$HADOOP_CONF_DIR" ]; then
+    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your fluo-dev env.sh '$HADOOP_CONF_DIR'"
+    exit 1
+  fi
+  if [ -n "$ZH" -a "$ZH" != "$ZOOKEEPER_HOME" ]; then
+    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your fluo-dev env.sh '$ZOOKEEPER_HOME'"
+    exit 1
+  fi
+  if [ -n "$SH" -a "$SH" != "$SPARK_HOME" ]; then
+    echo "SPARK_HOME in your shell env '$SH' needs to match your fluo-dev env.sh '$SPARK_HOME'"
+    exit 1
+  fi
+  if [ -n "$AH" -a "$AH" != "$ACCUMULO_HOME" ]; then
+    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your fluo-dev env.sh '$ACCUMULO_HOME'"
+    exit 1
+  fi
+  if [ -n "$FH" -a "$FH" != "$FLUO_HOME" ]; then
+    echo "FLUO_HOME in your shell env '$FH' needs to match your fluo-dev env.sh '$FLUO_HOME'"
+    exit 1
+  fi
 fi
 
 # Confirm that env variables were set correctly
