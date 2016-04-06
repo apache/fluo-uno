@@ -86,6 +86,6 @@ if [ -n "$TARBALL" ]; then
     echo "io.fluo.metrics.reporter.graphite.enable=true" >> $FLUO_PROPS
     echo "io.fluo.metrics.reporter.graphite.host=localhost" >> $FLUO_PROPS
     echo "io.fluo.metrics.reporter.graphite.port=2003" >> $FLUO_PROPS
-    echo "io.fluo.metrics.reporter.graphite.frequency=10" >> $FLUO_PROPS
+    echo "io.fluo.metrics.reporter.graphite.frequency=30" >> $FLUO_PROPS
   fi
 fi
