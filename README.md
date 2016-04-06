@@ -109,32 +109,22 @@ setting up a new cluster:
 Running Fluo applications
 -------------------------
 
-There are two ways to run Fluo applications using `fluo-dev`:
+Before running a Fluo application, it is recommended that you configure your shell using `fluo-dev env`.
+If this is done, many Fluo example applications (such as [Webindex][2] and [Phrasecount][3]) can be run
+by simply cloning their repo and executing their start scripts (which will use environment varibles set in
+your shell by `fluo-dev env`).
 
-1. Run pre-built Fluo applications like [fluo-stress] that are listed and configured 
-   in `conf/applications.props` and can be run by a single command.
-
-    ```
-    fluo-dev run stress
-    ```
-
-   The `run` command will clone the application's repo to `install/fluo-app-repos/`.  It will
-   run the commands specified in `applications.props` to initialize and run the application 
-   which will remain running unless you stop it using `fluo stop <app>`.  The run command will
-   pass any additional arguments after the application name to the commands specified in 
-   `applications.props`.  For example, the phrasecount application requires an additional
-   argument that specifies a directory containing text documents to index:
-
-    ```
-    fluo-dev run phrasecount /path/to/txt/docs
-    ```
-
-2. Configure, initialize, and start your own Fluo application by following instructions starting at
-   the [Configure a Fluo application][2] section of the Fluo production setup instructions.
+If you want to create your own Fluo application, you should mimic the scripts of example Fluo applications
+or follow the instructions starting at the [Configure a Fluo application][4] section of the Fluo production
+setup instructions.  These instructions will guide you through the process of configuring, initializing, and
+starting your application. 
 
 The `fluo-dev` commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
 `fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
 
 [1]: http://www.apache.org/dyn/closer.cgi
-[2]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application
+[2]: https://github.com/fluo-io/webindex
+[3]: https://github.com/fluo-io/phrasecount
+[4]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application
 [fluo-stress]: https://github.com/fluo-io/fluo-stress
+
