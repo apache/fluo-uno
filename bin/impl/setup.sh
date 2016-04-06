@@ -42,8 +42,9 @@ if [ `grep -c "${hostname}" /etc/hosts` -ge 1 ]; then
 elif [ `host "${hostname}"` -ge 1 ]; then
   echo "Found ${hostname} in DNS."
 else
-  echo "ERROR - Your machine failed to do a DNS lookup of your IP given your hostname using 'host `hostname`'.  This is likely a DNS issue"
-  echo "that can cause fluo-dev services (such as Hadoop) to not start up.  You should confirm that /etc/resolv.conf is correct."
+  echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
+  echo "This is an issue that can cause fluo-dev services (such as Hadoop) to not start up.  You should"
+  echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
   exit 1
 fi
 
