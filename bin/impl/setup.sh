@@ -36,8 +36,12 @@ verify_exist_hash $HADOOP_TARBALL $HADOOP_MD5
 verify_exist_hash $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
 verify_exist_hash $SPARK_TARBALL $SPARK_MD5
 
-host `hostname` &> /dev/null
-if [ $? != 0 ]; then
+hostname=$(hostname)
+if [ `grep -c "${hostname}" /etc/hosts` -ge 1 ]; then
+  echo "Found ${hostname} in /etc/hosts."
+elif [ `host "${hostname}"` -ge 1 ]; then
+  echo "Found ${hostname} in DNS."
+else
   echo "ERROR - Your machine failed to do a DNS lookup of your IP given your hostname using 'host `hostname`'.  This is likely a DNS issue"
   echo "that can cause fluo-dev services (such as Hadoop) to not start up.  You should confirm that /etc/resolv.conf is correct."
   exit 1
@@ -182,4 +186,7 @@ if [ $SETUP_METRICS = "true" ]; then
   done 
 fi
 
+stty sane
+
 echo -e "\nSetup is finished!"
+
