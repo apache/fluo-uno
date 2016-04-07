@@ -35,6 +35,9 @@ function download_verify() {
   echo "$tarball exists in downloads/ and matches expected MD5 ($expected_md5)"
 }
 
+# Determine best apache mirror to use
+APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
+
 download_verify $APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION $HADOOP_TARBALL $HADOOP_MD5
 download_verify $APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
 download_verify $APACHE_MIRROR/spark/spark-$SPARK_VERSION $SPARK_TARBALL $SPARK_MD5
