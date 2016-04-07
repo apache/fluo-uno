@@ -39,13 +39,16 @@ verify_exist_hash $SPARK_TARBALL $SPARK_MD5
 hostname=$(hostname)
 if [ `grep -c "${hostname}" /etc/hosts` -ge 1 ]; then
   echo "Found ${hostname} in /etc/hosts."
-elif [ `host "${hostname}"` -ge 1 ]; then
-  echo "Found ${hostname} in DNS."
 else
-  echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
-  echo "This is an issue that can cause fluo-dev services (such as Hadoop) to not start up.  You should"
-  echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
-  exit 1
+  host ${hostname} &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo "Found ${hostname} in DNS."
+  else
+    echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
+    echo "This is an issue that can cause fluo-dev services (such as Hadoop) to not start up.  You should"
+    echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
+    exit 1
+  fi
 fi
 
 if [ $SETUP_METRICS = "true" ]; then
