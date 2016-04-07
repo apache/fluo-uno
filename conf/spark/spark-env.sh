@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#! /usr/bin/env bash
 
-HADOOP_CONF_DIR=HADOOP_PREFIX/etc/hadoop
+export HADOOP_CONF_DIR="$HADOOP_PREFIX"/etc/hadoop

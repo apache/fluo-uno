@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 # Copyright 2014 Fluo authors (see AUTHORS)
 #
@@ -20,9 +20,9 @@ set -e
 function verify_exist_hash() {
   tarball=$1
   expected_md5=$2
-  actual_md5=`$MD5 $DOWNLOADS/$tarball | awk '{print $1}'`
+  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
 
-  if [ ! -f "$DOWNLOADS/$tarball" ]; then
+  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
     echo "The tarball $tarball does not exists in downloads/"
     exit 1
   fi
@@ -32,29 +32,29 @@ function verify_exist_hash() {
   fi
 }
 
-if [ -n "$FLUO_TARBALL_PATH" ]; then
+if [[ -n "$FLUO_TARBALL_PATH" ]]; then
   TARBALL=$FLUO_TARBALL_PATH
-elif [ -n "$FLUO_TARBALL_REPO" ]; then
+elif [[ -n "$FLUO_TARBALL_REPO" ]]; then
   echo "Rebuilding Fluo tarball" 
-  cd $FLUO_TARBALL_REPO
-  mvn clean package -DskipTests -Daccumulo.version=$ACCUMULO_VERSION -Dhadoop.version=$HADOOP_VERSION -Dthrift.version=$THRIFT_VERSION
+  cd "$FLUO_TARBALL_REPO"
+  mvn clean package -DskipTests -Daccumulo.version="$ACCUMULO_VERSION" -Dhadoop.version="$HADOOP_VERSION" -Dthrift.version="$THRIFT_VERSION"
   # mvn command above puts shell in weird state where commands are not echoed when typed.  command below fixes this.
   stty echo
 
   TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
-  if [ ! -f $TARBALL ]; then
+  if [[ ! -f "$TARBALL" ]]; then
     echo "The tarball $TARBALL does not exist after building from the FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO"
     echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
     exit 1
   fi
-elif [ -n "$FLUO_TARBALL_URL_PREFIX" ]; then
-  verify_exist_hash $FLUO_TARBALL $FLUO_MD5
+elif [[ -n "$FLUO_TARBALL_URL_PREFIX" ]]; then
+  verify_exist_hash "$FLUO_TARBALL" "$FLUO_MD5"
   TARBALL=$DOWNLOADS/$FLUO_TARBALL
 else
   echo "Fluo tarball location was not set in conf/env.sh.  Fluo will not be set up."
 fi
 
-if [ -n "$TARBALL" ]; then
+if [[ -n "$TARBALL" ]]; then
   echo "Killing Fluo (if running)"
   # Don't stop if pkills fail
   set +e
@@ -64,28 +64,30 @@ if [ -n "$TARBALL" ]; then
   set -e
 
   echo "Removing old Fluo deployment" 
-  rm -rf $FLUO_HOME
+  rm -rf "$FLUO_HOME"
 
   echo "Deploying new Fluo tarball"
-  tar xzf $TARBALL -C $INSTALL/
+  tar xzf "$TARBALL" -C "$INSTALL"/
 
   echo "Configuring Fluo"
   # Copy example config to deployment
-  cp $FLUO_HOME/conf/examples/* $FLUO_HOME/conf/
+  cp "$FLUO_HOME"/conf/examples/* "$FLUO_HOME"/conf/
   FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
-  $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" $FLUO_PROPS
-  $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" $FLUO_PROPS
-  $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" $FLUO_PROPS
-  $SED "s/.*io.fluo.worker.num.threads=.*/io.fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" $FLUO_PROPS
-  $SED "s/.*io.fluo.worker.max.memory.mb=.*/io.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" $FLUO_PROPS
-  $SED "s/.*io.fluo.worker.instances=.*/io.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" $FLUO_PROPS
-  $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" $FLUO_HOME/conf/fluo-env.sh
+  $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$FLUO_PROPS"
+  $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" "$FLUO_PROPS"
+  $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$FLUO_PROPS"
+  $SED "s/.*io.fluo.worker.num.threads=.*/io.fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$FLUO_PROPS"
+  $SED "s/.*io.fluo.worker.max.memory.mb=.*/io.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
+  $SED "s/.*io.fluo.worker.instances=.*/io.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
+  $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
   
-  if [ $SETUP_METRICS = "true" ]; then
-    $SED "/io.fluo.metrics.reporter.graphite/d" $FLUO_PROPS
-    echo "io.fluo.metrics.reporter.graphite.enable=true" >> $FLUO_PROPS
-    echo "io.fluo.metrics.reporter.graphite.host=localhost" >> $FLUO_PROPS
-    echo "io.fluo.metrics.reporter.graphite.port=2003" >> $FLUO_PROPS
-    echo "io.fluo.metrics.reporter.graphite.frequency=30" >> $FLUO_PROPS
+  if [[ "$SETUP_METRICS" == "true" ]]; then
+    $SED "/io.fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
+    {
+      echo "io.fluo.metrics.reporter.graphite.enable=true"
+      echo "io.fluo.metrics.reporter.graphite.host=localhost"
+      echo "io.fluo.metrics.reporter.graphite.port=2003"
+      echo "io.fluo.metrics.reporter.graphite.frequency=30"
+    } >> "$FLUO_PROPS"
   fi
 fi
