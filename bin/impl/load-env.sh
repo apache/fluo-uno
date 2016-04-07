@@ -104,7 +104,6 @@ fi
 : ${ZOOKEEPER_VERSION:?"ZOOKEEPER_VERSION is not set in env.sh"}
 : ${ACCUMULO_VERSION:?"ACCUMULO_VERSION is not set in env.sh"}
 : ${DOWNLOADS:?"DOWNLOADS is not set in env.sh"}
-: ${APACHE_MIRROR:?"APACHE_MIRROR is not set in env.sh"}
 : ${ACCUMULO_TARBALL:?"ACCUMULO_TARBALL is not set in env.sh"}
 : ${FLUO_TARBALL:?"FLUO_TARBALL is not set in env.sh"}
 : ${HADOOP_TARBALL:?"HADOOP_TARBALL is not set in env.sh"}
