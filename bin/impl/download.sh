@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 # Copyright 2014 Fluo authors (see AUTHORS)
 #
@@ -20,13 +20,13 @@ function download_verify() {
   expected_md5=$3
 
   exp_md5_len=${#expected_md5}
-  if [ $exp_md5_len != 32 ]; then
+  if [[ "$exp_md5_len" -ne 32 ]]; then
     echo "The expected MD5 checksum ($expected_md5) of $tarball has a length of $exp_md5_len but should be 32"
     exit 1
   fi
   
-  wget -c -P $DOWNLOADS $url_prefix/$tarball
-  actual_md5=`$MD5 $DOWNLOADS/$tarball | awk '{print $1}'`
+  wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
+  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ "$actual_md5" != "$expected_md5" ]]; then
     echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
@@ -38,17 +38,17 @@ function download_verify() {
 # Determine best apache mirror to use
 APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
 
-download_verify $APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION $HADOOP_TARBALL $HADOOP_MD5
-download_verify $APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION $ZOOKEEPER_TARBALL $ZOOKEEPER_MD5
-download_verify $APACHE_MIRROR/spark/spark-$SPARK_VERSION $SPARK_TARBALL $SPARK_MD5
+download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_MD5"
+download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_MD5"
+download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_MD5"
 
-if [ -n "$ACCUMULO_TARBALL_REPO" ]; then
-  rm -f $DOWNLOADS/$ACCUMULO_TARBALL
+if [[ -n "$ACCUMULO_TARBALL_REPO" ]]; then
+  rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
   pushd .
-  cd $ACCUMULO_TARBALL_REPO
+  cd "$ACCUMULO_TARBALL_REPO"
   mvn clean package -Passemble -DskipTests
   ACCUMULO_BUILT_TAR=$ACCUMULO_TARBALL_REPO/assemble/target/accumulo-$ACCUMULO_VERSION-bin.tar.gz
-  if [ ! -f $ACCUMULO_BUILT_TAR ]; then
+  if [[ ! -f "$ACCUMULO_BUILT_TAR" ]]; then
     echo
     echo "The following file does not exist :"
     echo "    $ACCUMULO_BUILT_TAR"
@@ -59,16 +59,16 @@ if [ -n "$ACCUMULO_TARBALL_REPO" ]; then
     exit 1
   fi
   popd
-  cp $ACCUMULO_BUILT_TAR $DOWNLOADS/
+  cp "$ACCUMULO_BUILT_TAR" "$DOWNLOADS"/
 else
-  download_verify $APACHE_MIRROR/accumulo/$ACCUMULO_VERSION $ACCUMULO_TARBALL $ACCUMULO_MD5
+  download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
 fi
 
-if [ -z "$FLUO_TARBALL_PATH" -a -z "$FLUO_TARBALL_REPO" -a -n "$FLUO_TARBALL_URL_PREFIX" ]; then
-  download_verify $FLUO_TARBALL_URL_PREFIX $FLUO_TARBALL $FLUO_MD5
+if [[ -z "$FLUO_TARBALL_PATH" && -z "$FLUO_TARBALL_REPO" && -n "$FLUO_TARBALL_URL_PREFIX" ]]; then
+  download_verify "$FLUO_TARBALL_URL_PREFIX" "$FLUO_TARBALL" "$FLUO_MD5"
 fi
 
-if [ $SETUP_METRICS = "true" ]; then
+if [[ "$SETUP_METRICS" == "true" ]]; then
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
@@ -77,34 +77,34 @@ if [ $SETUP_METRICS = "true" ]; then
   fi
 
   BUILD=$DOWNLOADS/build
-  rm -rf $BUILD
-  mkdir -p $BUILD
+  rm -rf "$BUILD"
+  mkdir -p "$BUILD"
   IF_DIR=influxdb-$INFLUXDB_VERSION
   IF_PATH=$BUILD/$IF_DIR
   GF_DIR=grafana-$GRAFANA_VERSION
   GF_PATH=$BUILD/$GF_DIR
 
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
-  download_verify https://s3.amazonaws.com/influxdb $INFLUXDB_TARBALL $INFLUXDB_MD5
+  download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_MD5"
 
-  tar xzf $DOWNLOADS/$INFLUXDB_TARBALL -C $BUILD
-  mv $BUILD/influxdb_"$INFLUXDB_VERSION"_x86_64 $IF_PATH
-  mkdir $IF_PATH/bin
-  mv $IF_PATH/opt/influxdb/versions/$INFLUXDB_VERSION/* $IF_PATH/bin
-  rm -rf $IF_PATH/opt
+  tar xzf "$DOWNLOADS/$INFLUXDB_TARBALL" -C "$BUILD"
+  mv "$BUILD"/influxdb_"$INFLUXDB_VERSION"_x86_64 "$IF_PATH"
+  mkdir "$IF_PATH"/bin
+  mv "$IF_PATH/opt/influxdb/versions/$INFLUXDB_VERSION"/* "$IF_PATH"/bin
+  rm -rf "$IF_PATH"/opt
 
-  cd $BUILD
-  tar czf influxdb-"$INFLUXDB_VERSION".tar.gz $IF_DIR
-  rm -rf $IF_PATH
+  cd "$BUILD"
+  tar czf influxdb-"$INFLUXDB_VERSION".tar.gz "$IF_DIR"
+  rm -rf "$IF_PATH"
 
   GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  download_verify https://grafanarel.s3.amazonaws.com/builds $GRAFANA_TARBALL $GRAFANA_MD5
+  download_verify https://grafanarel.s3.amazonaws.com/builds "$GRAFANA_TARBALL" "$GRAFANA_MD5"
 
-  tar xzf $DOWNLOADS/$GRAFANA_TARBALL -C $BUILD
+  tar xzf "$DOWNLOADS/$GRAFANA_TARBALL" -C "$BUILD"
 
-  cd $BUILD
-  tar czf grafana-"$GRAFANA_VERSION".tar.gz $GF_DIR
-  rm -rf $GF_PATH
+  cd "$BUILD"
+  tar czf grafana-"$GRAFANA_VERSION".tar.gz "$GF_DIR"
+  rm -rf "$GF_PATH"
 fi
 
 echo "Success! All tarballs have been downloaded and their checksums verified."

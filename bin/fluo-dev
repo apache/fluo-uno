@@ -16,27 +16,26 @@
 
 # Start: Resolve Script Directory
 SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+while [[ -h "$SOURCE" ]]; do # resolve $SOURCE until the file is no longer a symlink
    bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
    SOURCE="$(readlink "$SOURCE")"
    [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-script=$( basename "$SOURCE" )
 # Stop: Resolve Script Directory
 
 . "$bin"/impl/load-env.sh "$1"
 
 function check_dirs() {
-  if [ ! -d "$HADOOP_PREFIX" ]; then
+  if [[ ! -d "$HADOOP_PREFIX" ]]; then
     echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory.  Please make sure it exists"
     exit 1
   fi
-  if [ ! -d "$ZOOKEEPER_HOME" ]; then
+  if [[ ! -d "$ZOOKEEPER_HOME" ]]; then
     echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory.  Please make sure it exists"
     exit 1
   fi
-  if [ ! -d "$ACCUMULO_HOME" ]; then
+  if [[ ! -d "$ACCUMULO_HOME" ]]; then
     echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory.  Please make sure it exists"
     exit 1
   fi
@@ -58,7 +57,7 @@ kill)
 	;;
 ashell)
   check_dirs
-  $ACCUMULO_HOME/bin/accumulo shell -u $ACCUMULO_USER -p $ACCUMULO_PASSWORD "${@:2}"
+  "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
 	;;
 env)
   "$bin"/impl/print-env.sh "${@:2}"
