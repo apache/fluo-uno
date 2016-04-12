@@ -115,6 +115,11 @@ fi
 : "${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}"
 : "${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}"
 : "${START_SPARK_HIST_SERVER:?"START_SPARK_HIST_SERVER is not set in env.sh"}"
+: "${LOGS_DIR:?"LOGS_DIR is not set in env.sh"}"
+: "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in env.sh"}"
+: "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in env.sh"}"
+: "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in env.sh"}"
+: "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in env.sh"}"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export MD5="md5 -q"

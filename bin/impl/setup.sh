@@ -84,6 +84,21 @@ rm -rf "$INSTALL"/spark-*
 rm -rf "$INSTALL"/influxdb-*
 rm -rf "$INSTALL"/grafana-*
 
+echo "Remove previous log dirs and recreate"
+rm -f "$HADOOP_LOG_DIR"/*
+rm -rf "$YARN_LOG_DIR"/application_*
+rm -f "$YARN_LOG_DIR"/*
+rm -f "$ACCUMULO_LOG_DIR"/*
+rm -f "$ZOO_LOG_DIR"/*
+rm -f "$LOGS_DIR"/spark/*
+rm -f "$LOGS_DIR"/metrics/*
+mkdir -p "$HADOOP_LOG_DIR"
+mkdir -p "$YARN_LOG_DIR"
+mkdir -p "$ACCUMULO_LOG_DIR"
+mkdir -p "$ZOO_LOG_DIR"
+mkdir -p "$LOGS_DIR"/spark
+mkdir -p "$LOGS_DIR"/metrics
+
 echo "Installing Hadoop, Zookeeper, Accumulo & Spark to $INSTALL"
 tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
@@ -97,9 +112,11 @@ cp "$SPARK_HOME"/lib/spark-"$SPARK_VERSION"-yarn-shuffle.jar "$HADOOP_PREFIX"/sh
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/hdfs-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/mapred-site.xml
-$SED "s#YARN_LOGS#$HADOOP_PREFIX/logs#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
+$SED "s#YARN_LOGS#$YARN_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
 $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
+$SED "s#\#export HADOOP_LOG_DIR=[^ ]*#export HADOOP_LOG_DIR=$HADOOP_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/hadoop-env.sh
+$SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-env.sh
 
 # configure zookeeper
 cp "$FLUO_DEV"/conf/zookeeper/* "$ZOOKEEPER_HOME"/conf/
@@ -118,30 +135,28 @@ $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-
 # configure spark
 cp "$FLUO_DEV"/conf/spark/* "$SPARK_HOME"/conf
 $SED "s#DATA_DIR#$DATA_DIR#g" "$SPARK_HOME"/conf/spark-defaults.conf
-$SED "s#HADOOP_PREFIX#$HADOOP_PREFIX#g" "$SPARK_HOME"/conf/spark-env.sh
+$SED "s#LOGS_DIR#$LOGS_DIR#g" "$SPARK_HOME"/conf/spark-defaults.conf
 
 echo "Starting Spark HistoryServer..."
 rm -rf "$DATA_DIR"/spark
 mkdir -p "$DATA_DIR"/spark/events
 if [[ "$START_SPARK_HIST_SERVER" == "true" ]]; then
+  export SPARK_LOG_DIR=$LOGS_DIR/spark
   "$SPARK_HOME"/sbin/start-history-server.sh
 fi
 
 echo "Starting Hadoop..."
-rm -rf "$HADOOP_PREFIX"/logs/*
 rm -rf "$DATA_DIR"/hadoop
+echo $HADOOP_LOG_DIR
 "$HADOOP_PREFIX"/bin/hdfs namenode -format
 "$HADOOP_PREFIX"/sbin/start-dfs.sh
 "$HADOOP_PREFIX"/sbin/start-yarn.sh
 
 echo "Starting Zookeeper..."
-rm -f "$ZOOKEEPER_HOME"/zookeeper.out
 rm -rf "$DATA_DIR"/zookeeper
-export ZOO_LOG_DIR="$ZOOKEEPER_HOME"
 "$ZOOKEEPER_HOME"/bin/zkServer.sh start
 
 echo "Starting Accumulo..."
-rm -f "$ACCUMULO_HOME"/logs/*
 "$HADOOP_PREFIX"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
 "$ACCUMULO_HOME"/bin/start-all.sh
@@ -159,14 +174,15 @@ if [[ "$SETUP_METRICS" == "true" ]]; then
   fi
   $SED "s#DATA_DIR#$DATA_DIR#g" "$INFLUXDB_HOME"/influxdb.conf
   rm -rf "$DATA_DIR"/influxdb
-  "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$INFLUXDB_HOME"/influxdb.log &
+  "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
 
   tar xzf "$DOWNLOADS"/build/"$GRAFANA_TARBALL" -C "$INSTALL"
   cp "$FLUO_DEV"/conf/grafana/custom.ini "$GRAFANA_HOME"/conf/
   $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
+  $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
   mkdir "$GRAFANA_HOME"/dashboards
   cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
-  "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" &> "$GRAFANA_HOME"/grafana.log &
+  "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
 
   echo "Configuring InfluxDB..."
   sleep 10
