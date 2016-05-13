@@ -131,6 +131,11 @@ $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM
 $SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
 $SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
 $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
+$SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
+if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
+  echo "Building Accumulo native map library..."
+  "$ACCUMULO_HOME"/bin/build_native_library.sh
+fi
 
 # configure spark
 cp "$FLUO_DEV"/conf/spark/* "$SPARK_HOME"/conf

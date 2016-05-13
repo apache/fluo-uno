@@ -54,7 +54,7 @@
 
   <property>
     <name>tserver.memory.maps.native.enabled</name>
-    <value>false</value>
+    <value>ACCUMULO_USE_NATIVE_MAP</value>
   </property>
 
   <property>
