@@ -73,21 +73,21 @@ if [[ -n "$TARBALL" ]]; then
   # Copy example config to deployment
   cp "$FLUO_HOME"/conf/examples/* "$FLUO_HOME"/conf/
   FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
-  $SED "s/io.fluo.client.accumulo.instance=/io.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$FLUO_PROPS"
-  $SED "s/io.fluo.client.accumulo.user=/io.fluo.client.accumulo.user=$ACCUMULO_USER/g" "$FLUO_PROPS"
-  $SED "s/io.fluo.client.accumulo.password=/io.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$FLUO_PROPS"
-  $SED "s/.*io.fluo.worker.num.threads=.*/io.fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$FLUO_PROPS"
-  $SED "s/.*io.fluo.worker.max.memory.mb=.*/io.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
-  $SED "s/.*io.fluo.worker.instances=.*/io.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
+  $SED "s/org.apache.fluo.client.accumulo.instance=/org.apache.fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$FLUO_PROPS"
+  $SED "s/org.apache.fluo.client.accumulo.user=/org.apache.fluo.client.accumulo.user=$ACCUMULO_USER/g" "$FLUO_PROPS"
+  $SED "s/org.apache.fluo.client.accumulo.password=/org.apache.fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$FLUO_PROPS"
+  $SED "s/.*org.apache.fluo.worker.num.threads=.*/org.apache.fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$FLUO_PROPS"
+  $SED "s/.*org.apache.fluo.worker.max.memory.mb=.*/org.apache.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
+  $SED "s/.*org.apache.fluo.worker.instances=.*/org.apache.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
   $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
   
   if [[ "$SETUP_METRICS" == "true" ]]; then
-    $SED "/io.fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
+    $SED "/org.apache.fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
     {
-      echo "io.fluo.metrics.reporter.graphite.enable=true"
-      echo "io.fluo.metrics.reporter.graphite.host=localhost"
-      echo "io.fluo.metrics.reporter.graphite.port=2003"
-      echo "io.fluo.metrics.reporter.graphite.frequency=30"
+      echo "org.apache.fluo.metrics.reporter.graphite.enable=true"
+      echo "org.apache.fluo.metrics.reporter.graphite.host=localhost"
+      echo "org.apache.fluo.metrics.reporter.graphite.port=2003"
+      echo "org.apache.fluo.metrics.reporter.graphite.frequency=30"
     } >> "$FLUO_PROPS"
   fi
 fi
