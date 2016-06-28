@@ -80,6 +80,9 @@ if [[ -n "$TARBALL" ]]; then
   $SED "s/.*org.apache.fluo.worker.max.memory.mb=.*/org.apache.fluo.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
   $SED "s/.*org.apache.fluo.worker.instances=.*/org.apache.fluo.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
   $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
+  $SED "s#ACCUMULO_HOME=/path/to/accumulo#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
+  $SED "s#ZOOKEEPER_HOME=/path/to/zookeeper#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
+
   
   if [[ "$SETUP_METRICS" == "true" ]]; then
     $SED "/org.apache.fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
