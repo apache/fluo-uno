@@ -83,7 +83,6 @@ if [[ -n "$TARBALL" ]]; then
   $SED "s#ACCUMULO_HOME=/path/to/accumulo#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ZOOKEEPER_HOME=/path/to/zookeeper#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
 
-  
   if [[ "$SETUP_METRICS" == "true" ]]; then
     $SED "/fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
     {
@@ -93,4 +92,6 @@ if [[ -n "$TARBALL" ]]; then
       echo "fluo.metrics.reporter.graphite.frequency=30"
     } >> "$FLUO_PROPS"
   fi
+
+  $FLUO_HOME/lib/fetch.sh extra
 fi
