@@ -14,48 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+source $FLUO_DEV/bin/impl/util.sh
+
 # stop if any command fails
 set -e
 
-function verify_exist_hash() {
-  tarball=$1
-  expected_md5=$2
-  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
-
-  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo "The tarball $tarball does not exists in downloads/"
-    exit 1
-  fi
-  if [[ "$actual_md5" != "$expected_md5" ]]; then
-    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
-    exit 1
-  fi
-}
-
-if [[ -n "$FLUO_TARBALL_PATH" ]]; then
-  TARBALL=$FLUO_TARBALL_PATH
-elif [[ -n "$FLUO_TARBALL_REPO" ]]; then
-  echo "Rebuilding Fluo tarball" 
-  cd "$FLUO_TARBALL_REPO"
-  mvn clean package -DskipTests -Daccumulo.version="$ACCUMULO_VERSION" -Dhadoop.version="$HADOOP_VERSION" -Dthrift.version="$THRIFT_VERSION"
-  # mvn command above puts shell in weird state where commands are not echoed when typed.  command below fixes this.
-  stty echo
-
-  TARBALL=$FLUO_TARBALL_REPO/modules/distribution/target/fluo-$FLUO_VERSION-bin.tar.gz
-  if [[ ! -f "$TARBALL" ]]; then
-    echo "The tarball $TARBALL does not exist after building from the FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO"
-    echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
-    exit 1
-  fi
-elif [[ -n "$FLUO_TARBALL_URL_PREFIX" ]]; then
+if [[ -z "$FLUO_REPO" ]]; then
   verify_exist_hash "$FLUO_TARBALL" "$FLUO_MD5"
-  TARBALL=$DOWNLOADS/$FLUO_TARBALL
-else
-  echo "Fluo tarball location was not set in conf/env.sh.  Fluo will not be set up."
 fi
 
-if [[ -n "$TARBALL" ]]; then
-  echo "Killing Fluo (if running)"
+if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
+  echo "Killing any Fluo applications (if running)"
   # Don't stop if pkills fail
   set +e
   pkill -f fluo.yarn
@@ -63,11 +32,11 @@ if [[ -n "$TARBALL" ]]; then
   pkill -f twill.launcher
   set -e
 
-  echo "Removing old Fluo deployment" 
-  rm -rf "$FLUO_HOME"
+  echo "Removing previous Fluo installs"
+  rm -rf "$INSTALL"/fluo-*
 
   echo "Deploying new Fluo tarball"
-  tar xzf "$TARBALL" -C "$INSTALL"/
+  tar xzf "$DOWNLOADS/$FLUO_TARBALL" -C "$INSTALL"/
 
   echo "Configuring Fluo"
   # Copy example config to deployment
@@ -94,4 +63,7 @@ if [[ -n "$TARBALL" ]]; then
   fi
 
   $FLUO_HOME/lib/fetch.sh extra
+else
+  echo "WARNING: Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
+  echo "Fluo will not be set up!"
 fi

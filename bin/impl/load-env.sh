@@ -43,10 +43,9 @@ FH=$FLUO_HOME
 
 # Load env configuration
 if [[ -f "$FLUO_DEV/conf/env.sh" ]]; then
-  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"; fi
   . "$FLUO_DEV"/conf/env.sh
 else
-  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
+  if [[ ! "version env" =~ $1 ]]; then echo "WARNING: fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
   . "$FLUO_DEV"/conf/env.sh.example
 fi
 
@@ -79,12 +78,12 @@ if [[ ! "version env" =~ $1 ]]; then
 fi
 
 # Confirm that env variables were set correctly
-if [[ -n "$FLUO_TARBALL_PATH" && ! -f "$FLUO_TARBALL_PATH" ]]; then
-  echo "FLUO_TARBALL_PATH=$FLUO_TARBALL_PATH is not a valid file.  Please make sure it exists"
+if [[ -n "$FLUO_REPO" && ! -d "$FLUO_REPO" ]]; then
+  echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
-if [[ -n "$FLUO_TARBALL_REPO" && ! -d "$FLUO_TARBALL_REPO" ]]; then
-  echo "FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO is not a valid directory.  Please make sure it exists"
+if [[ -n "$ACCUMULO_REPO" && ! -d "$ACCUMULO_REPO" ]]; then
+  echo "ACCUMULO_REPO=$ACCUMULO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
 
