@@ -10,7 +10,7 @@ avoid inadvertent data loss, Uno should not be used in production.
 
 ## Installation
 
-First, clone the uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
+First, clone the Uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
     git clone https://github.com/astralway/uno.git
 
