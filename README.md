@@ -1,24 +1,22 @@
-fluo-dev
-========
+# Uno
 
-A command-line tool for running Fluo on a single machine for development. This tool is designed for
+A command-line tool for running [Apache Fluo][fluo] on a single machine for development. This tool is designed for
 developers who need to frequently upgrade Fluo, test their code, and do not care about preserving
-data. While fluo-dev makes it easy to setup a cluster running Fluo, it also makes it easy clear
-your data and setup a new cluster. To avoid inadvertent data loss, the fluo-dev tool should not
-be used in production. 
+data. While Uno makes it easy to setup a cluster running Fluo, it also makes it easy clear your
+data and setup a new cluster. To avoid inadvertent data loss, Uno should not be used
+in production.
 
-Installation
-------------
+## Installation
 
-First, clone the fluo-dev repo on a local disk with enough space to run Hadoop, Accumulo, etc:
+First, clone the uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
-    git clone https://github.com/fluo-io/fluo-dev.git
+    git clone https://github.com/astralway/uno.git
 
-The `fluo-dev` command uses `conf/env.sh.example` for its default configuration which should
-be sufficient for most users.
+The `uno` command uses `conf/env.sh.example` for its default configuration which should be
+sufficient for most users.
 
-Optionally, you can customize this configuration by creating an `env.sh` file and modifying it
-for your environment:
+Optionally, you can customize this configuration by creating an `env.sh` file and modifying it for
+your environment:
 
 ```bash
 cd conf/
@@ -26,63 +24,68 @@ cp env.sh.example env.sh
 vim env.sh
 ```
 
-Fluo-dev can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) that can be used
-to monitor your Fluo applications. This setup does not occur with the default configuration. You
-must set `SETUP_METRICS` to `true` in your `env.sh`.
+Uno can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) that can be used to
+monitor your Fluo applications. This setup does not occur with the default configuration. You must
+set `SETUP_METRICS` to `true` in your `env.sh`.
 
-Fluo-dev can build a Fluo tarball from a local Fluo git repo by setting `FLUO_TARBALL_REPO` in
-`env.sh` to the location of your local Fluo clone. You should  also modify `FLUO_VERSION` to
-use the version in the checked out branch of your local Fluo clone (i.e `1.0.0-beta-2-SNAPSHOT`)
-rather than the last release version (i.e `1.0.0-beta-1`). This option lets users build and
-run the latest Fluo code from master or lets Fluo developers test their changes made to their
-local clone before submitting pull requests.
+All commands are run using the `uno` script in `bin/`. Uno has a command that helps you
+configure your shell so that you can run commands from any directory and easily set common
+environment variables in your shell for Uno, Hadoop, Zookeeper, Fluo, and Spark. Run the
+following command to print this shell configuration. You can also add `--paths` or `--vars` to the
+command below to limit output to PATH or environment variable configuration:
 
-All commands are run using the `fluo-dev` script in `bin/`. Fluo-dev has a command that helps
-you configure your shell so that you can run commands from any directory and easily set common
-environment variables in your shell for Fluo-dev, Hadoop, Zookeeper, Fluo, and Spark. Run the
-following command to print this shell configuration. You can also add `--paths` or `--vars` to
-the command below to limit output to PATH or environment variable configuration:
+    uno env
 
-    fluo-dev env
-
-You can either copy and paste this output into your shell or add the following (with a correct
-path) to your ~/.bashrc automatically configure every new shell.
+You can either copy and paste this output into your shell or add the following (with a correct path)
+to your ~/.bashrc automatically configure every new shell.
 
 ```bash
-eval "$(/path/to/fluo-dev/bin/fluo-dev env)"
+eval "$(/path/to/uno/bin/uno env)"
 ```
 
-With `fluo-dev` script set up, you can now use it to download, configure, and run Fluo and
-its dependencies.
+With `uno` script set up, you can now use it to download, configure, and run Fluo and its
+dependencies.
 
-Download command
-----------------
+## Fetch command
 
-The `download` command needs to be run first. It will download the binary tarballs of software needed
-by fluo-dev (i.e Accumulo, Hadoop, Zookeeper, Spark, etc). If the software is an Apache project, it will
-use the Apache download mirror specified by `APACHE_MIRROR` in env.sh. Other mirrors can be chosen from
-[this website][1]. This command will verify that the MD5 hashes of the downloaded tarballs match the
-expected MD5 hashes set in your `env.sh`. If any don't match, the command will fail and error message
-will be printed.
+The `uno fetch` command fetches the binary tarball dependencies of Fluo and Accumulo. By
+default, it will download these tarballs. However, you can configure the `fetch` command to build
+them from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `env.sh`.
 
-    fluo-dev download
+If `uno fetch all` is run, all depedencies will be either downloaded or built. If you would
+like, to only fetch certain dependencies, run `uno fetch` to see a list of possible
+dependencies.
 
-After this command is run for the first time, it only needs to run again if you upgrade
-software and need to download the latest version.
+After the `fetch` command is run for the first time, it only needs to run again if you upgrade
+software and need to download/build the latest version.
 
-Setup command
--------------
+## Setup command
 
-The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in
-your env.sh and run you local development cluster. It will always configure and run Hadoop, Zookeeper
-and Accumulo.  If you have a Fluo tarball location specified in `conf/env.sh`, it will setup Fluo but not
-run an application.  If you don't want Fluo set up, you should make sure all the bash variables in the
-'Fluo Tarball' section are commented out. If you have `SETUP_METRICS` set to `true`, this command will
-also set up InfluxDB and Grafana.
+The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
+env.sh and run you local development cluster. The command can be run in several different ways:
 
-    fluo-dev setup
+1. Set up Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and will
+   wipe Accumulo/Hadoop if this command was run previously.  This command also sets up Spark and
+   starts Spark's History Server (set `START_SPARK_HIST_SERVER=false` in your env.sh to turn off).
 
-Confirm that everything started by checking the monitoring pages of Hadoop & Accumulo:
+   This command is useful if you are using Uno for Accumulo development.
+
+        uno setup accumulo
+
+2. Sets up Fluo along with Accumulo (and its dependencies). It also sets up a metrics server for
+   Fluo consisting of InfluxDB & Grafana if `SETUP_METRICS` is set to true in env.sh. This command
+   will wipe your cluster. While Fluo is set up, it does not start any Fluo applictions.
+
+        uno setup fluo
+
+3. Sets up Fluo only. This will stop any previously running Fluo applcations but it will not wipe
+   your cluster. If you want upgrade Fluo without wiping your cluster, run `uno fetch fluo`
+   before running this command.
+
+        uno setup fluo-only
+
+You can confirm that everything started by checking the monitoring pages of below:
+
  * [Hadoop NameNode](http://localhost:50070/)
  * [Hadoop ResourceManager](http://localhost:8088/)
  * [Accumulo Monitor](http://localhost:50095/)
@@ -91,40 +94,28 @@ Confirm that everything started by checking the monitoring pages of Hadoop & Acc
  * [InfluxDB Admin](http://localhost:8083/) (optional)
 
 You can verify that Fluo was installed by correctly by running the `fluo` command which you can use
-to adminster Fluo:
+to administer Fluo:
 
     ./install/fluo-1.0.0-beta-1/bin/fluo
 
-If you run some tests and then want a fresh cluster, run `setup` command again which kill all
-running processes, clear any data and logs, and restart your cluster.
+If you run some tests and then want a fresh cluster, run `uno setup all` command again which will
+kill all running processes, clear any data and logs, and restart your cluster.
 
-Redeploy command
-----------------
+## Running Fluo applications
 
-The 'redeploy' command allows you to make changes to the Fluo codebase and redeploy Fluo without 
-setting up a new cluster:
+Before running a Fluo application, it is recommended that you configure your shell using
+`uno env`. If this is done, many Fluo example applications (such as [Webindex] and
+[Phrasecount]) can be run by simply cloning their repo and executing their start scripts (which will
+use environment variables set in your shell by `uno env`).
 
-    fluo-dev redeploy
+If you want to create your own Fluo application, you should mimic the scripts of example Fluo
+applications or follow the instructions starting at the [Configure a Fluo application][configure]
+section of the Fluo install instructions. These instructions will guide you through the process of
+configuring, initializing, and starting your application.
 
-Running Fluo applications
--------------------------
-
-Before running a Fluo application, it is recommended that you configure your shell using `fluo-dev env`.
-If this is done, many Fluo example applications (such as [Webindex][2] and [Phrasecount][3]) can be run
-by simply cloning their repo and executing their start scripts (which will use environment varibles set in
-your shell by `fluo-dev env`).
-
-If you want to create your own Fluo application, you should mimic the scripts of example Fluo applications
-or follow the instructions starting at the [Configure a Fluo application][4] section of the Fluo production
-setup instructions.  These instructions will guide you through the process of configuring, initializing, and
-starting your application. 
-
-The `fluo-dev` commands above are designed to be repeated.  If Hadoop or Accumulo become unstable, run
-`fluo-dev setup` to setup Hadoop/Accumulo again and then `fluo-dev deploy` to redeploy Fluo.
-
-[1]: http://www.apache.org/dyn/closer.cgi
-[2]: https://github.com/fluo-io/webindex
-[3]: https://github.com/fluo-io/phrasecount
-[4]: https://github.com/fluo-io/fluo/blob/master/docs/prod-fluo-setup.md#configure-a-fluo-application
-[fluo-stress]: https://github.com/fluo-io/fluo-stress
-
+[fluo]: http://fluo.apache.org/
+[mirrors]: http://www.apache.org/dyn/closer.cgi
+[Webindex]: https://github.com/astralway/webindex
+[Phrasecount]: https://github.com/astralway/phrasecount
+[configure]: https://github.com/apache/fluo/blob/master/docs/install.md#configure-a-fluo-application
+[fluo-stress]: https://github.com/astralway/fluo-stress

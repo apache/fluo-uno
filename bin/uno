@@ -42,15 +42,38 @@ function check_dirs() {
 }
 
 case "$1" in
-download)
-  "$bin"/impl/download.sh "${@:2}"
+fetch)
+  if [[ "$2" == "all" ]]; then
+    "$bin"/impl/fetch.sh accumulo
+    "$bin"/impl/fetch.sh fluo
+    "$bin"/impl/fetch.sh hadoop
+    "$bin"/impl/fetch.sh metrics
+    "$bin"/impl/fetch.sh spark
+    "$bin"/impl/fetch.sh zookeeper
+  else
+    "$bin"/impl/fetch.sh "${@:2}"
+  fi
 	;;
 setup)
-  "$bin"/impl/setup.sh "${@:2}"
-	;;
-redeploy)
-  check_dirs
-  "$bin"/impl/redeploy.sh "${@:2}"
+  case "$2" in
+  accumulo)
+    "$bin"/impl/setup-accumulo.sh "${@:2}"
+    ;;
+  fluo)
+    "$bin"/impl/setup-fluo.sh "${@:2}"
+    ;;
+  fluo-only)
+    "$bin"/impl/setup-fluo-only.sh "${@:2}"
+    ;;
+  *)
+    echo "Usage: uno setup <command>"
+    echo -e "\nPossible commands:\n"
+    echo "    accumulo   Sets up Accumulo along with Hadoop, Zookeeper and Spark"
+    echo "    fluo       Sets up Fluo along with Accumulo (and its dependences)."
+    echo "               Also, sets up metrics server (if SETUP_METRICS=true in env.sh)"
+    echo "    fluo-only  Sets up Fluo only. Useful for upgrading Fluo without losing cluster data."
+    exit 1
+  esac
 	;;
 kill)
   "$bin"/impl/kill.sh "${@:2}"
@@ -66,16 +89,17 @@ version)
   "$bin"/impl/version.sh "${@:2}"
   ;;
 *)
-  echo -e "Usage: fluo-dev <command> (<argument>)\n"
+  echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-  echo "  download      Downloads Fluo dependencies (i.e. Hadoop, Accumulo, & Zookeeper)"
-  echo "  setup         Sets up development cluster as configured by env.sh (clearing any existing data)"
-  echo "  redeploy      Redeploys Fluo code after stopping any running Fluo applications"
-  echo "  kill          Kills Fluo and its depenedencies"
-  echo "  ashell        Runs the Accumulo shell"
-  echo "  env           Prints out shell configuration for PATH and common environment variables."
-  echo "                Add '--paths' or '--vars' command to limit what is printed."
-  echo "  version <dep> Prints out configured version for dependency"
+  echo "  fetch <dependency>  Fetches dependencies by either building or downloading them (as configured by env.sh)"
+  echo "                      Run 'uno fetch all' to fetch all dependencies. Run 'uno fetch' for list of dependencies."
+  echo "  setup <command>     Sets up development cluster (clearing any existing data)"
+  echo "                      Run 'uno setup fluo' to setup all possible software. Run 'uno setup' for list of commands."
+  echo "  kill                Kills all software"
+  echo "  ashell              Runs the Accumulo shell"
+  echo "  env                 Prints out shell configuration for PATH and common environment variables."
+  echo "                      Add '--paths' or '--vars' command to limit what is printed."
+  echo "  version <dep>       Prints out configured version for dependency"
   echo " " 
   exit 1
 esac

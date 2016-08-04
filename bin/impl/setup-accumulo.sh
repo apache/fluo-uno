@@ -14,22 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-function verify_exist_hash() {
-  tarball=$1
-  expected_md5=$2
-  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
+source $FLUO_DEV/bin/impl/util.sh
 
-  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo "The tarball $tarball does not exists in downloads/"
-    exit 1
-  fi
-  if [[ "$actual_md5" != "$expected_md5" ]]; then
-    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
-    exit 1
-  fi
-}
-
-if [[ -z "$ACCUMULO_TARBALL_REPO" ]]; then
+if [[ -z "$ACCUMULO_REPO" ]]; then
   verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
 fi
 verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_MD5"
@@ -45,28 +32,8 @@ else
     echo "Found ${hostname} in DNS."
   else
     echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
-    echo "This is an issue that can cause fluo-dev services (such as Hadoop) to not start up.  You should"
+    echo "This is an issue that can cause uno services (such as Hadoop) to not start up.  You should"
     echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
-    exit 1
-  fi
-fi
-
-if [[ "$SETUP_METRICS" == "true" ]]; then
-  # verify downloaded tarballs
-  INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
-  GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  verify_exist_hash "$INFLUXDB_TARBALL" "$INFLUXDB_MD5"
-  verify_exist_hash "$GRAFANA_TARBALL" "$GRAFANA_MD5"
-
-  # make sure built tarballs exist
-  INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz
-  GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".tar.gz
-  if [[ ! -f "$DOWNLOADS/build/$INFLUXDB_TARBALL" ]]; then
-    echo "InfluxDB tarball $INFLUXDB_TARBALL does not exists in downloads/build/"
-    exit 1
-  fi
-  if [[ ! -f "$DOWNLOADS/build/$GRAFANA_TARBALL" ]]; then
-    echo "Grafana tarball $GRAFANA_TARBALL does not exists in downloads/build"
     exit 1
   fi
 fi
@@ -81,8 +48,6 @@ rm -rf "$INSTALL"/accumulo-*
 rm -rf "$INSTALL"/hadoop-*
 rm -rf "$INSTALL"/zookeeper-*
 rm -rf "$INSTALL"/spark-*
-rm -rf "$INSTALL"/influxdb-*
-rm -rf "$INSTALL"/grafana-*
 
 echo "Remove previous log dirs and recreate"
 rm -f "$HADOOP_LOG_DIR"/*
@@ -91,13 +56,11 @@ rm -f "$YARN_LOG_DIR"/*
 rm -f "$ACCUMULO_LOG_DIR"/*
 rm -f "$ZOO_LOG_DIR"/*
 rm -f "$LOGS_DIR"/spark/*
-rm -f "$LOGS_DIR"/metrics/*
 mkdir -p "$HADOOP_LOG_DIR"
 mkdir -p "$YARN_LOG_DIR"
 mkdir -p "$ACCUMULO_LOG_DIR"
 mkdir -p "$ZOO_LOG_DIR"
 mkdir -p "$LOGS_DIR"/spark
-mkdir -p "$LOGS_DIR"/metrics
 
 echo "Installing Hadoop, Zookeeper, Accumulo & Spark to $INSTALL"
 tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
@@ -165,53 +128,3 @@ echo "Starting Accumulo..."
 "$HADOOP_PREFIX"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
 "$ACCUMULO_HOME"/bin/start-all.sh
-
-echo "Setting up Fluo"
-"$FLUO_DEV"/bin/impl/redeploy.sh
-
-if [[ "$SETUP_METRICS" == "true" ]]; then
-  echo "Setting up metrics (influxdb + grafana)..."
-  tar xzf "$DOWNLOADS"/build/"$INFLUXDB_TARBALL" -C "$INSTALL"
-  "$INFLUXDB_HOME"/bin/influxd config -config "$FLUO_DEV"/conf/influxdb/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
-  if [[ ! -f "$INFLUXDB_HOME"/influxdb.conf ]]; then
-    echo "Failed to create $INFLUXDB_HOME/influxdb.conf"
-    exit 1
-  fi
-  $SED "s#DATA_DIR#$DATA_DIR#g" "$INFLUXDB_HOME"/influxdb.conf
-  rm -rf "$DATA_DIR"/influxdb
-  "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
-
-  tar xzf "$DOWNLOADS"/build/"$GRAFANA_TARBALL" -C "$INSTALL"
-  cp "$FLUO_DEV"/conf/grafana/custom.ini "$GRAFANA_HOME"/conf/
-  $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
-  $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
-  mkdir "$GRAFANA_HOME"/dashboards
-  cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
-  "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
-
-  echo "Configuring InfluxDB..."
-  sleep 10
-  "$INFLUXDB_HOME"/bin/influx -import -path "$FLUO_HOME"/contrib/influxdb/fluo_metrics_setup.txt
-
-  # allow commands to fail
-  set +e
-
-  echo "Configuring Grafana..."
-  echo "Adding InfluxDB as datasource"
-  sleep 10
-  retcode=1
-  while [[ $retcode != 0 ]];  do
-    curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
-      --data-binary '{"name":"fluo_metrics","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
-    retcode=$?
-    if [[ $retcode != 0 ]]; then
-      echo "Failed to add Grafana data source.  Retrying in 5 sec.."
-      sleep 5
-    fi
-  done 
-fi
-
-stty sane
-
-echo -e "\nSetup is finished!"
-

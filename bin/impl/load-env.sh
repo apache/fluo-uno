@@ -43,48 +43,47 @@ FH=$FLUO_HOME
 
 # Load env configuration
 if [[ -f "$FLUO_DEV/conf/env.sh" ]]; then
-  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using custom configuration at $FLUO_DEV/conf/env.sh"; fi
   . "$FLUO_DEV"/conf/env.sh
 else
-  if [[ ! "version env" =~ $1 ]]; then echo "fluo-dev is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
+  if [[ ! "version env" =~ $1 ]]; then echo "WARNING: uno is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
   . "$FLUO_DEV"/conf/env.sh.example
 fi
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
   if [[ -n "$HP" && "$HP" != "$HADOOP_PREFIX" ]]; then
-    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your fluo-dev env.sh '$HADOOP_PREFIX'"
+    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your uno env.sh '$HADOOP_PREFIX'"
     exit 1
   fi
   if [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]]; then
-    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your fluo-dev env.sh '$HADOOP_CONF_DIR'"
+    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your uno env.sh '$HADOOP_CONF_DIR'"
     exit 1
   fi
   if [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]]; then
-    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your fluo-dev env.sh '$ZOOKEEPER_HOME'"
+    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your uno env.sh '$ZOOKEEPER_HOME'"
     exit 1
   fi
   if [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]]; then
-    echo "SPARK_HOME in your shell env '$SH' needs to match your fluo-dev env.sh '$SPARK_HOME'"
+    echo "SPARK_HOME in your shell env '$SH' needs to match your uno env.sh '$SPARK_HOME'"
     exit 1
   fi
   if [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]]; then
-    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your fluo-dev env.sh '$ACCUMULO_HOME'"
+    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your uno env.sh '$ACCUMULO_HOME'"
     exit 1
   fi
   if [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]]; then
-    echo "FLUO_HOME in your shell env '$FH' needs to match your fluo-dev env.sh '$FLUO_HOME'"
+    echo "FLUO_HOME in your shell env '$FH' needs to match your uno env.sh '$FLUO_HOME'"
     exit 1
   fi
 fi
 
 # Confirm that env variables were set correctly
-if [[ -n "$FLUO_TARBALL_PATH" && ! -f "$FLUO_TARBALL_PATH" ]]; then
-  echo "FLUO_TARBALL_PATH=$FLUO_TARBALL_PATH is not a valid file.  Please make sure it exists"
+if [[ -n "$FLUO_REPO" && ! -d "$FLUO_REPO" ]]; then
+  echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
-if [[ -n "$FLUO_TARBALL_REPO" && ! -d "$FLUO_TARBALL_REPO" ]]; then
-  echo "FLUO_TARBALL_REPO=$FLUO_TARBALL_REPO is not a valid directory.  Please make sure it exists"
+if [[ -n "$ACCUMULO_REPO" && ! -d "$ACCUMULO_REPO" ]]; then
+  echo "ACCUMULO_REPO=$ACCUMULO_REPO is not a valid directory.  Please make sure it exists"
   exit 1
 fi
 

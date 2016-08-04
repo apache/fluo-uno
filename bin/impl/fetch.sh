@@ -38,38 +38,57 @@ function download_verify() {
 # Determine best apache mirror to use
 APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
 
-download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_MD5"
-download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_MD5"
-download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_MD5"
-
-if [[ -n "$ACCUMULO_TARBALL_REPO" ]]; then
-  rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
-  pushd .
-  cd "$ACCUMULO_TARBALL_REPO"
-  mvn clean package -Passemble -DskipTests
-  ACCUMULO_BUILT_TAR=$ACCUMULO_TARBALL_REPO/assemble/target/accumulo-$ACCUMULO_VERSION-bin.tar.gz
-  if [[ ! -f "$ACCUMULO_BUILT_TAR" ]]; then
-    echo
-    echo "The following file does not exist :"
-    echo "    $ACCUMULO_BUILT_TAR"
-    echo "after building from :"
-    echo "    ACCUMULO_TARBALL_REPO=$ACCUMULO_TARBALL_REPO"
-    echo "ensure ACCUMULO_VERSION=$ACCUMULO_VERSION is correct."
-    echo
-    exit 1
+case "$1" in 
+hadoop)
+  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_MD5"
+  ;;
+zookeeper)
+  download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_MD5"
+  ;;
+spark)
+  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_MD5"
+  ;;
+accumulo)
+  if [[ -n "$ACCUMULO_REPO" ]]; then
+    rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
+    pushd .
+    cd "$ACCUMULO_REPO"
+    mvn clean package -Passemble -DskipTests -DskipFormat
+    accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
+    if [[ ! -f "$accumulo_built_tarball" ]]; then
+      echo
+      echo "The following file does not exist :"
+      echo "    $accumulo_built_tarball"
+      echo "after building from :"
+      echo "    ACCUMULO_REPO=$ACCUMULO_REPO"
+      echo "ensure ACCUMULO_VERSION=$ACCUMULO_VERSION is correct."
+      echo
+      exit 1
+    fi
+    popd
+    cp "$accumulo_built_tarball" "$DOWNLOADS"/
+  else
+    download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
   fi
-  popd
-  cp "$ACCUMULO_BUILT_TAR" "$DOWNLOADS"/
-else
-  download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
-fi
+  ;;
+fluo)
+  if [[ -n "$FLUO_REPO" ]]; then
+    rm -f "$DOWNLOADS/$FLUO_TARBALL"
+    cd "$FLUO_REPO"
+    mvn clean package -DskipTests -Dformatter.skip
 
-if [[ -z "$FLUO_TARBALL_PATH" && -z "$FLUO_TARBALL_REPO" && -n "$FLUO_TARBALL_URL_PREFIX" ]]; then
-  download_verify "$FLUO_TARBALL_URL_PREFIX" "$FLUO_TARBALL" "$FLUO_MD5"
-fi
-
-if [[ "$SETUP_METRICS" == "true" ]]; then
-
+    fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
+    if [[ ! -f "$fluo_built_tarball" ]]; then
+      echo "The tarball $fluo_built_tarball does not exist after building from the FLUO_REPO=$FLUO_REPO"
+      echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
+      exit 1
+    fi
+    cp "$fluo_built_tarball" "$DOWNLOADS"/
+  else
+    download_verify "$APACHE_MIRROR/incubator/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_MD5"
+  fi
+  ;;
+metrics)
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
     echo "You should set SETUP_METRICS to false in env.sh."
@@ -105,6 +124,16 @@ if [[ "$SETUP_METRICS" == "true" ]]; then
   cd "$BUILD"
   tar czf grafana-"$GRAFANA_VERSION".tar.gz "$GF_DIR"
   rm -rf "$GF_PATH"
-fi
-
-echo "Success! All tarballs have been downloaded and their checksums verified."
+  ;;
+*)
+  echo "Usage: uno fetch <dependency>"
+  echo -e "\nPossible dependencies:\n"
+  echo "    all        Fetches all of the following dependencies"
+  echo "    accummulo  Builds Accumulo if repo set in env.sh. Otherwise, downloads it."
+  echo "    fluo       Builds Fluo if repo set in env.sh. Otherwise, downloads it."
+  echo "    hadoop     Downloads Hadoop"
+  echo "    metrics    Downloads InfluxDB and Grafana"
+  echo "    spark      Downloads Spark"
+  echo "    zookeeper  Downloads Zookeeper"
+  exit 1
+esac
