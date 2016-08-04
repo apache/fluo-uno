@@ -92,7 +92,7 @@ version)
   echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
   echo "  fetch <dependency>  Fetches dependencies by either building or downloading them (as configured by env.sh)"
-  echo "                      Run 'ino fetch all' to fetch all dependencies. Run 'uno fetch' for list of dependencies."
+  echo "                      Run 'uno fetch all' to fetch all dependencies. Run 'uno fetch' for list of dependencies."
   echo "  setup <command>     Sets up development cluster (clearing any existing data)"
   echo "                      Run 'uno setup fluo' to setup all possible software. Run 'uno setup' for list of commands."
   echo "  kill                Kills all software"
