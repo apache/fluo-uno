@@ -1,10 +1,12 @@
-# Uno
+![Uno][logo]
+---
+[![Apache License][li]][ll]
 
-A command-line tool for running [Apache Fluo][fluo] on a single machine for development. This tool is designed for
-developers who need to frequently upgrade Fluo, test their code, and do not care about preserving
-data. While Uno makes it easy to setup a cluster running Fluo, it also makes it easy clear your
-data and setup a new cluster. To avoid inadvertent data loss, Uno should not be used
-in production.
+A command-line tool for running [Apache Fluo][fluo] or [Apache Accumulo][accumulo] on a single
+machine for development. This tool is designed for developers who need to frequently upgrade and
+test their code, and do not care about preserving data. While Uno makes it easy to setup a dev stack
+running Fluo or Accumulo, it also makes it easy clear your data and setup your dev stack again. To
+avoid inadvertent data loss, Uno should not be used in production.
 
 ## Installation
 
@@ -114,8 +116,11 @@ section of the Fluo install instructions. These instructions will guide you thro
 configuring, initializing, and starting your application.
 
 [fluo]: http://fluo.apache.org/
+[accumulo]: http://accumulo.apache.org/
 [mirrors]: http://www.apache.org/dyn/closer.cgi
 [Webindex]: https://github.com/astralway/webindex
 [Phrasecount]: https://github.com/astralway/phrasecount
 [configure]: https://github.com/apache/fluo/blob/master/docs/install.md#configure-a-fluo-application
-[fluo-stress]: https://github.com/astralway/fluo-stress
+[li]: http://img.shields.io/badge/license-ASL-blue.svg
+[ll]: https://github.com/astralway/uno/blob/master/LICENSE
+[logo]: contrib/uno-logo.png

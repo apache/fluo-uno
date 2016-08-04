@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Copyright 2016 Uno authors (see AUTHORS)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!-- This logo was created using: 
+  - Device-laptop Icon by Stephen Hutchings (CC BY-SA license)
+    https://github.com/stephenhutchings/typicons.font 
+  - Audiowide Font (SIL Open Font License 1.1)
+    https://www.google.com/fonts/specimen/Audiowide
+-->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="uno-logo.svg"
+   inkscape:export-filename="/tmp/uno-logo.png"
+   inkscape:export-xdpi="40.350735"
+   inkscape:export-ydpi="40.350735">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2859"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2859-3"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2988"
+       inkscape:persp3d-origin="12 : 8 : 1"
+       inkscape:vp_z="24 : 12 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 12 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3047"
+       inkscape:persp3d-origin="12 : 8 : 1"
+       inkscape:vp_z="24 : 12 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 12 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3059"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5432"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.50000001"
+     inkscape:cx="303.64988"
+     inkscape:cy="463.71862"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1477"
+     inkscape:window-height="736"
+     inkscape:window-x="92"
+     inkscape:window-y="58"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path5018"
+       d="m 254.10862,526.59011 c 0.0337,-1.085 0.0413,-2.263 0.0413,-3.61322 l 0,-31 c 0,-5.69711 -5.0475,-10.33333 -11.25,-10.33333 l -52.5,0 c -6.2025,0 -11.25,4.63622 -11.25,10.33333 l 0,31 c 0,1.32612 0.008,2.51445 0.045,3.61322 -4.29375,0.78533 -7.545,4.27112 -7.545,8.44233 0,4.74645 4.2075,8.61112 9.375,8.61112 l 71.25,0 c 5.1675,0 9.375,-3.86467 9.375,-8.61112 0,-4.17121 -3.2475,-7.65355 -7.54125,-8.44233 z m -67.45876,-34.61322 c 0,-1.89788 1.68376,-3.44445 3.75001,-3.44445 l 52.49999,0 c 2.06626,0 3.75001,1.54657 3.75001,3.44445 l 0,31 c 0,1.33645 -0.0188,2.50067 -0.0525,3.44445 l -3.69751,0 0,-31 c 0,-1.89445 -1.6875,-3.44445 -3.74999,-3.44445 l -45,0 c -2.0625,0 -3.75,1.55 -3.75,3.44445 l 0,31 -3.675,0 c -0.045,-0.90933 -0.0751,-2.06323 -0.0751,-3.44445 l 0,-31 z m 52.50001,34.44445 -45,0 0,-31 45,0 0,31 z m 13.125,10.33334 -71.25001,0 c -1.01624,0 -1.87499,-0.78879 -1.87499,-1.72224 0,-0.93343 0.85875,-1.72221 1.87499,-1.72221 l 71.25001,0 c 1.01625,0 1.87499,0.78878 1.87499,1.72221 0,0.93345 -0.85874,1.72224 -1.87499,1.72224 z"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d" />
+    <flowRoot
+       transform="translate(152.39844,169.63693)"
+       style="font-style:normal;font-weight:normal;font-size:40px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot5027"
+       xml:space="preserve"><flowRegion
+         id="flowRegion5029"><rect
+           y="298.07648"
+           x="114.28571"
+           height="122.00006"
+           width="385.14288"
+           id="rect5031" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:72px;line-height:125%;font-family:Audiowide;-inkscape-font-specification:Audiowide;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#00d400"
+         id="flowPara5033">Uno</flowPara></flowRoot>  </g>
+</svg>
