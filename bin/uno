@@ -66,7 +66,7 @@ setup)
     "$bin"/impl/setup-fluo-only.sh "${@:2}"
     ;;
   *)
-    echo "Usage: fluo-dev setup <command>"
+    echo "Usage: uno setup <command>"
     echo -e "\nPossible commands:\n"
     echo "    accumulo   Sets up Accumulo along with Hadoop, Zookeeper and Spark"
     echo "    fluo       Sets up Fluo along with Accumulo (and its dependences)."
@@ -89,12 +89,12 @@ version)
   "$bin"/impl/version.sh "${@:2}"
   ;;
 *)
-  echo -e "Usage: fluo-dev <command> (<argument>)\n"
+  echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
   echo "  fetch <dependency>  Fetches dependencies by either building or downloading them (as configured by env.sh)"
-  echo "                      Run 'fluo-dev fetch all' to fetch all dependencies. Run 'fluo-dev fetch' for list of dependencies."
+  echo "                      Run 'uno fetch all' to fetch all dependencies. Run 'uno fetch' for list of dependencies."
   echo "  setup <command>     Sets up development cluster (clearing any existing data)"
-  echo "                      Run 'fluo-dev setup fluo' to setup all possible software. Run 'fluo-dev setup' for list of commands."
+  echo "                      Run 'uno setup fluo' to setup all possible software. Run 'uno setup' for list of commands."
   echo "  kill                Kills all software"
   echo "  ashell              Runs the Accumulo shell"
   echo "  env                 Prints out shell configuration for PATH and common environment variables."

@@ -32,7 +32,7 @@ else
     echo "Found ${hostname} in DNS."
   else
     echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
-    echo "This is an issue that can cause fluo-dev services (such as Hadoop) to not start up.  You should"
+    echo "This is an issue that can cause uno services (such as Hadoop) to not start up.  You should"
     echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
     exit 1
   fi

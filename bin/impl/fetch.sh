@@ -126,7 +126,7 @@ metrics)
   rm -rf "$GF_PATH"
   ;;
 *)
-  echo "Usage: fluo-dev fetch <dependency>"
+  echo "Usage: uno fetch <dependency>"
   echo -e "\nPossible dependencies:\n"
   echo "    all        Fetches all of the following dependencies"
   echo "    accummulo  Builds Accumulo if repo set in env.sh. Otherwise, downloads it."
