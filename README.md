@@ -2,11 +2,17 @@
 ---
 [![Apache License][li]][ll]
 
-A command-line tool for running [Apache Fluo][fluo] or [Apache Accumulo][accumulo] on a single
-machine for development. This tool is designed for developers who need to frequently upgrade and
-test their code, and do not care about preserving data. While Uno makes it easy to setup a dev stack
-running Fluo or Accumulo, it also makes it easy clear your data and setup your dev stack again. To
-avoid inadvertent data loss, Uno should not be used in production.
+[Apache Fluo][fluo] depends on [Apache Accumulo][accumulo], [Apache Zookeeper][zookeeper], and
+[Apache Hadoop][hadoop].  Setting up these dependencies is time consuming.  Uno provides a set of
+helper scripts to automate setting up these dependencies on a single machine.   This makes it quick
+for a developer to experiment with Fluo in a realistic environment. 
+
+Uno is designed for developers who need to frequently upgrade and test their code, and do not care
+about preserving data. While Uno makes it easy to setup a dev stack running Fluo or Accumulo, it
+also makes it easy clear your data and setup your dev stack again. To avoid inadvertent data loss,
+Uno should not be used in production.
+
+Checkout [Muchos] for setting up Fluo's dependencies on multiple machines.
 
 ## Installation
 
@@ -117,6 +123,8 @@ configuring, initializing, and starting your application.
 
 [fluo]: http://fluo.apache.org/
 [accumulo]: http://accumulo.apache.org/
+[zookeeper]: http://zookeeper.apache.org/
+[hadoop]: http://hadoop.apache.org/
 [mirrors]: http://www.apache.org/dyn/closer.cgi
 [Webindex]: https://github.com/astralway/webindex
 [Phrasecount]: https://github.com/astralway/phrasecount
@@ -124,3 +132,4 @@ configuring, initializing, and starting your application.
 [li]: http://img.shields.io/badge/license-ASL-blue.svg
 [ll]: https://github.com/astralway/uno/blob/master/LICENSE
 [logo]: contrib/uno-logo.png
+[Muchos]: https://github.com/astralway/muchos
