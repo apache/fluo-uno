@@ -16,7 +16,7 @@ Checkout [Muchos] for setting up Fluo's dependencies on multiple machines.
 
 ## Installation
 
-First, clone the uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
+First, clone the Uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
     git clone https://github.com/astralway/uno.git
 
