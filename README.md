@@ -3,8 +3,8 @@
 [![Apache License][li]][ll]
 
 [Apache Fluo][fluo] depends on [Apache Accumulo][accumulo], [Apache Zookeeper][zookeeper], and
-[Apache Hadoop][hadoop].  Setting up these dependencies is time consuming.  Uno provides a set of
-helper scripts to automate setting up these dependencies on a single machine.   This makes it quick
+[Apache Hadoop][hadoop]. Setting up these dependencies is time consuming. Uno provides a set of
+helper scripts to automate setting up these dependencies on a single machine. This makes it quick
 for a developer to experiment with Fluo in a realistic environment. 
 
 Uno is designed for developers who need to frequently upgrade and test their code, and do not care
@@ -33,14 +33,14 @@ vim env.sh
 ```
 
 Uno can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) that can be used to
-monitor your Fluo applications. This setup does not occur with the default configuration. You must
-set `SETUP_METRICS` to `true` in your `env.sh`.
+monitor your Apache Fluo applications. This setup does not occur with the default configuration. You
+must set `SETUP_METRICS` to `true` in your `env.sh`.
 
-All commands are run using the `uno` script in `bin/`. Uno has a command that helps you
-configure your shell so that you can run commands from any directory and easily set common
-environment variables in your shell for Uno, Hadoop, Zookeeper, Fluo, and Spark. Run the
-following command to print this shell configuration. You can also add `--paths` or `--vars` to the
-command below to limit output to PATH or environment variable configuration:
+All commands are run using the `uno` script in `bin/`. Uno has a command that helps you configure
+your shell so that you can run commands from any directory and easily set common environment
+variables in your shell for Uno, Hadoop, Zookeeper, Fluo, and Spark. Run the following command to
+print this shell configuration. You can also add `--paths` or `--vars` to the command below to limit
+output to PATH or environment variable configuration:
 
     uno env
 
@@ -51,43 +51,41 @@ to your ~/.bashrc automatically configure every new shell.
 eval "$(/path/to/uno/bin/uno env)"
 ```
 
-With `uno` script set up, you can now use it to download, configure, and run Fluo and its
-dependencies.
+With `uno` script set up, you can now use it to download, configure, and run Fluo's dependencies.
 
 ## Fetch command
 
-The `uno fetch` command fetches the binary tarball dependencies of Fluo and Accumulo. By
-default, it will download these tarballs. However, you can configure the `fetch` command to build
-them from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `env.sh`.
+The `uno fetch` command fetches the binary tarball dependencies of Apache Fluo to be later installed
+by the `setup` command. By default, it will download binary tarballs. However, you can configure the
+`fetch` command to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or
+`ACCUMULO_REPO` in `env.sh`.
 
-If `uno fetch all` is run, all depedencies will be either downloaded or built. If you would
-like, to only fetch certain dependencies, run `uno fetch` to see a list of possible
-dependencies.
+If `uno fetch all` is run, all dependencies will be either downloaded or built. If you would like to
+only fetch certain dependencies, run `uno fetch` to see a list of possible dependencies.
 
-After the `fetch` command is run for the first time, it only needs to run again if you upgrade
-software and need to download/build the latest version.
+After the `fetch` command is run for the first time, it only needs to run again if you want to
+upgrade dependencies and need to download/build the latest version.
 
 ## Setup command
 
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
 env.sh and run you local development cluster. The command can be run in several different ways:
 
-1. Set up Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and will
-   wipe Accumulo/Hadoop if this command was run previously.  This command also sets up Spark and
-   starts Spark's History Server (set `START_SPARK_HIST_SERVER=false` in your env.sh to turn off).
-
-   This command is useful if you are using Uno for Accumulo development.
+1. Sets up Apache Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and
+   will wipe Accumulo/Hadoop if this command was run previously.  This command also sets up Spark
+   and starts Spark's History Server (set `START_SPARK_HIST_SERVER=false` in your env.sh to turn 
+   off). This command is useful if you are using Uno for Accumulo development.
 
         uno setup accumulo
 
-2. Sets up Fluo along with Accumulo (and its dependencies). It also sets up a metrics server for
-   Fluo consisting of InfluxDB & Grafana if `SETUP_METRICS` is set to true in env.sh. This command
-   will wipe your cluster. While Fluo is set up, it does not start any Fluo applictions.
+2. Sets up Apache Fluo along with Accumulo (and its dependencies). It also sets up a metrics server
+   for Fluo consisting of InfluxDB & Grafana if `SETUP_METRICS` is set to true in env.sh. This
+   command will wipe your cluster. While Fluo is set up, it does not start any Fluo applications.
 
         uno setup fluo
 
-3. Sets up Fluo only. This will stop any previously running Fluo applcations but it will not wipe
-   your cluster. If you want upgrade Fluo without wiping your cluster, run `uno fetch fluo`
+3. Sets up Apache Fluo only. This will stop any previously running Fluo applications but it will not
+   wipe your cluster. If you want upgrade Fluo without wiping your cluster, run `uno fetch fluo`
    before running this command.
 
         uno setup fluo-only
@@ -109,12 +107,12 @@ to administer Fluo:
 If you run some tests and then want a fresh cluster, run `uno setup all` command again which will
 kill all running processes, clear any data and logs, and restart your cluster.
 
-## Running Fluo applications
+## Running Apache Fluo applications
 
-Before running a Fluo application, it is recommended that you configure your shell using
-`uno env`. If this is done, many Fluo example applications (such as [Webindex] and
-[Phrasecount]) can be run by simply cloning their repo and executing their start scripts (which will
-use environment variables set in your shell by `uno env`).
+Before running an Apache Fluo application, it is recommended that you configure your shell using
+`uno env`. If this is done, many Fluo example applications (such as [Webindex] and [Phrasecount])
+can be run by simply cloning their repo and executing their start scripts (which will use
+environment variables set in your shell by `uno env`).
 
 If you want to create your own Fluo application, you should mimic the scripts of example Fluo
 applications or follow the instructions starting at the [Configure a Fluo application][configure]

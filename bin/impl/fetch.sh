@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Fluo authors (see AUTHORS)
+# Copyright 2014 Uno authors (see AUTHORS)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ function download_verify() {
     echo "The expected MD5 checksum ($expected_md5) of $tarball has a length of $exp_md5_len but should be 32"
     exit 1
   fi
-  
+
   wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
   actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
 
@@ -38,7 +38,7 @@ function download_verify() {
 # Determine best apache mirror to use
 APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
 
-case "$1" in 
+case "$1" in
 hadoop)
   download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_MD5"
   ;;
