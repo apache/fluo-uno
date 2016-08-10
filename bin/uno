@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Fluo authors (see AUTHORS)
+# Copyright 2014 Uno authors (see AUTHORS)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -100,6 +100,6 @@ version)
   echo "  env                 Prints out shell configuration for PATH and common environment variables."
   echo "                      Add '--paths' or '--vars' command to limit what is printed."
   echo "  version <dep>       Prints out configured version for dependency"
-  echo " " 
+  echo " "
   exit 1
 esac

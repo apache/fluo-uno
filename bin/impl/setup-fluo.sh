@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Fluo authors (see AUTHORS)
+# Copyright 2014 Uno authors (see AUTHORS)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ if [[ "$SETUP_METRICS" == "true" ]]; then
       echo "Failed to add Grafana data source.  Retrying in 5 sec.."
       sleep 5
     fi
-  done 
+  done
 fi
 
 stty sane
