@@ -8,18 +8,18 @@
   </property>
 
   <property>
-    <name>logger.dir.walog</name>
-    <value>walogs</value>
-  </property>
-
-  <property>
     <name>instance.secret</name>
     <value>DEFAULT</value>
   </property>
 
   <property>
-    <name>tserver.wal.sync.method</name>
-    <value>hflush</value>
+    <name>instance.volumes</name>
+    <value>hdfs://localhost:10000/accumulo</value>
+  </property>
+
+  <property>
+    <name>logger.dir.walog</name>
+    <value>walogs</value>
   </property>
 
   <property>
@@ -28,13 +28,14 @@
   </property>
 
   <property>
-    <name>tserver.readahead.concurrent.max</name>
-    <value>64</value>
+    <name>trace.token.property.password</name>
+    <!-- change this to the root user's password, and/or change the user below -->
+    <value>secret</value>
   </property>
 
   <property>
-    <name>tserver.server.threads.minimum</name>
-    <value>64</value>
+    <name>trace.user</name>
+    <value>root</value>
   </property>
 
   <property>
@@ -58,19 +59,23 @@
   </property>
 
   <property>
-    <name>trace.token.property.password</name>
-    <!-- change this to the root user's password, and/or change the user below -->
-    <value>secret</value>
+    <name>tserver.readahead.concurrent.max</name>
+    <value>64</value>
   </property>
 
   <property>
-    <name>trace.user</name>
-    <value>root</value>
+    <name>tserver.server.threads.minimum</name>
+    <value>64</value>
   </property>
 
   <property>
     <name>tserver.sort.buffer.size</name>
     <value>50M</value>
+  </property>
+
+  <property>
+    <name>tserver.wal.sync.method</name>
+    <value>hflush</value>
   </property>
 
   <property>
