@@ -2,14 +2,16 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
-  <property>
-    <name>instance.zookeeper.host</name>
-    <value>localhost:2181</value>
+
+  <property> 
+    <!-- Work around for ACCUMULO-2388. See Accumulo 1.6.0 release notes --> 
+    <name>general.rpc.timeout</name> 
+    <value>240s</value> 
   </property>
 
   <property>
     <name>instance.secret</name>
-    <value>DEFAULT</value>
+    <value>uno</value>
   </property>
 
   <property>
@@ -18,24 +20,13 @@
   </property>
 
   <property>
-    <name>logger.dir.walog</name>
-    <value>walogs</value>
+    <name>instance.zookeeper.host</name>
+    <value>localhost:2181</value>
   </property>
 
   <property>
     <name>table.durability</name>
     <value>flush</value>
-  </property>
-
-  <property>
-    <name>trace.token.property.password</name>
-    <!-- change this to the root user's password, and/or change the user below -->
-    <value>secret</value>
-  </property>
-
-  <property>
-    <name>trace.user</name>
-    <value>root</value>
   </property>
 
   <property>
