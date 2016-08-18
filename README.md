@@ -104,7 +104,7 @@ to administer Fluo:
 
     ./install/fluo-1.0.0-beta-1/bin/fluo
 
-If you run some tests and then want a fresh cluster, run `uno setup all` command again which will
+If you run some tests and then want a fresh cluster, run the `setup` command again which will
 kill all running processes, clear any data and logs, and restart your cluster.
 
 ## Running Apache Fluo applications
