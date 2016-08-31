@@ -14,6 +14,16 @@ Uno should not be used in production.
 
 Checkout [Muchos] for setting up Fluo's dependencies on multiple machines.
 
+## Requirements
+
+Uno requires the following software to be installed on your machine.
+
+* Java - JDK 8 is required for running Fluo.
+* wget - Needed for `fetch` command to download tarballs.
+* Maven - Only needed if `fetch` command builds tarball from local repo.
+
+You should also be able to [ssh to localhost without a passphrase][ssh-docs].
+
 ## Installation
 
 First, clone the Uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
@@ -131,3 +141,4 @@ configuring, initializing, and starting your application.
 [ll]: https://github.com/astralway/uno/blob/master/LICENSE
 [logo]: contrib/uno-logo.png
 [Muchos]: https://github.com/astralway/muchos
+[ssh-docs]: https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh

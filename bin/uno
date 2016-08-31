@@ -43,6 +43,8 @@ function check_dirs() {
 
 case "$1" in
 fetch)
+  hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH.  Aborting."; exit 1; }
+  hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH.  Aborting."; exit 1; }
   if [[ "$2" == "all" ]]; then
     "$bin"/impl/fetch.sh accumulo
     "$bin"/impl/fetch.sh fluo
