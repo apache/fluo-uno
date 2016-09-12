@@ -22,8 +22,8 @@ if [[ "$SETUP_METRICS" == "true" ]]; then
   # verify downloaded tarballs
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
   GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  verify_exist_hash "$INFLUXDB_TARBALL" "$INFLUXDB_MD5"
-  verify_exist_hash "$GRAFANA_TARBALL" "$GRAFANA_MD5"
+  verify_exist_hash "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
+  verify_exist_hash "$GRAFANA_TARBALL" "$GRAFANA_HASH"
 
   # make sure built tarballs exist
   INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz

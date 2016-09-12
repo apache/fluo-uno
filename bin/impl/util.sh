@@ -16,15 +16,21 @@
 
 function verify_exist_hash() {
   tarball=$1
-  expected_md5=$2
-  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
+  expected_hash=$2
 
+  if [[ ! $expected_hash =~ $HASH_REGEX ]]; then
+    echo "Expected checksum ($expected_hash) of $tarball does not match regex $HASH_REGEX"
+    exit 1
+  fi
   if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
     echo "The tarball $tarball does not exists in downloads/"
     exit 1
   fi
-  if [[ "$actual_md5" != "$expected_md5" ]]; then
-    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
+
+  actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
+
+  if [[ "$actual_hash" != "$expected_hash" ]]; then
+    echo "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
     exit 1
   fi
 }

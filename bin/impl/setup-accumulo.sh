@@ -17,11 +17,11 @@
 source $FLUO_DEV/bin/impl/util.sh
 
 if [[ -z "$ACCUMULO_REPO" ]]; then
-  verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
+  verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
 fi
-verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_MD5"
-verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_MD5"
-verify_exist_hash "$SPARK_TARBALL" "$SPARK_MD5"
+verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
+verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
+verify_exist_hash "$SPARK_TARBALL" "$SPARK_HASH"
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
   hostname=$(hostname)
