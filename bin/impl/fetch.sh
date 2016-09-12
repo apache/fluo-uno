@@ -17,22 +17,21 @@
 function download_verify() {
   url_prefix=$1
   tarball=$2
-  expected_md5=$3
+  expected_hash=$3
 
-  exp_md5_len=${#expected_md5}
-  if [[ "$exp_md5_len" -ne 32 ]]; then
-    echo "The expected MD5 checksum ($expected_md5) of $tarball has a length of $exp_md5_len but should be 32"
+  if [[ ! $expected_hash =~ $HASH_REGEX ]]; then
+    echo "Expected checksum ($expected_hash) of $tarball does not match regex $HASH_REGEX"
     exit 1
   fi
 
   wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
-  actual_md5=$($MD5 "$DOWNLOADS/$tarball" | awk '{print $1}')
+  actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
 
-  if [[ "$actual_md5" != "$expected_md5" ]]; then
-    echo "The MD5 checksum ($actual_md5) of $tarball does not match the expected checksum ($expected_md5)"
+  if [[ "$actual_hash" != "$expected_hash" ]]; then
+    echo "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
     exit 1
   fi
-  echo "$tarball exists in downloads/ and matches expected MD5 ($expected_md5)"
+  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
 }
 
 # Determine best apache mirror to use
@@ -40,13 +39,13 @@ APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred
 
 case "$1" in
 hadoop)
-  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_MD5"
+  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
   ;;
 zookeeper)
-  download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_MD5"
+  download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
   ;;
 spark)
-  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_MD5"
+  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
   if [[ -n "$ACCUMULO_REPO" ]]; then
@@ -68,7 +67,7 @@ accumulo)
     popd
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_MD5"
+    download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
   ;;
 fluo)
@@ -85,7 +84,7 @@ fluo)
     fi
     cp "$fluo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$APACHE_MIRROR/incubator/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_MD5"
+    download_verify "$APACHE_MIRROR/incubator/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
   ;;
 metrics)
@@ -104,7 +103,7 @@ metrics)
   GF_PATH=$BUILD/$GF_DIR
 
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
-  download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_MD5"
+  download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
 
   tar xzf "$DOWNLOADS/$INFLUXDB_TARBALL" -C "$BUILD"
   mv "$BUILD"/influxdb_"$INFLUXDB_VERSION"_x86_64 "$IF_PATH"
@@ -117,7 +116,7 @@ metrics)
   rm -rf "$IF_PATH"
 
   GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  download_verify https://grafanarel.s3.amazonaws.com/builds "$GRAFANA_TARBALL" "$GRAFANA_MD5"
+  download_verify https://grafanarel.s3.amazonaws.com/builds "$GRAFANA_TARBALL" "$GRAFANA_HASH"
 
   tar xzf "$DOWNLOADS/$GRAFANA_TARBALL" -C "$BUILD"
 

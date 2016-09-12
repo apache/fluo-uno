@@ -20,7 +20,7 @@ source $FLUO_DEV/bin/impl/util.sh
 set -e
 
 if [[ -z "$FLUO_REPO" ]]; then
-  verify_exist_hash "$FLUO_TARBALL" "$FLUO_MD5"
+  verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
 fi
 
 if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then

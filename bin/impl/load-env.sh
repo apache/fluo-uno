@@ -120,14 +120,13 @@ fi
 : "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in env.sh"}"
 : "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in env.sh"}"
 
+hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH.  Aborting."; exit 1; }
+export HASH_CMD="shasum -a 256"
+export HASH_REGEX="^[a-f0-9]{64}$"
 hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH.  Aborting."; exit 1; }
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  hash md5 2>/dev/null || { echo >&2 "md5 must be installed & on PATH.  Aborting."; exit 1; }
-  export MD5="md5 -q"
   export SED="sed -i .bak"
 else
-  hash md5sum 2>/dev/null || { echo >&2 "md5sum must be installed & on PATH.  Aborting."; exit 1; }
-  export MD5=md5sum
   export SED="sed -i"
 fi
