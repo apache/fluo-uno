@@ -67,6 +67,9 @@ setup)
   fluo-only)
     "$bin"/impl/setup-fluo-only.sh "${@:2}"
     ;;
+  metrics)
+    "$bin"/impl/setup-metrics.sh "${@:2}"
+    ;;
   *)
     echo "Usage: uno setup <command>"
     echo -e "\nPossible commands:\n"
@@ -74,6 +77,7 @@ setup)
     echo "    fluo       Sets up Fluo along with Accumulo (and its dependences)."
     echo "               Also, sets up metrics server (if SETUP_METRICS=true in env.sh)"
     echo "    fluo-only  Sets up Fluo only. Useful for upgrading Fluo without losing cluster data."
+    echo "    metrics    Sets up metrics service (InfluxDB + Grafana)."
     exit 1
   esac
 	;;

@@ -100,7 +100,12 @@ env.sh and run you local development cluster. The command can be run in several 
 
         uno setup fluo-only
 
-You can confirm that everything started by checking the monitoring pages of below:
+4. Sets up metrics service (InfluxDB + Grafana). This command will set up metrics even if
+   `SETUP_METRICS` is set to false in env.sh.
+
+        uno setup metrics
+
+You can confirm that everything started by checking the monitoring pages below:
 
  * [Hadoop NameNode](http://localhost:50070/)
  * [Hadoop ResourceManager](http://localhost:8088/)
