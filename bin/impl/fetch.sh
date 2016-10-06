@@ -84,7 +84,7 @@ fluo)
     fi
     cp "$fluo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$APACHE_MIRROR/incubator/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+    download_verify "$APACHE_MIRROR/incubator/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
   ;;
 metrics)
