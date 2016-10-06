@@ -88,18 +88,34 @@ cp "$FLUO_DEV"/conf/zookeeper/* "$ZOOKEEPER_HOME"/conf/
 $SED "s#DATA_DIR#$DATA_DIR#g" "$ZOOKEEPER_HOME"/conf/zoo.cfg
 
 # configure accumulo
-cp "$ACCUMULO_HOME"/conf/examples/2GB/standalone/* "$ACCUMULO_HOME"/conf/
+if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  cp "$ACCUMULO_HOME"/conf/examples/2GB/standalone/* "$ACCUMULO_HOME"/conf/
+else
+  "$ACCUMULO_HOME"/bin/accumulo create-config -o -s 2GB -j -v 2
+  "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
+fi
 cp "$FLUO_DEV"/conf/accumulo/* "$ACCUMULO_HOME"/conf/
-$SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
-$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+
+if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+  $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+else
+  $SED "s#\# export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+  $SED "s#\# export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+fi
 $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
 $SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
 $SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
 $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
 $SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
+
 if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
   echo "Building Accumulo native map library..."
-  "$ACCUMULO_HOME"/bin/build_native_library.sh
+  if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+    "$ACCUMULO_HOME"/bin/build_native_library.sh
+  else
+    "$ACCUMULO_HOME"/bin/accumulo build-native
+  fi
 fi
 
 # configure spark
@@ -128,4 +144,9 @@ rm -rf "$DATA_DIR"/zookeeper
 echo "Starting Accumulo..."
 "$HADOOP_PREFIX"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
-"$ACCUMULO_HOME"/bin/start-all.sh
+
+if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  "$ACCUMULO_HOME"/bin/start-all.sh
+else
+  "$ACCUMULO_HOME"/bin/accumulo-cluster start
+fi
