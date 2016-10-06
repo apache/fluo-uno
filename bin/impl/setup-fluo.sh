@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source $FLUO_DEV/bin/impl/util.sh
+source "$FLUO_DEV"/bin/impl/util.sh
 
 "$FLUO_DEV"/bin/impl/kill.sh
 

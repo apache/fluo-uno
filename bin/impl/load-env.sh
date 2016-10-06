@@ -25,12 +25,12 @@ impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 bin="$( cd -P "$( dirname "$impl" )" && pwd )"
 # Stop: Resolve Script Directory
 
-# Determine FLUO_DEV - Use env variable set by user.  If none set, calculate using bin dir
+# Determine FLUO_DEV - Use env variable set by user. If none set, calculate using bin dir
 FLUO_DEV="${FLUO_DEV:-$( cd -P "${bin}"/.. && pwd )}"
 export FLUO_DEV
 if [[ -z "$FLUO_DEV" || ! -d "$FLUO_DEV" ]]
 then
-  echo "FLUO_DEV=$FLUO_DEV is not a valid directory.  Please make sure it exists"
+  echo "FLUO_DEV=$FLUO_DEV is not a valid directory. Please make sure it exists"
   exit 1
 fi
 
@@ -43,10 +43,10 @@ FH=$FLUO_HOME
 
 # Load env configuration
 if [[ -f "$FLUO_DEV/conf/env.sh" ]]; then
-  . "$FLUO_DEV"/conf/env.sh
+  source "$FLUO_DEV"/conf/env.sh
 else
   if [[ ! "version env" =~ $1 ]]; then echo "WARNING: uno is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
-  . "$FLUO_DEV"/conf/env.sh.example
+  source "$FLUO_DEV"/conf/env.sh.example
 fi
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
@@ -79,11 +79,11 @@ fi
 
 # Confirm that env variables were set correctly
 if [[ -n "$FLUO_REPO" && ! -d "$FLUO_REPO" ]]; then
-  echo "FLUO_REPO=$FLUO_REPO is not a valid directory.  Please make sure it exists"
+  echo "FLUO_REPO=$FLUO_REPO is not a valid directory. Please make sure it exists"
   exit 1
 fi
 if [[ -n "$ACCUMULO_REPO" && ! -d "$ACCUMULO_REPO" ]]; then
-  echo "ACCUMULO_REPO=$ACCUMULO_REPO is not a valid directory.  Please make sure it exists"
+  echo "ACCUMULO_REPO=$ACCUMULO_REPO is not a valid directory. Please make sure it exists"
   exit 1
 fi
 
@@ -120,10 +120,8 @@ fi
 : "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in env.sh"}"
 : "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in env.sh"}"
 
-hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH.  Aborting."; exit 1; }
-export HASH_CMD="shasum -a 256"
-export HASH_REGEX="^[a-f0-9]{64}$"
-hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH.  Aborting."; exit 1; }
+hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
+hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export SED="sed -i .bak"

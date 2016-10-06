@@ -14,23 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+source "$FLUO_DEV"/bin/impl/util.sh
+
 function download_verify() {
   url_prefix=$1
   tarball=$2
   expected_hash=$3
 
-  if [[ ! $expected_hash =~ $HASH_REGEX ]]; then
-    echo "Expected checksum ($expected_hash) of $tarball does not match regex $HASH_REGEX"
-    exit 1
-  fi
-
   wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
-  actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
-
-  if [[ "$actual_hash" != "$expected_hash" ]]; then
-    echo "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
-    exit 1
-  fi
+  verify_exist_hash "$tarball" "$expected_hash"
   echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
 }
 
@@ -39,12 +31,15 @@ APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred
 
 case "$1" in
 hadoop)
+  [[ $HADOOP_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
   ;;
 zookeeper)
+  [[ $ZOOKEEPER_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
   ;;
 spark)
+  [[ $SPARK_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
@@ -67,6 +62,7 @@ accumulo)
     popd
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
+    [[ $ACCUMULO_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
     download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
   ;;
@@ -84,7 +80,8 @@ fluo)
     fi
     cp "$fluo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$APACHE_MIRROR/incubator/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+    [[ $FLUO_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
+    download_verify "$APACHE_MIRROR/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
   ;;
 metrics)

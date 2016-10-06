@@ -24,33 +24,33 @@ done
 bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Stop: Resolve Script Directory
 
-. "$bin"/impl/load-env.sh "$1"
+source "$bin"/impl/load-env.sh "$1"
 
 function check_dirs() {
   if [[ ! -d "$HADOOP_PREFIX" ]]; then
-    echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory.  Please make sure it exists"
+    echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory. Please make sure it exists"
     exit 1
   fi
   if [[ ! -d "$ZOOKEEPER_HOME" ]]; then
-    echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory.  Please make sure it exists"
+    echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory. Please make sure it exists"
     exit 1
   fi
   if [[ ! -d "$ACCUMULO_HOME" ]]; then
-    echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory.  Please make sure it exists"
+    echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory. Please make sure it exists"
     exit 1
   fi
 }
 
 case "$1" in
 fetch)
-  hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH.  Aborting."; exit 1; }
-  hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH.  Aborting."; exit 1; }
+  hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
+  hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
   if [[ "$2" == "all" ]]; then
-    "$bin"/impl/fetch.sh accumulo
-    "$bin"/impl/fetch.sh fluo
-    "$bin"/impl/fetch.sh hadoop
-    "$bin"/impl/fetch.sh metrics
-    "$bin"/impl/fetch.sh spark
+    "$bin"/impl/fetch.sh accumulo && \
+    "$bin"/impl/fetch.sh fluo && \
+    "$bin"/impl/fetch.sh hadoop && \
+    "$bin"/impl/fetch.sh metrics && \
+    "$bin"/impl/fetch.sh spark && \
     "$bin"/impl/fetch.sh zookeeper
   else
     "$bin"/impl/fetch.sh "${@:2}"

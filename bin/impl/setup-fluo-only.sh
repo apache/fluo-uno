@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source $FLUO_DEV/bin/impl/util.sh
+source "$FLUO_DEV"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
@@ -62,7 +62,7 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
     } >> "$FLUO_PROPS"
   fi
 
-  $FLUO_HOME/lib/fetch.sh extra
+  "$FLUO_HOME"/lib/fetch.sh extra
 else
   echo "WARNING: Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
   echo "Fluo will not be set up!"

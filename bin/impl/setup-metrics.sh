@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source $FLUO_DEV/bin/impl/util.sh
+source "$FLUO_DEV"/bin/impl/util.sh
 
 echo "Killing InfluxDB & Grafana (if running)"
 pkill -f influxdb
@@ -84,7 +84,7 @@ while [[ $retcode != 0 ]];  do
     --data-binary '{"name":"fluo_metrics","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
   retcode=$?
   if [[ $retcode != 0 ]]; then
-    echo "Failed to add Grafana data source.  Retrying in 5 sec.."
+    echo "Failed to add Grafana data source. Retrying in 5 sec.."
     sleep 5
   fi
 done
