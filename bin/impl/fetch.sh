@@ -31,15 +31,12 @@ APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred
 
 case "$1" in
 hadoop)
-  [[ $HADOOP_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
   ;;
 zookeeper)
-  [[ $ZOOKEEPER_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
   ;;
 spark)
-  [[ $SPARK_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
   download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
@@ -62,7 +59,6 @@ accumulo)
     popd
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
-    [[ $ACCUMULO_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
     download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
   ;;

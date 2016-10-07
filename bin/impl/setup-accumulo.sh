@@ -117,7 +117,6 @@ fi
 
 echo "Starting Hadoop..."
 rm -rf "$DATA_DIR"/hadoop
-echo "$HADOOP_LOG_DIR"
 "$HADOOP_PREFIX"/bin/hdfs namenode -format
 "$HADOOP_PREFIX"/sbin/start-dfs.sh
 "$HADOOP_PREFIX"/sbin/start-yarn.sh
