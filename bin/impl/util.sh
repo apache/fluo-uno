@@ -16,17 +16,24 @@
 
 function verify_exist_hash() {
   tarball=$1
-  expected_hash=$2
+  expected_hash=$(echo "${2// /}" | tr '[:upper:]' '[:lower:]')
 
-  if [[ ! $expected_hash =~ $HASH_REGEX ]]; then
-    echo "Expected checksum ($expected_hash) of $tarball does not match regex $HASH_REGEX"
-    exit 1
-  fi
   if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo "The tarball $tarball does not exists in downloads/"
+    echo "The tarball $tarball does not exist in downloads/"
     exit 1
   fi
 
+  local HASH_CMD
+  case "${#expected_hash}" in
+    32) HASH_CMD='md5sum' ;;
+    40) HASH_CMD='shasum -a 1' ;;
+    64) HASH_CMD='shasum -a 256' ;;
+    128) HASH_CMD='shasum -a 512' ;;
+    *)
+      echo "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
+      exit 1
+      ;;
+  esac
   actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ "$actual_hash" != "$expected_hash" ]]; then

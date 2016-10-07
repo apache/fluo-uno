@@ -82,7 +82,7 @@ The `setup` command will install the downloaded tarballs to the directory set by
 env.sh and run you local development cluster. The command can be run in several different ways:
 
 1. Sets up Apache Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and
-   will wipe Accumulo/Hadoop if this command was run previously.  This command also sets up Spark
+   will wipe Accumulo/Hadoop if this command was run previously. This command also sets up Spark
    and starts Spark's History Server (set `START_SPARK_HIST_SERVER=false` in your env.sh to turn 
    off). This command is useful if you are using Uno for Accumulo development.
 

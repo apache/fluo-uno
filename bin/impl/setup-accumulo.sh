@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source $FLUO_DEV/bin/impl/util.sh
+source "$FLUO_DEV"/bin/impl/util.sh
 
 if [[ -z "$ACCUMULO_REPO" ]]; then
   verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
@@ -33,7 +33,7 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
       echo "Found ${hostname} in DNS."
     else
       echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
-      echo "This is an issue that can cause uno services (such as Hadoop) to not start up.  You should"
+      echo "This is an issue that can cause uno services (such as Hadoop) to not start up. You should"
       echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
       exit 1
     fi
@@ -117,7 +117,6 @@ fi
 
 echo "Starting Hadoop..."
 rm -rf "$DATA_DIR"/hadoop
-echo $HADOOP_LOG_DIR
 "$HADOOP_PREFIX"/bin/hdfs namenode -format
 "$HADOOP_PREFIX"/sbin/start-dfs.sh
 "$HADOOP_PREFIX"/sbin/start-yarn.sh
