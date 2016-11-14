@@ -44,7 +44,7 @@ accumulo)
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
     cd "$ACCUMULO_REPO"
-    mvn clean package -Passemble -DskipTests -DskipFormat
+    mvn clean package -DskipTests -DskipFormat
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
     if [[ ! -f "$accumulo_built_tarball" ]]; then
       echo
