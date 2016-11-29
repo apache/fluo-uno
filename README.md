@@ -38,7 +38,7 @@ git clone https://github.com/astralway/uno.git
 cd uno
 ./bin/uno fetch all
 ./bin/uno setup fluo
-#add Fluo, Accumulo, Hadoop, etc to path
+# bash specific command to add Fluo, Accumulo, Hadoop, etc to path of current shell
 eval "$(./bin/uno env)"
 ```
 

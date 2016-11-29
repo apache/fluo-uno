@@ -6,7 +6,7 @@ Ubuntu 16.04 for Uno.
 
 ```bash
 #install stuff
-sudo apt install --assume-yes openjdk-8-jdk maven git openssh-server wget
+sudo apt install openjdk-8-jdk maven git openssh-server wget
 
 #setup passwordless ssh
 ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
