@@ -23,6 +23,26 @@ Uno requires the following software to be installed on your machine.
 * Maven - Only needed if `fetch` command builds tarball from local repo.
 
 You should also be able to [ssh to localhost without a passphrase][ssh-docs].
+The following instructions can help you setup these requirements in your
+environment :
+
+ * [Ubuntu 16.04](/docs/ubuntu1604.md)
+
+## Quickstart
+
+The following commands will get you up and running with a Fluo instance if you
+have satisfied the requirements mentioned above.
+
+```bash
+git clone https://github.com/astralway/uno.git
+cd uno
+./bin/uno fetch all
+./bin/uno setup fluo
+# bash specific command to add Fluo, Accumulo, Hadoop, etc to path of current shell
+eval "$(./bin/uno env)"
+```
+
+For a more complete understanding of Uno, please continue reading.
 
 ## Installation
 
