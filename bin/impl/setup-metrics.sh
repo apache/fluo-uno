@@ -16,6 +16,11 @@
 
 source "$FLUO_DEV"/bin/impl/util.sh
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
+  exit 1
+fi
+
 echo "Killing InfluxDB & Grafana (if running)"
 pkill -f influxdb
 pkill -f grafana-server
@@ -35,6 +40,11 @@ if [[ ! -f "$DOWNLOADS/build/$INFLUXDB_TARBALL" ]]; then
 fi
 if [[ ! -f "$DOWNLOADS/build/$GRAFANA_TARBALL" ]]; then
   echo "Grafana tarball $GRAFANA_TARBALL does not exists in downloads/build"
+  exit 1
+fi
+
+if [[ ! -d "$FLUO_HOME" ]]; then
+  echo "Fluo must be installed before setting up metrics"
   exit 1
 fi
 
@@ -67,6 +77,16 @@ $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
 mkdir "$GRAFANA_HOME"/dashboards
 cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
 "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
+
+echo "Configuring Fluo to send metrics to InfluxDB"
+FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+$SED "/fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
+{
+  echo "fluo.metrics.reporter.graphite.enable=true"
+  echo "fluo.metrics.reporter.graphite.host=localhost"
+  echo "fluo.metrics.reporter.graphite.port=2003"
+  echo "fluo.metrics.reporter.graphite.frequency=30"
+} >> "$FLUO_PROPS"
 
 echo "Configuring InfluxDB..."
 sleep 10

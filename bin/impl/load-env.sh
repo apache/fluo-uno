@@ -113,7 +113,6 @@ fi
 : "${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in env.sh"}"
 : "${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}"
 : "${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}"
-: "${START_SPARK_HIST_SERVER:?"START_SPARK_HIST_SERVER is not set in env.sh"}"
 : "${LOGS_DIR:?"LOGS_DIR is not set in env.sh"}"
 : "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in env.sh"}"
 : "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in env.sh"}"
