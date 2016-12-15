@@ -16,22 +16,48 @@
 
 source "$FLUO_DEV"/bin/impl/util.sh
 
-"$FLUO_DEV"/bin/impl/kill.sh
-
 # stop if any command fails
 set -e
 
-echo "Setting up Accumulo"
-"$FLUO_DEV"/bin/impl/setup-accumulo.sh
-
-echo "Setting up Fluo"
-"$FLUO_DEV"/bin/impl/setup-fluo-only.sh
-
-if [[ "$SETUP_METRICS" == "true" ]]; then
-  echo "Setting up Metrics"
-  "$FLUO_DEV"/bin/impl/setup-metrics.sh
+if [[ -z "$FLUO_REPO" ]]; then
+  verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
 fi
 
-stty sane
+if [[ $1 != "--no-deps" ]]; then
+  "$FLUO_DEV"/bin/impl/setup-accumulo.sh
+fi
 
-echo -e "\nSetup is finished!"
+if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
+  echo "Setting up Apache Fluo at $FLUO_HOME"
+  # Don't stop if pkills fail
+  set +e
+  pkill -f fluo.yarn
+  pkill -f MiniFluo
+  pkill -f twill.launcher
+  set -e
+
+  rm -rf "$INSTALL"/fluo-*
+
+  tar xzf "$DOWNLOADS/$FLUO_TARBALL" -C "$INSTALL"/
+
+  cp "$FLUO_HOME"/conf/examples/* "$FLUO_HOME"/conf/
+  FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+  $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$FLUO_PROPS"
+  $SED "s/fluo.client.accumulo.user=/fluo.client.accumulo.user=$ACCUMULO_USER/g" "$FLUO_PROPS"
+  $SED "s/fluo.client.accumulo.password=/fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$FLUO_PROPS"
+  $SED "s/.*fluo.yarn.worker.num.threads=.*/fluo.yarn.worker.num.threads=$FLUO_WORKER_THREADS/g" "$FLUO_PROPS"
+  $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
+  $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
+  $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
+  $SED "s#ACCUMULO_HOME=/path/to/accumulo#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
+  $SED "s#ZOOKEEPER_HOME=/path/to/zookeeper#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
+
+  "$FLUO_HOME"/lib/fetch.sh extra
+
+  echo "Apache Fluo setup complete"
+
+  stty sane
+else
+  echo "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
+  echo "Apache Fluo will not be set up!"
+fi

@@ -26,20 +26,9 @@ function download_verify() {
   echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
 }
 
-# Determine best apache mirror to use
-APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
-
-case "$1" in
-hadoop)
-  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
-  ;;
-zookeeper)
+function fetch_accumulo() {
   download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
-  ;;
-spark)
-  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
-  ;;
-accumulo)
+  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
   if [[ -n "$ACCUMULO_REPO" ]]; then
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
@@ -61,8 +50,20 @@ accumulo)
   else
     download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
+}
+
+# Determine best apache mirror to use
+APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
+
+case "$1" in
+spark)
+  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
+  ;;
+accumulo)
+  fetch_accumulo
   ;;
 fluo)
+  fetch_accumulo
   if [[ -n "$FLUO_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_TARBALL"
     cd "$FLUO_REPO"
@@ -83,7 +84,6 @@ fluo)
 metrics)
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
-    echo "You should set SETUP_METRICS to false in env.sh."
     exit 1
   fi
 
@@ -118,14 +118,12 @@ metrics)
   rm -rf "$GF_PATH"
   ;;
 *)
-  echo "Usage: uno fetch <dependency>"
-  echo -e "\nPossible dependencies:\n"
-  echo "    all        Fetches all of the following dependencies"
-  echo "    accummulo  Builds Accumulo if repo set in env.sh. Otherwise, downloads it."
-  echo "    fluo       Builds Fluo if repo set in env.sh. Otherwise, downloads it."
-  echo "    hadoop     Downloads Hadoop"
+  echo "Usage: uno fetch <component>..."
+  echo -e "\nPossible components:\n"
+  echo "    all        Fetches all binary tarballs of the following components"
+  echo "    accumulo   Downloads Accumulo, Hadoop & Zookeeper. Builds Accumulo if repo set in env.sh"
+  echo "    fluo       Downloads Fluo, Accumulo, Hadoop & Zookeeper. Builds Fluo or Accumulo if repo set in env.sh"
   echo "    metrics    Downloads InfluxDB and Grafana"
   echo "    spark      Downloads Spark"
-  echo "    zookeeper  Downloads Zookeeper"
   exit 1
 esac

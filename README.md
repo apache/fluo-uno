@@ -2,17 +2,15 @@
 ---
 [![Apache License][li]][ll]
 
-[Apache Fluo][fluo] depends on [Apache Accumulo][accumulo], [Apache Zookeeper][zookeeper], and
-[Apache Hadoop][hadoop]. Setting up these dependencies is time consuming. Uno provides a set of
-helper scripts to automate setting up these dependencies on a single machine. This makes it quick
-for a developer to experiment with Fluo in a realistic environment. 
+**Uno automates setting up [Apache Accumulo][accumulo] or [Apache Fluo][fluo] (and their dependencies) on a single machine.**
 
+Uno makes it easy for a developer to experiment with Accumulo or Fluo in a realistic environment.
 Uno is designed for developers who need to frequently upgrade and test their code, and do not care
 about preserving data. While Uno makes it easy to setup a dev stack running Fluo or Accumulo, it
 also makes it easy clear your data and setup your dev stack again. To avoid inadvertent data loss,
 Uno should not be used in production.
 
-Checkout [Muchos] for setting up Fluo's dependencies on multiple machines.
+Checkout [Muchos] for setting up Accumulo or Fluo on multiple machines.
 
 ## Requirements
 
@@ -30,16 +28,16 @@ environment :
 
 ## Quickstart
 
-The following commands will get you up and running with a Fluo instance if you
-have satisfied the requirements mentioned above.
+The following commands will get you up and running with an Accumulo instance if you
+have satisfied the requirements mentioned above.  Replace `accumulo` with `fluo` to
+setup a Fluo instance.
 
 ```bash
 git clone https://github.com/astralway/uno.git
 cd uno
-./bin/uno fetch all
-./bin/uno setup fluo
-# bash specific command to add Fluo, Accumulo, Hadoop, etc to path of current shell
-eval "$(./bin/uno env)"
+./bin/uno fetch accumulo            # Fetches binary tarballs of Accumulo and its dependencies
+./bin/uno setup accumulo            # Sets up Accumulo and its dependencies (Hadoop & Zookeeper)
+eval "$(./bin/uno env)"             # Bash-specific command that sets up current shell
 ```
 
 For a more complete understanding of Uno, please continue reading.
@@ -61,10 +59,6 @@ cd conf/
 cp env.sh.example env.sh
 vim env.sh
 ```
-
-Uno can optionally setup a metrics/monitoring tool (i.e Grafana+InfluxDB) that can be used to
-monitor your Apache Fluo applications. This setup does not occur with the default configuration. You
-must set `SETUP_METRICS` to `true` in your `env.sh`.
 
 All commands are run using the `uno` script in `bin/`. Uno has a command that helps you configure
 your shell so that you can run commands from any directory and easily set common environment
@@ -102,28 +96,32 @@ The `setup` command will install the downloaded tarballs to the directory set by
 env.sh and run you local development cluster. The command can be run in several different ways:
 
 1. Sets up Apache Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and
-   will wipe Accumulo/Hadoop if this command was run previously. This command also sets up Spark
-   and starts Spark's History Server (set `START_SPARK_HIST_SERVER=false` in your env.sh to turn 
-   off). This command is useful if you are using Uno for Accumulo development.
+   will wipe Accumulo/Hadoop if this command was run previously.
 
         uno setup accumulo
 
-2. Sets up Apache Fluo along with Accumulo (and its dependencies). It also sets up a metrics server
-   for Fluo consisting of InfluxDB & Grafana if `SETUP_METRICS` is set to true in env.sh. This
-   command will wipe your cluster. While Fluo is set up, it does not start any Fluo applications.
+2. Sets up Apache Fluo along with Accumulo (and its dependencies). This command will wipe your
+   cluster. While Fluo is set up, it does not start any Fluo applications.
 
         uno setup fluo
 
-3. Sets up Apache Fluo only. This will stop any previously running Fluo applications but it will not
-   wipe your cluster. If you want upgrade Fluo without wiping your cluster, run `uno fetch fluo`
-   before running this command.
+3. For Fluo & Accumulo, you can setup the software again without wiping/setting up their underlying
+   dependencies. You can upgrade Accumulo or Fluo by running `uno fetch` before running this command.
 
-        uno setup fluo-only
+        uno setup fluo --no-deps
+        uno setup accumulo --no-deps
 
-4. Sets up metrics service (InfluxDB + Grafana). This command will set up metrics even if
-   `SETUP_METRICS` is set to false in env.sh.
+4. Sets up metrics service (InfluxDB + Grafana).
 
         uno setup metrics
+
+5. Sets up Apache Spark and starts Spark's History Server.
+
+        uno setup spark
+
+6. Sets up all components (Fluo, Accumulo, Hadoop, Zookeeper, Spark, metrics service).
+
+        uno setup all
 
 You can confirm that everything started by checking the monitoring pages below:
 
@@ -134,7 +132,7 @@ You can confirm that everything started by checking the monitoring pages below:
  * [Grafana](http://localhost:3000/) (optional)
  * [InfluxDB Admin](http://localhost:8083/) (optional)
 
-You can verify that Fluo was installed by correctly by running the `fluo` command which you can use
+You can verify that Fluo was installed correctly by running the `fluo` command which you can use
 to administer Fluo:
 
     ./install/fluo-1.0.0-beta-1/bin/fluo

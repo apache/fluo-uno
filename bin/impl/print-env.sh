@@ -25,8 +25,11 @@ fi
 
 if [[ -z "$1" || "$1" == "--paths" ]]; then
   echo -n "export PATH=\"\$PATH:$FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin"
-  if [[ "$SETUP_METRICS" == "true" ]]; then
-    echo -n ":$INFLUXDB_HOME/bin:$GRAFANA_HOME/bin"
+  if [[ -d "$INFLUXDB_HOME" ]]; then
+    echo -n ":$INFLUXDB_HOME/bin"
+  fi
+  if [[ -d "$GRAFANA_HOME" ]]; then
+    echo -n ":$GRAFANA_HOME/bin"
   fi
   echo '"'
 fi

@@ -45,42 +45,50 @@ case "$1" in
 fetch)
   hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
   hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
+  if [[ -z "${@:2}" ]]; then
+    "$bin"/impl/fetch.sh
+  fi
   if [[ "$2" == "all" ]]; then
-    "$bin"/impl/fetch.sh accumulo && \
     "$bin"/impl/fetch.sh fluo && \
-    "$bin"/impl/fetch.sh hadoop && \
-    "$bin"/impl/fetch.sh metrics && \
     "$bin"/impl/fetch.sh spark && \
-    "$bin"/impl/fetch.sh zookeeper
+    "$bin"/impl/fetch.sh metrics
   else
-    "$bin"/impl/fetch.sh "${@:2}"
+    "$bin"/impl/fetch.sh "$2"
   fi
 	;;
 setup)
   case "$2" in
-  accumulo)
-    "$bin"/impl/setup-accumulo.sh "${@:2}"
-    ;;
-  fluo)
-    "$bin"/impl/setup-fluo.sh "${@:2}"
-    ;;
-  fluo-only)
-    "$bin"/impl/setup-fluo-only.sh "${@:2}"
-    ;;
-  metrics)
-    "$bin"/impl/setup-metrics.sh "${@:2}"
-    ;;
-  *)
-    echo "Usage: uno setup <command>"
-    echo -e "\nPossible commands:\n"
-    echo "    accumulo   Sets up Accumulo along with Hadoop, Zookeeper and Spark"
-    echo "    fluo       Sets up Fluo along with Accumulo (and its dependences)."
-    echo "               Also, sets up metrics server (if SETUP_METRICS=true in env.sh)"
-    echo "    fluo-only  Sets up Fluo only. Useful for upgrading Fluo without losing cluster data."
-    echo "    metrics    Sets up metrics service (InfluxDB + Grafana)."
-    exit 1
+    all)
+      "$bin"/impl/setup-fluo.sh
+      "$bin"/impl/setup-spark.sh
+      "$bin"/impl/setup-metrics.sh
+      ;;
+    accumulo)
+      "$bin"/impl/setup-accumulo.sh $3
+      ;;
+    fluo)
+      "$bin"/impl/setup-fluo.sh $3
+      ;;
+    spark)
+      "$bin"/impl/setup-spark.sh
+      ;;
+    metrics)
+      "$bin"/impl/setup-metrics.sh
+      ;;
+    *)
+      echo "Usage: uno setup <component> [--no-deps]"
+      echo -e "\nPossible components:\n"
+      echo "    all        Sets up all of the following components"
+      echo "    accumulo   Sets up Apache Accumulo and its dependencies (Hadoop & Zookeeper)"
+      echo "    spark      Sets up Apache Spark"
+      echo "    fluo       Sets up Apache Fluo and its dependencies (Accumulo, Hadoop, & Zookeeper)"
+      echo "    metrics    Sets up metrics service (InfluxDB + Grafana)."
+      echo "Options:"
+      echo "    --no-deps  Dependencies will be setup unless this option is specified. Only works for fluo & accumulo components."
+      exit 1
+      ;;
   esac
-	;;
+  ;;
 kill)
   "$bin"/impl/kill.sh "${@:2}"
 	;;
@@ -97,15 +105,16 @@ version)
 *)
   echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
-  echo "  fetch <dependency>  Fetches dependencies by either building or downloading them (as configured by env.sh)"
-  echo "                      Run 'uno fetch all' to fetch all dependencies. Run 'uno fetch' for list of dependencies."
-  echo "  setup <command>     Sets up development cluster (clearing any existing data)"
-  echo "                      Run 'uno setup fluo' to setup all possible software. Run 'uno setup' for list of commands."
-  echo "  kill                Kills all software"
-  echo "  ashell              Runs the Accumulo shell"
-  echo "  env                 Prints out shell configuration for PATH and common environment variables."
-  echo "                      Add '--paths' or '--vars' command to limit what is printed."
-  echo "  version <dep>       Prints out configured version for dependency"
+  echo "  fetch <component>      Fetches binary tarballs of component and it dependencies by either building or downloading"
+  echo "                         the tarball (as configured by env.sh). Run 'uno fetch all' to fetch all binary tarballs."
+  echo "                         Run 'uno fetch' for a list of possible components."
+  echo "  setup <component>      Sets up component and its dependencies (clearing any existing data)"
+  echo "                         Run 'uno setup' for list of components."
+  echo "  kill                   Kills all software"
+  echo "  ashell                 Runs the Accumulo shell"
+  echo "  env                    Prints out shell configuration for PATH and common environment variables."
+  echo "                         Add '--paths' or '--vars' command to limit what is printed."
+  echo "  version <dep>          Prints out configured version for dependency"
   echo " "
   exit 1
 esac
