@@ -118,7 +118,7 @@ metrics)
   rm -rf "$GF_PATH"
   ;;
 *)
-  echo "Usage: uno fetch <component>..."
+  echo "Usage: uno fetch <component>"
   echo -e "\nPossible components:\n"
   echo "    all        Fetches all binary tarballs of the following components"
   echo "    accumulo   Downloads Accumulo, Hadoop & Zookeeper. Builds Accumulo if repo set in env.sh"

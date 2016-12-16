@@ -45,9 +45,6 @@ case "$1" in
 fetch)
   hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
   hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
-  if [[ -z "${@:2}" ]]; then
-    "$bin"/impl/fetch.sh
-  fi
   if [[ "$2" == "all" ]]; then
     "$bin"/impl/fetch.sh fluo && \
     "$bin"/impl/fetch.sh spark && \
@@ -82,7 +79,7 @@ setup)
       echo "    accumulo   Sets up Apache Accumulo and its dependencies (Hadoop & Zookeeper)"
       echo "    spark      Sets up Apache Spark"
       echo "    fluo       Sets up Apache Fluo and its dependencies (Accumulo, Hadoop, & Zookeeper)"
-      echo "    metrics    Sets up metrics service (InfluxDB + Grafana)."
+      echo -e "    metrics    Sets up metrics service (InfluxDB + Grafana)\n"
       echo "Options:"
       echo "    --no-deps  Dependencies will be setup unless this option is specified. Only works for fluo & accumulo components."
       exit 1

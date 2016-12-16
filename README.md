@@ -79,16 +79,15 @@ With `uno` script set up, you can now use it to download, configure, and run Flu
 
 ## Fetch command
 
-The `uno fetch` command fetches the binary tarball dependencies of Apache Fluo to be later installed
-by the `setup` command. By default, it will download binary tarballs. However, you can configure the
-`fetch` command to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or
-`ACCUMULO_REPO` in `env.sh`.
+The `uno fetch <component>` command fetches the tarballs of a component and its dependencies for later
+use by the `setup` command. By default, the `fetch` command downloads tarballs but you can configure it
+to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `env.sh`.
 
-If `uno fetch all` is run, all dependencies will be either downloaded or built. If you would like to
-only fetch certain dependencies, run `uno fetch` to see a list of possible dependencies.
+If `uno fetch all` is run, all possible components will be either downloaded or built. If you
+would like to only fetch certain components, run `uno fetch` to see a list of possible components.
 
 After the `fetch` command is run for the first time, it only needs to run again if you want to
-upgrade dependencies and need to download/build the latest version.
+upgrade components and need to download/build the latest version.
 
 ## Setup command
 
