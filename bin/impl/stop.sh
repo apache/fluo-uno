@@ -17,71 +17,71 @@
 source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
-	accumulo)
-		check_dirs ACCUMULO_HOME
+  accumulo)
+    check_dirs ACCUMULO_HOME
 
-		if [[ ! -z "$(pgrep -f accumulo\\.start)" ]]; then
-			if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-			  "$ACCUMULO_HOME"/bin/stop-all.sh
-			else
-			  "$ACCUMULO_HOME"/bin/accumulo-cluster stop
-			fi
-		fi
+    if [[ ! -z "$(pgrep -f accumulo\\.start)" ]]; then
+      if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+        "$ACCUMULO_HOME"/bin/stop-all.sh
+      else
+        "$ACCUMULO_HOME"/bin/accumulo-cluster stop
+      fi
+    fi
 
-		if [[ "$2" != "--no-deps" ]]; then
-	  	check_dirs ZOOKEEPER_HOME HADOOP_PREFIX
+    if [[ "$2" != "--no-deps" ]]; then
+      check_dirs ZOOKEEPER_HOME HADOOP_PREFIX
 
-			if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-				"$HADOOP_PREFIX"/sbin/stop-yarn.sh
-			fi
+      if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
+        "$HADOOP_PREFIX"/sbin/stop-yarn.sh
+      fi
 
-			if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-				"$HADOOP_PREFIX"/sbin/stop-dfs.sh
-			fi
+      if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
+        "$HADOOP_PREFIX"/sbin/stop-dfs.sh
+      fi
 
-	  	if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
-				"$ZOOKEEPER_HOME"/bin/zkServer.sh stop
-			fi
-		fi
-	  ;;
-	hadoop)
-		check_dirs HADOOP_PREFIX
-		
-		if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-			"$HADOOP_PREFIX"/sbin/stop-yarn.sh
-		fi
+      if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
+        "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
+      fi
+    fi
+    ;;
+  hadoop)
+    check_dirs HADOOP_PREFIX
+    
+    if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
+      "$HADOOP_PREFIX"/sbin/stop-yarn.sh
+    fi
 
-		if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-			"$HADOOP_PREFIX"/sbin/stop-dfs.sh
-		fi
-		;;
-	zookeeper)
-		check_dirs ZOOKEEPER_HOME
+    if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
+      "$HADOOP_PREFIX"/sbin/stop-dfs.sh
+    fi
+    ;;
+  zookeeper)
+    check_dirs ZOOKEEPER_HOME
 
-		if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
-			"$ZOOKEEPER_HOME"/bin/zkServer.sh stop
-		fi
-		;;
+    if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
+      "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
+    fi
+    ;;
 
-	# NYI
-	# fluo)
-	#   
-	#   ;;
-	# spark)
-	#   
-	#   ;;
-	# metrics)
-	#   
-	#   ;;
+  # NYI
+  # fluo)
+  #   
+  #   ;;
+  # spark)
+  #   
+  #   ;;
+  # metrics)
+  #   
+  #   ;;
 
-	*)
-	  echo "Usage: uno stop <component> [--no-deps]"
-	  echo -e "\nPossible components:\n"
-	  echo "    accumulo   Stop Apache Accumulo plus dependencies: Hadoop, Zookeeper"
-	  echo "    hadoop     Stop Apache Hadoop"
-	  echo "    zookeeper  Stop Apache Zookeeper"
-	  echo "Options:"
-	  echo "    --no-deps  Dependencies will stop unless this option is specified. Only works for accumulo component."
-	  exit 1
-	  ;;
-	esac
+  *)
+    echo "Usage: uno stop <component> [--no-deps]"
+    echo -e "\nPossible components:\n"
+    echo "    accumulo   Stop Apache Accumulo plus dependencies: Hadoop, Zookeeper"
+    echo "    hadoop     Stop Apache Hadoop"
+    echo "    zookeeper  Stop Apache Zookeeper"
+    echo "Options:"
+    echo "    --no-deps  Dependencies will stop unless this option is specified. Only works for accumulo component."
+    exit 1
+    ;;
+  esac
