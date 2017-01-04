@@ -93,6 +93,14 @@ ashell)
   check_dirs
   "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
 	;;
+astart)
+  check_dirs
+  "$bin"/impl/start-accumulo-hadoop-zookeeper.sh "${@:2}"
+  ;;
+astop)
+  check_dirs
+  "$bin"/impl/stop-accumulo-hadoop-zookeeper.sh "${@:2}"
+  ;;
 env)
   "$bin"/impl/print-env.sh "${@:2}"
   ;;
@@ -107,6 +115,8 @@ version)
   echo "                         Run 'uno fetch' for a list of possible components."
   echo "  setup <component>      Sets up component and its dependencies (clearing any existing data)"
   echo "                         Run 'uno setup' for list of components."
+  echo "  astart                 Start Zookeeper, Hadoop, Accumulo."
+  echo "  astop                  Stop Accumulo, Hadoop, Zookeeper."
   echo "  kill                   Kills all software"
   echo "  ashell                 Runs the Accumulo shell"
   echo "  env                    Prints out shell configuration for PATH and common environment variables."
