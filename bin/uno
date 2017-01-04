@@ -25,17 +25,7 @@ bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Stop: Resolve Script Directory
 
 source "$bin"/impl/load-env.sh "$1"
-
-# Takes directory variables as arguments
-function check_dirs() {
-  for arg in $@; do
-    echo "arg: $arg"
-    if [[ ! -d "${!arg}" ]]; then
-      echo "$arg=${!arg} is not a valid directory. Please make sure it exists"
-      exit 1
-    fi
-  done
-}
+source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
 fetch)
@@ -86,15 +76,13 @@ kill)
   "$bin"/impl/kill.sh "${@:2}"
 	;;
 ashell)
-  check_dirs ZOOKEEPER_HOME HADOOP_PREFIX ACCUMULO_HOME
+  check_dirs ACCUMULO_HOME
   "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
 	;;
 start)
-  check_dirs ZOOKEEPER_HOME HADOOP_PREFIX ACCUMULO_HOME
   "$bin"/impl/start.sh "${@:2}"
   ;;
 stop)
-  check_dirs ZOOKEEPER_HOME HADOOP_PREFIX ACCUMULO_HOME
   "$bin"/impl/stop.sh "${@:2}"
   ;;
 env)

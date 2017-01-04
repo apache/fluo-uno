@@ -41,3 +41,13 @@ function verify_exist_hash() {
     exit 1
   fi
 }
+
+# Takes directory variables as arguments
+function check_dirs() {
+  for arg in $@; do
+    if [[ ! -d "${!arg}" ]]; then
+      echo "$arg=${!arg} is not a valid directory. Please make sure it exists"
+      exit 1
+    fi
+  done
+}
