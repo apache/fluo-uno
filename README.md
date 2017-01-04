@@ -52,8 +52,7 @@ The `uno` command uses `conf/env.sh.example` for its default configuration which
 sufficient for most users.
 
 Optionally, you can customize this configuration by creating an `env.sh` file and modifying it for
-your environment. Inside this script the variable `UNO_HOME` defaults to the location of the
-cloned Uno repository. You may override this by defining UNO_HOME yourself, if need be.
+your environment. Inside this script the variable `UNO_HOME` defaults to the root of the Uno repository. 
 
 ```bash
 cd conf/
