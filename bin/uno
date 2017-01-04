@@ -25,21 +25,7 @@ bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Stop: Resolve Script Directory
 
 source "$bin"/impl/load-env.sh "$1"
-
-function check_dirs() {
-  if [[ ! -d "$HADOOP_PREFIX" ]]; then
-    echo "HADOOP_PREFIX=$HADOOP_PREFIX is not a valid directory. Please make sure it exists"
-    exit 1
-  fi
-  if [[ ! -d "$ZOOKEEPER_HOME" ]]; then
-    echo "ZOOKEEPER_HOME=$ZOOKEEPER_HOME is not a valid directory. Please make sure it exists"
-    exit 1
-  fi
-  if [[ ! -d "$ACCUMULO_HOME" ]]; then
-    echo "ACCUMULO_HOME=$ACCUMULO_HOME is not a valid directory. Please make sure it exists"
-    exit 1
-  fi
-}
+source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
 fetch)
@@ -90,9 +76,15 @@ kill)
   "$bin"/impl/kill.sh "${@:2}"
 	;;
 ashell)
-  check_dirs
+  check_dirs ACCUMULO_HOME
   "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
 	;;
+start)
+  "$bin"/impl/start.sh "${@:2}"
+  ;;
+stop)
+  "$bin"/impl/stop.sh "${@:2}"
+  ;;
 env)
   "$bin"/impl/print-env.sh "${@:2}"
   ;;
@@ -107,6 +99,8 @@ version)
   echo "                         Run 'uno fetch' for a list of possible components."
   echo "  setup <component>      Sets up component and its dependencies (clearing any existing data)"
   echo "                         Run 'uno setup' for list of components."
+  echo "  start <component>      Start Zookeeper, Hadoop, Accumulo, if not running."
+  echo "  stop  <component>      Stop Accumulo, Hadoop, Zookeeper, if running."
   echo "  kill                   Kills all software"
   echo "  ashell                 Runs the Accumulo shell"
   echo "  env                    Prints out shell configuration for PATH and common environment variables."
