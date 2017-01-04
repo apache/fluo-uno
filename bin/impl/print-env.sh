@@ -24,7 +24,7 @@ if [[ -z "$1" || "$1" == "--vars" ]]; then
 fi
 
 if [[ -z "$1" || "$1" == "--paths" ]]; then
-  echo -n "export PATH=\"\$PATH:$FLUO_DEV/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin"
+  echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin"
   if [[ -d "$INFLUXDB_HOME" ]]; then
     echo -n ":$INFLUXDB_HOME/bin"
   fi

@@ -14,15 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 if [[ -z "$ACCUMULO_REPO" ]]; then
   verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
 fi
 
 if [[ $1 != "--no-deps" ]]; then
-  "$FLUO_DEV"/bin/impl/setup-hadoop.sh
-  "$FLUO_DEV"/bin/impl/setup-zookeeper.sh
+  "$UNO_HOME"/bin/impl/setup-hadoop.sh
+  "$UNO_HOME"/bin/impl/setup-zookeeper.sh
 fi
 
 pkill -f accumulo.start
@@ -44,7 +44,7 @@ else
   "$ACCUMULO_HOME"/bin/accumulo create-config -o -s 2GB -j -v 2
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
 fi
-cp "$FLUO_DEV"/conf/accumulo/* "$ACCUMULO_HOME"/conf/
+cp "$UNO_HOME"/conf/accumulo/* "$ACCUMULO_HOME"/conf/
 
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
