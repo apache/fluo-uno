@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pkill -f fluo.yarn
+pkill -f fluo\\.yarn
 pkill -f MiniFluo
-pkill -f accumulo.start
-pkill -f hadoop.hdfs
-pkill -f hadoop.yarn
+pkill -f accumulo\\.start
+pkill -f hadoop\\.hdfs
+pkill -f hadoop\\.yarn
 pkill -f QuorumPeerMain
-pkill -f org.apache.spark.deploy.history.HistoryServer
+pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
 pkill -f influxdb
 pkill -f grafana-server

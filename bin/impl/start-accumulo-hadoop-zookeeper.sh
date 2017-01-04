@@ -14,13 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"$ZOOKEEPER_HOME"/bin/zkServer.sh start
+if [[ -z "$(pgrep -f QuorumPeerMain)" ]]; then
+	"$ZOOKEEPER_HOME"/bin/zkServer.sh start
+fi
 
-"$HADOOP_PREFIX"/sbin/start-dfs.sh
-"$HADOOP_PREFIX"/sbin/start-yarn.sh
+if [[ -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
+	"$HADOOP_PREFIX"/sbin/start-dfs.sh
+fi
+if [[ -z "$(pgrep -f hadoop\\.yarn)" ]]; then
+	"$HADOOP_PREFIX"/sbin/start-yarn.sh
+fi
 
-if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-  "$ACCUMULO_HOME"/bin/start-all.sh
-else
-  "$ACCUMULO_HOME"/bin/accumulo-cluster start
+if [[ -z "$(pgrep -f accumulo\\.start)" ]]; then
+	if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+	  "$ACCUMULO_HOME"/bin/start-all.sh
+	else
+	  "$ACCUMULO_HOME"/bin/accumulo-cluster start
+	fi
 fi
