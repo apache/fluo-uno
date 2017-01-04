@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
@@ -24,7 +24,7 @@ if [[ -z "$FLUO_REPO" ]]; then
 fi
 
 if [[ $1 != "--no-deps" ]]; then
-  "$FLUO_DEV"/bin/impl/setup-accumulo.sh
+  "$UNO_HOME"/bin/impl/setup-accumulo.sh
 fi
 
 if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then

@@ -52,7 +52,7 @@ The `uno` command uses `conf/env.sh.example` for its default configuration which
 sufficient for most users.
 
 Optionally, you can customize this configuration by creating an `env.sh` file and modifying it for
-your environment:
+your environment. Inside this script the variable `UNO_HOME` defaults to the root of the Uno repository. 
 
 ```bash
 cd conf/
@@ -126,7 +126,7 @@ You can confirm that everything started by checking the monitoring pages below:
 
  * [Hadoop NameNode](http://localhost:50070/)
  * [Hadoop ResourceManager](http://localhost:8088/)
- * [Accumulo Monitor](http://localhost:50095/)
+ * [Accumulo Monitor](http://localhost:50095/)  (new default Monitor address in Accumulo 1.8 uses [port 9995](http://localhost:9995/))
  * [Spark HistoryServer](http://localhost:18080/)
  * [Grafana](http://localhost:3000/) (optional)
  * [InfluxDB Admin](http://localhost:8083/) (optional)

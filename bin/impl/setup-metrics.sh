@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
@@ -62,7 +62,7 @@ mkdir -p "$LOGS_DIR"/metrics
 
 echo "Setting up metrics (influxdb + grafana)..."
 tar xzf "$DOWNLOADS"/build/"$INFLUXDB_TARBALL" -C "$INSTALL"
-"$INFLUXDB_HOME"/bin/influxd config -config "$FLUO_DEV"/conf/influxdb/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
+"$INFLUXDB_HOME"/bin/influxd config -config "$UNO_HOME"/conf/influxdb/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
 if [[ ! -f "$INFLUXDB_HOME"/influxdb.conf ]]; then
   echo "Failed to create $INFLUXDB_HOME/influxdb.conf"
   exit 1
@@ -71,7 +71,7 @@ $SED "s#DATA_DIR#$DATA_DIR#g" "$INFLUXDB_HOME"/influxdb.conf
 "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
 
 tar xzf "$DOWNLOADS"/build/"$GRAFANA_TARBALL" -C "$INSTALL"
-cp "$FLUO_DEV"/conf/grafana/custom.ini "$GRAFANA_HOME"/conf/
+cp "$UNO_HOME"/conf/grafana/custom.ini "$GRAFANA_HOME"/conf/
 $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
 mkdir "$GRAFANA_HOME"/dashboards

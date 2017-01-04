@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
 
@@ -30,7 +30,7 @@ mkdir -p "$ZOO_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$ZOOKEEPER_TARBALL" -C "$INSTALL"
 
-cp "$FLUO_DEV"/conf/zookeeper/* "$ZOOKEEPER_HOME"/conf/
+cp "$UNO_HOME"/conf/zookeeper/* "$ZOOKEEPER_HOME"/conf/
 $SED "s#DATA_DIR#$DATA_DIR#g" "$ZOOKEEPER_HOME"/conf/zoo.cfg
 
 rm -rf "$DATA_DIR"/zookeeper

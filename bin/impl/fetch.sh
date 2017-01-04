@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 function download_verify() {
   url_prefix=$1

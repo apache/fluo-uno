@@ -25,12 +25,12 @@ impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 bin="$( cd -P "$( dirname "$impl" )" && pwd )"
 # Stop: Resolve Script Directory
 
-# Determine FLUO_DEV - Use env variable set by user. If none set, calculate using bin dir
-FLUO_DEV="${FLUO_DEV:-$( cd -P "${bin}"/.. && pwd )}"
-export FLUO_DEV
-if [[ -z "$FLUO_DEV" || ! -d "$FLUO_DEV" ]]
+# Determine UNO_HOME - Use env variable set by user. If none set, calculate using bin dir
+UNO_HOME="${UNO_HOME:-$( cd -P "${bin}"/.. && pwd )}"
+export UNO_HOME
+if [[ -z "$UNO_HOME" || ! -d "$UNO_HOME" ]]
 then
-  echo "FLUO_DEV=$FLUO_DEV is not a valid directory. Please make sure it exists"
+  echo "UNO_HOME=$UNO_HOME is not a valid directory. Please make sure it exists"
   exit 1
 fi
 
@@ -42,11 +42,11 @@ AH=$ACCUMULO_HOME
 FH=$FLUO_HOME
 
 # Load env configuration
-if [[ -f "$FLUO_DEV/conf/env.sh" ]]; then
-  source "$FLUO_DEV"/conf/env.sh
+if [[ -f "$UNO_HOME/conf/env.sh" ]]; then
+  source "$UNO_HOME"/conf/env.sh
 else
-  if [[ ! "version env" =~ $1 ]]; then echo "WARNING: uno is using default configuration at $FLUO_DEV/conf/env.sh.example"; fi
-  source "$FLUO_DEV"/conf/env.sh.example
+  if [[ ! "version env" =~ $1 ]]; then echo "WARNING: uno is using default configuration at $UNO_HOME/conf/env.sh.example"; fi
+  source "$UNO_HOME"/conf/env.sh.example
 fi
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set

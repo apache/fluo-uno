@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source "$FLUO_DEV"/bin/impl/util.sh
+source "$UNO_HOME"/bin/impl/util.sh
 
 verify_exist_hash "$SPARK_TARBALL" "$SPARK_HASH"
 
@@ -38,7 +38,7 @@ mkdir -p "$DATA_DIR"/spark/events
 
 tar xzf "$DOWNLOADS/$SPARK_TARBALL" -C "$INSTALL"
 
-cp "$FLUO_DEV"/conf/spark/* "$SPARK_HOME"/conf
+cp "$UNO_HOME"/conf/spark/* "$SPARK_HOME"/conf
 $SED "s#DATA_DIR#$DATA_DIR#g" "$SPARK_HOME"/conf/spark-defaults.conf
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$SPARK_HOME"/conf/spark-defaults.conf
 
