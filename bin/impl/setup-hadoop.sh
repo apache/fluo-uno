@@ -18,23 +18,6 @@ source "$UNO_HOME"/bin/impl/util.sh
 
 verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
 
-if [[ "$OSTYPE" != "darwin"* ]]; then
-  hostname=$(hostname)
-  if [[ "$(grep -c "${hostname}" /etc/hosts)" -ge 1 ]]; then
-    echo "Found ${hostname} in /etc/hosts."
-  else
-    host "${hostname}" &> /dev/null
-    if [[ $? -eq 0 ]]; then
-      echo "Found ${hostname} in DNS."
-    else
-      echo "ERROR - Your machine was unable to find its own hostname in /etc/hosts or by using 'host $hostname'."
-      echo "This is an issue that can cause uno services (such as Hadoop) to not start up. You should"
-      echo "confirm that there is an entry in /etc/hosts or that /etc/resolv.conf is correct."
-      exit 1
-    fi
-  fi
-fi
-
 pkill -f hadoop.hdfs
 pkill -f hadoop.yarn
 
