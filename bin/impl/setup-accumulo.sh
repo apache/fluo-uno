@@ -48,6 +48,7 @@ cp "$UNO_HOME"/conf/accumulo/* "$ACCUMULO_HOME"/conf/
 
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
 $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+$SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
 else
