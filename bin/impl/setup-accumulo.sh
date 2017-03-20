@@ -40,11 +40,11 @@ tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   cp "$ACCUMULO_HOME"/conf/examples/2GB/standalone/* "$ACCUMULO_HOME"/conf/
+  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$ACCUMULO_HOME"/conf/accumulo-site.xml
 else
-  "$ACCUMULO_HOME"/bin/accumulo-util create-config -o -s 2GB -j -v 2
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
+  cp "$UNO_HOME"/conf/accumulo/accumulo-site-2.0.xml "$ACCUMULO_HOME"/conf/accumulo-site.xml
 fi
-cp "$UNO_HOME"/conf/accumulo/* "$ACCUMULO_HOME"/conf/
 
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
 $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
