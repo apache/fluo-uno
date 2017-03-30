@@ -16,7 +16,7 @@
 
   <property>
     <name>instance.volumes</name>
-    <value>hdfs://localhost:10000/accumulo</value>
+    <value>hdfs://localhost:8020/accumulo</value>
   </property>
 
   <property>

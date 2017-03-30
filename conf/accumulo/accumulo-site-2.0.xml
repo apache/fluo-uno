@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property> 
+    <!-- Work around for ACCUMULO-2388. See Accumulo 1.6.0 release notes --> 
+    <name>general.rpc.timeout</name> 
+    <value>240s</value> 
+  </property>
+  <property>
+    <name>instance.secret</name>
+    <value>uno</value>
+  </property>
+  <property>
+    <name>instance.volumes</name>
+    <value>hdfs://localhost:8020/accumulo</value>
+  </property>
+  <property>
+    <name>instance.zookeeper.host</name>
+    <value>localhost:2181</value>
+  </property>
+  <property>
+    <name>table.durability</name>
+    <value>flush</value>
+  </property>
+  <property>
+    <name>tserver.memory.maps.native.enabled</name>
+    <value>ACCUMULO_USE_NATIVE_MAP</value>
+  </property>
+  <property>
+    <name>tserver.readahead.concurrent.max</name>
+    <value>64</value>
+  </property>
+  <property>
+    <name>tserver.server.threads.minimum</name>
+    <value>64</value>
+  </property>
+  <property>
+    <name>tserver.walog.max.size</name>
+    <value>512M</value>
+  </property>
+</configuration>
