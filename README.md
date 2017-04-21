@@ -48,16 +48,14 @@ First, clone the Uno repo on a local disk with enough space to run Hadoop, Accum
 
     git clone https://github.com/astralway/uno.git
 
-The `uno` command uses `conf/env.sh.example` for its default configuration which should be
+The `uno` command uses `conf/uno.conf` for its default configuration which should be
 sufficient for most users.
 
-Optionally, you can customize this configuration by creating an `env.sh` file and modifying it for
+Optionally, you can customize this configuration by modifying the `uno.conf` file for
 your environment. Inside this script the variable `UNO_HOME` defaults to the root of the Uno repository. 
 
 ```bash
-cd conf/
-cp env.sh.example env.sh
-vim env.sh
+vim conf/uno.conf
 ```
 
 All commands are run using the `uno` script in `bin/`. Uno has a command that helps you configure
@@ -81,7 +79,7 @@ With `uno` script set up, you can now use it to download, configure, and run Flu
 
 The `uno fetch <component>` command fetches the tarballs of a component and its dependencies for later
 use by the `setup` command. By default, the `fetch` command downloads tarballs but you can configure it
-to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `env.sh`.
+to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `uno.conf`.
 
 If `uno fetch all` is run, all possible components will be either downloaded or built. If you
 would like to only fetch certain components, run `uno fetch` to see a list of possible components.
@@ -92,7 +90,7 @@ upgrade components and need to download/build the latest version.
 ## Setup command
 
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
-env.sh and run you local development cluster. The command can be run in several different ways:
+`uno.conf` and run you local development cluster. The command can be run in several different ways:
 
 1. Sets up Apache Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and
    will wipe Accumulo/Hadoop if this command was run previously.

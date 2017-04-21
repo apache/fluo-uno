@@ -72,7 +72,7 @@ fluo)
     fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
     if [[ ! -f "$fluo_built_tarball" ]]; then
       echo "The tarball $fluo_built_tarball does not exist after building from the FLUO_REPO=$FLUO_REPO"
-      echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in env.sh?"
+      echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in uno.conf?"
       exit 1
     fi
     cp "$fluo_built_tarball" "$DOWNLOADS"/
@@ -99,7 +99,7 @@ metrics)
   download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
 
   tar xzf "$DOWNLOADS/$INFLUXDB_TARBALL" -C "$BUILD"
-  mv "$BUILD"/influxdb_"$INFLUXDB_VERSION"_x86_64 "$IF_PATH"
+  mv "$BUILD/influxdb_$INFLUXDB_VERSION_x86_64" "$IF_PATH"
   mkdir "$IF_PATH"/bin
   mv "$IF_PATH/opt/influxdb/versions/$INFLUXDB_VERSION"/* "$IF_PATH"/bin
   rm -rf "$IF_PATH"/opt
@@ -121,8 +121,8 @@ metrics)
   echo "Usage: uno fetch <component>"
   echo -e "\nPossible components:\n"
   echo "    all        Fetches all binary tarballs of the following components"
-  echo "    accumulo   Downloads Accumulo, Hadoop & Zookeeper. Builds Accumulo if repo set in env.sh"
-  echo "    fluo       Downloads Fluo, Accumulo, Hadoop & Zookeeper. Builds Fluo or Accumulo if repo set in env.sh"
+  echo "    accumulo   Downloads Accumulo, Hadoop & Zookeeper. Builds Accumulo if repo set in uno.conf"
+  echo "    fluo       Downloads Fluo, Accumulo, Hadoop & Zookeeper. Builds Fluo or Accumulo if repo set in uno.conf"
   echo "    metrics    Downloads InfluxDB and Grafana"
   echo "    spark      Downloads Spark"
   exit 1

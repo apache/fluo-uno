@@ -61,7 +61,7 @@ rm -rf "$DATA_DIR"/influxdb
 mkdir -p "$LOGS_DIR"/metrics
 
 echo "Setting up metrics (influxdb + grafana)..."
-tar xzf "$DOWNLOADS"/build/"$INFLUXDB_TARBALL" -C "$INSTALL"
+tar xzf "$DOWNLOADS/build/$INFLUXDB_TARBALL" -C "$INSTALL"
 "$INFLUXDB_HOME"/bin/influxd config -config "$UNO_HOME"/conf/influxdb/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
 if [[ ! -f "$INFLUXDB_HOME"/influxdb.conf ]]; then
   echo "Failed to create $INFLUXDB_HOME/influxdb.conf"
@@ -70,7 +70,7 @@ fi
 $SED "s#DATA_DIR#$DATA_DIR#g" "$INFLUXDB_HOME"/influxdb.conf
 "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
 
-tar xzf "$DOWNLOADS"/build/"$GRAFANA_TARBALL" -C "$INSTALL"
+tar xzf "$DOWNLOADS/build/$GRAFANA_TARBALL" -C "$INSTALL"
 cp "$UNO_HOME"/conf/grafana/custom.ini "$GRAFANA_HOME"/conf/
 $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini

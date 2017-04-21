@@ -47,10 +47,10 @@ setup)
       "$bin"/impl/setup-metrics.sh
       ;;
     accumulo)
-      "$bin"/impl/setup-accumulo.sh $3
+      "$bin"/impl/setup-accumulo.sh "$3"
       ;;
     fluo)
-      "$bin"/impl/setup-fluo.sh $3
+      "$bin"/impl/setup-fluo.sh "$3"
       ;;
     spark)
       "$bin"/impl/setup-spark.sh
@@ -95,7 +95,7 @@ version)
   echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
   echo "  fetch <component>      Fetches binary tarballs of component and it dependencies by either building or downloading"
-  echo "                         the tarball (as configured by env.sh). Run 'uno fetch all' to fetch all binary tarballs."
+  echo "                         the tarball (as configured by uno.conf). Run 'uno fetch all' to fetch all binary tarballs."
   echo "                         Run 'uno fetch' for a list of possible components."
   echo "  setup <component>      Sets up component and its dependencies (clearing any existing data)"
   echo "                         Run 'uno setup' for list of components."

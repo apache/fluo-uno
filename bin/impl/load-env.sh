@@ -42,37 +42,37 @@ AH=$ACCUMULO_HOME
 FH=$FLUO_HOME
 
 # Load env configuration
-if [[ -f "$UNO_HOME/conf/env.sh" ]]; then
-  source "$UNO_HOME"/conf/env.sh
+if [[ -f "$UNO_HOME/conf/uno.conf" ]]; then
+  source "$UNO_HOME"/conf/uno.conf
 else
-  if [[ ! "version env" =~ $1 ]]; then echo "WARNING: uno is using default configuration at $UNO_HOME/conf/env.sh.example"; fi
-  source "$UNO_HOME"/conf/env.sh.example
+  echo "ERROR: Configuration file $UNO_HOME/conf/uno.conf does not exist" 1>&2
+  exit 1
 fi
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
   if [[ -n "$HP" && "$HP" != "$HADOOP_PREFIX" ]]; then
-    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your uno env.sh '$HADOOP_PREFIX'"
+    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your uno uno.conf '$HADOOP_PREFIX'"
     exit 1
   fi
   if [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]]; then
-    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your uno env.sh '$HADOOP_CONF_DIR'"
+    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your uno uno.conf '$HADOOP_CONF_DIR'"
     exit 1
   fi
   if [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]]; then
-    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your uno env.sh '$ZOOKEEPER_HOME'"
+    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your uno uno.conf '$ZOOKEEPER_HOME'"
     exit 1
   fi
   if [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]]; then
-    echo "SPARK_HOME in your shell env '$SH' needs to match your uno env.sh '$SPARK_HOME'"
+    echo "SPARK_HOME in your shell env '$SH' needs to match your uno uno.conf '$SPARK_HOME'"
     exit 1
   fi
   if [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]]; then
-    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your uno env.sh '$ACCUMULO_HOME'"
+    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your uno uno.conf '$ACCUMULO_HOME'"
     exit 1
   fi
   if [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]]; then
-    echo "FLUO_HOME in your shell env '$FH' needs to match your uno env.sh '$FLUO_HOME'"
+    echo "FLUO_HOME in your shell env '$FH' needs to match your uno uno.conf '$FLUO_HOME'"
     exit 1
   fi
 fi
@@ -88,7 +88,7 @@ if [[ -n "$ACCUMULO_REPO" && ! -d "$ACCUMULO_REPO" ]]; then
 fi
 
 if [[ -z "$INSTALL" ]]; then
-  echo "INSTALL=$INSTALL needs to be set in env.sh"
+  echo "INSTALL=$INSTALL needs to be set in uno.conf"
   exit 1
 fi
 
@@ -96,28 +96,28 @@ if [[ ! -d "$INSTALL" ]]; then
   mkdir -p "$INSTALL"
 fi
 
-: "${DATA_DIR:?"DATA_DIR is not set in env.sh"}"
-: "${FLUO_VERSION:?"FLUO_VERSION is not set in env.sh"}"
-: "${HADOOP_VERSION:?"HADOOP_VERSION is not set in env.sh"}"
-: "${ZOOKEEPER_VERSION:?"ZOOKEEPER_VERSION is not set in env.sh"}"
-: "${ACCUMULO_VERSION:?"ACCUMULO_VERSION is not set in env.sh"}"
-: "${DOWNLOADS:?"DOWNLOADS is not set in env.sh"}"
-: "${ACCUMULO_TARBALL:?"ACCUMULO_TARBALL is not set in env.sh"}"
-: "${FLUO_TARBALL:?"FLUO_TARBALL is not set in env.sh"}"
-: "${HADOOP_TARBALL:?"HADOOP_TARBALL is not set in env.sh"}"
-: "${ZOOKEEPER_TARBALL:?"ZOOKEEPER_TARBALL is not set in env.sh"}"
-: "${FLUO_HOME:?"FLUO_HOME is not set in env.sh"}"
-: "${ZOOKEEPER_HOME:?"ZOOKEEPER_HOME is not set in env.sh"}"
-: "${HADOOP_PREFIX:?"HADOOP_PREFIX is not set in env.sh"}"
-: "${ACCUMULO_HOME:?"ACCUMULO_HOME is not set in env.sh"}"
-: "${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in env.sh"}"
-: "${ACCUMULO_USER:?"ACCUMULO_USER is not set in env.sh"}"
-: "${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in env.sh"}"
-: "${LOGS_DIR:?"LOGS_DIR is not set in env.sh"}"
-: "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in env.sh"}"
-: "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in env.sh"}"
-: "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in env.sh"}"
-: "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in env.sh"}"
+: "${DATA_DIR:?"DATA_DIR is not set in uno.conf"}"
+: "${FLUO_VERSION:?"FLUO_VERSION is not set in uno.conf"}"
+: "${HADOOP_VERSION:?"HADOOP_VERSION is not set in uno.conf"}"
+: "${ZOOKEEPER_VERSION:?"ZOOKEEPER_VERSION is not set in uno.conf"}"
+: "${ACCUMULO_VERSION:?"ACCUMULO_VERSION is not set in uno.conf"}"
+: "${DOWNLOADS:?"DOWNLOADS is not set in uno.conf"}"
+: "${ACCUMULO_TARBALL:?"ACCUMULO_TARBALL is not set in uno.conf"}"
+: "${FLUO_TARBALL:?"FLUO_TARBALL is not set in uno.conf"}"
+: "${HADOOP_TARBALL:?"HADOOP_TARBALL is not set in uno.conf"}"
+: "${ZOOKEEPER_TARBALL:?"ZOOKEEPER_TARBALL is not set in uno.conf"}"
+: "${FLUO_HOME:?"FLUO_HOME is not set in uno.conf"}"
+: "${ZOOKEEPER_HOME:?"ZOOKEEPER_HOME is not set in uno.conf"}"
+: "${HADOOP_PREFIX:?"HADOOP_PREFIX is not set in uno.conf"}"
+: "${ACCUMULO_HOME:?"ACCUMULO_HOME is not set in uno.conf"}"
+: "${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in uno.conf"}"
+: "${ACCUMULO_USER:?"ACCUMULO_USER is not set in uno.conf"}"
+: "${ACCUMULO_PASSWORD:?"ACCUMULO_PASSWORD is not set in uno.conf"}"
+: "${LOGS_DIR:?"LOGS_DIR is not set in uno.conf"}"
+: "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in uno.conf"}"
+: "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in uno.conf"}"
+: "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in uno.conf"}"
+: "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in uno.conf"}"
 
 hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
 hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
