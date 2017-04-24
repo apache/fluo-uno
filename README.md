@@ -40,7 +40,9 @@ cd uno
 eval "$(./bin/uno env)"             # Bash-specific command that sets up current shell
 ```
 
-For a more complete understanding of Uno, please continue reading.
+Accumulo is now ready to use. Verify your installation by checking the [Accumulo Monitor](http://localhost:9995/)
+and [Hadoop NameNode](http://localhost:50070/) status pages. For a more complete understanding of Uno,
+please continue reading.
 
 ## Installation
 
