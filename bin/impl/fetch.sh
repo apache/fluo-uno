@@ -21,14 +21,16 @@ function download_verify() {
   tarball=$2
   expected_hash=$3
 
-  wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
+  if [ -n "$apache_mirror" ]; then
+    wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
+  fi 
   verify_exist_hash "$tarball" "$expected_hash"
   echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
 }
 
 function fetch_accumulo() {
-  download_verify "$APACHE_MIRROR/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
-  download_verify "$APACHE_MIRROR/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
+  download_verify "$apache_mirror/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
+  download_verify "$apache_mirror/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
   if [[ -n "$ACCUMULO_REPO" ]]; then
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
@@ -48,16 +50,21 @@ function fetch_accumulo() {
     popd
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$APACHE_MIRROR/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
+    download_verify "$apache_mirror/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
 }
 
 # Determine best apache mirror to use
-APACHE_MIRROR=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
+apache_mirror=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
+
+if [ -z "$apache_mirror" ]; then
+  echo "Failed querying apache.org for best download mirror!"
+  echo "Fetch can only verify existing downloads or build Accumulo/Fluo tarballs from a repo."
+fi
 
 case "$1" in
 spark)
-  download_verify "$APACHE_MIRROR/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
+  download_verify "$apache_mirror/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
   fetch_accumulo
@@ -77,8 +84,8 @@ fluo)
     fi
     cp "$fluo_built_tarball" "$DOWNLOADS"/
   else
-    [[ $FLUO_VERSION =~ .*-incubating ]] && APACHE_MIRROR="${APACHE_MIRROR}/incubator"
-    download_verify "$APACHE_MIRROR/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+    [[ $FLUO_VERSION =~ .*-incubating ]] && apache_mirror="${APACHE_MIRROR}/incubator"
+    download_verify "$apache_mirror/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
   ;;
 metrics)
