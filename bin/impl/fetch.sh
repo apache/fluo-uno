@@ -29,8 +29,11 @@ function download_verify() {
 }
 
 function fetch_accumulo() {
-  download_verify "$apache_mirror/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
-  download_verify "$apache_mirror/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
+  if [[ $1 != "--no-deps" ]]; then
+    download_verify "$apache_mirror/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
+    download_verify "$apache_mirror/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
+  fi
+
   if [[ -n "$ACCUMULO_REPO" ]]; then
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
@@ -67,10 +70,12 @@ spark)
   download_verify "$apache_mirror/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
-  fetch_accumulo
+  fetch_accumulo "$2"
   ;;
 fluo)
-  fetch_accumulo
+  if [[ $2 != "--no-deps" ]]; then
+    fetch_accumulo
+  fi
   if [[ -n "$FLUO_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_TARBALL"
     cd "$FLUO_REPO"
@@ -132,5 +137,7 @@ metrics)
   echo "    fluo       Downloads Fluo, Accumulo, Hadoop & Zookeeper. Builds Fluo or Accumulo if repo set in uno.conf"
   echo "    metrics    Downloads InfluxDB and Grafana"
   echo "    spark      Downloads Spark"
+  echo "Options:"
+  echo "    --no-deps  Dependencies will be fetched unless this option is specified. Only works for fluo & accumulo components."
   exit 1
 esac

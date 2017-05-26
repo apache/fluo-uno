@@ -36,7 +36,7 @@ fetch)
     "$bin"/impl/fetch.sh spark && \
     "$bin"/impl/fetch.sh metrics
   else
-    "$bin"/impl/fetch.sh "$2"
+    "$bin"/impl/fetch.sh "$2" "$3"
   fi
 	;;
 setup)
