@@ -52,6 +52,9 @@ setup)
     fluo)
       "$bin"/impl/setup-fluo.sh "$3"
       ;;
+    fluo-yarn)
+      "$bin"/impl/setup-fluo-yarn.sh "$3"
+      ;;
     spark)
       "$bin"/impl/setup-spark.sh
       ;;
@@ -65,6 +68,7 @@ setup)
       echo "    accumulo   Sets up Apache Accumulo and its dependencies (Hadoop & Zookeeper)"
       echo "    spark      Sets up Apache Spark"
       echo "    fluo       Sets up Apache Fluo and its dependencies (Accumulo, Hadoop, & Zookeeper)"
+      echo "    fluo-yarn  Sets up Apache Fluo YARN and its dependencies (Fluo, Accumulo, Hadoop, & Zookeeper)"
       echo -e "    metrics    Sets up metrics service (InfluxDB + Grafana)\n"
       echo "Options:"
       echo "    --no-deps  Dependencies will be setup unless this option is specified. Only works for fluo & accumulo components."

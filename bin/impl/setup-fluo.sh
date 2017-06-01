@@ -40,7 +40,9 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
 
   tar xzf "$DOWNLOADS/$FLUO_TARBALL" -C "$INSTALL"/
 
-  cp "$FLUO_HOME"/conf/examples/* "$FLUO_HOME"/conf/
+  if [ -d "$FLUO_HOME/conf/examples" ]; then
+    cp "$FLUO_HOME"/conf/examples/* "$FLUO_HOME"/conf/
+  fi
   FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
   $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://localhost:8020#g" "$FLUO_PROPS"
   $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$FLUO_PROPS"
@@ -49,6 +51,11 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
   $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$FLUO_PROPS"
   $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$FLUO_PROPS"
   $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$FLUO_PROPS"
+  APP_PROPS=$FLUO_HOME/conf/application.properties
+  $SED "s/fluo.accumulo.instance=/fluo.accumulo.instance=$ACCUMULO_INSTANCE/g" "$APP_PROPS"
+  $SED "s/fluo.accumulo.user=/fluo.accumulo.user=$ACCUMULO_USER/g" "$APP_PROPS"
+  $SED "s/fluo.accumulo.password=/fluo.accumulo.password=$ACCUMULO_PASSWORD/g" "$APP_PROPS"
+  $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$APP_PROPS"
   $SED "s#HADOOP_PREFIX=/path/to/hadoop#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ACCUMULO_HOME=/path/to/accumulo#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ZOOKEEPER_HOME=/path/to/zookeeper#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
