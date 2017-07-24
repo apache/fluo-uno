@@ -58,7 +58,7 @@ function fetch_accumulo() {
 }
 
 function fetch_fluo() {
-  if [[ $2 != "--no-deps" ]]; then
+  if [[ $1 != "--no-deps" ]]; then
     fetch_accumulo
   fi
   if [[ -n "$FLUO_REPO" ]]; then
