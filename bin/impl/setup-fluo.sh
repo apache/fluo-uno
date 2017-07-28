@@ -36,7 +36,7 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
   pkill -f twill.launcher
   set -e
 
-  rm -rf "$INSTALL"/fluo-*
+  rm -rf "$FLUO_HOME"
 
   tar xzf "$DOWNLOADS/$FLUO_TARBALL" -C "$INSTALL"/
 
