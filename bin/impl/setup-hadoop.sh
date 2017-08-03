@@ -37,6 +37,9 @@ mkdir -p "$YARN_LOG_DIR"
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
 cp "$UNO_HOME"/conf/hadoop/* "$HADOOP_PREFIX"/etc/hadoop/
+$SED "s#localhost#$UNO_HOST#g" "$HADOOP_PREFIX"/etc/hadoop/core-site.xml
+$SED "s#localhost#$UNO_HOST#g" "$HADOOP_PREFIX"/etc/hadoop/hdfs-site.xml
+$SED "s#localhost#$UNO_HOST#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/hdfs-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
 $SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/mapred-site.xml
