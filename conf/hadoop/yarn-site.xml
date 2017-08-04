@@ -19,7 +19,7 @@
 <configuration>
   <property>
     <name>yarn.resourcemanager.hostname</name>
-    <value>localhost</value>
+    <value>UNO_HOST</value>
   </property>
   <property>
     <name>yarn.nodemanager.local-dirs</name>

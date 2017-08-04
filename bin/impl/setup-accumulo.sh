@@ -62,7 +62,7 @@ $SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$conf"/accumulo-site.xml
 $SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$conf"/accumulo-site.xml
 $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$conf"/accumulo-site.xml
 $SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$conf"/accumulo-site.xml
-$SED "s#localhost#$UNO_HOST#" "$conf"/accumulo-site.xml
+$SED "s#UNO_HOST#$UNO_HOST#" "$conf"/accumulo-site.xml
 
 if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
   if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then

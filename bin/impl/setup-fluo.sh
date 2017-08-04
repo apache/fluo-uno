@@ -45,14 +45,18 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
     fluo_props=$FLUO_HOME/conf/fluo.properties
   else
     fluo_props=$FLUO_HOME/conf/fluo.properties.deprecated
+    conn_props=$FLUO_HOME/conf/fluo-conn.properties
+    $SED "s#.*fluo.connection.zookeepers=.*#fluo.connection.zookeepers=$UNO_HOST/fluo#g" "$conn_props"
     app_props=$FLUO_HOME/conf/fluo-app.properties
     $SED "s/fluo.accumulo.instance=/fluo.accumulo.instance=$ACCUMULO_INSTANCE/g" "$app_props"
     $SED "s/fluo.accumulo.user=/fluo.accumulo.user=$ACCUMULO_USER/g" "$app_props"
     $SED "s/fluo.accumulo.password=/fluo.accumulo.password=$ACCUMULO_PASSWORD/g" "$app_props"
+    $SED "s/.*fluo.accumulo.zookeepers=.*/fluo.accumulo.zookeepers=$UNO_HOST/g" "$app_props"
+    $SED "s#fluo.dfs.root=.*#fluo.dfs.root=hdfs://$UNO_HOST:8020/fluo#g" "$app_props"
     $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$app_props"
   fi
 
-  $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://localhost:8020#g" "$fluo_props"
+  $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://$UNO_HOST:8020#g" "$fluo_props"
   $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$fluo_props"
   $SED "s/fluo.client.accumulo.user=/fluo.client.accumulo.user=$ACCUMULO_USER/g" "$fluo_props"
   $SED "s/fluo.client.accumulo.password=/fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$fluo_props"

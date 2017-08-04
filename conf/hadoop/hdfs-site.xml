@@ -31,6 +31,6 @@
   </property>
   <property>
     <name>dfs.namenode.secondary.http-address</name>
-    <value>localhost:50090</value>
+    <value>UNO_HOST:50090</value>
   </property>
 </configuration>

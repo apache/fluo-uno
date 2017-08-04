@@ -19,6 +19,6 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name> 
-    <value>hdfs://localhost:8020</value>
+    <value>hdfs://UNO_HOST:8020</value>
   </property>
 </configuration>
