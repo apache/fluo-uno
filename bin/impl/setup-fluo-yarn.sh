@@ -45,7 +45,7 @@ if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
   $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$YARN_PROPS"
   $SED "s#FLUO_HOME=.*#FLUO_HOME=$FLUO_HOME#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
 
-  "$FLUO_YARN_HOME"/lib/fetch.sh extra
+  "$FLUO_YARN_HOME"/lib/fetch.sh
 
   echo "Apache Fluo YARN launcher setup complete"
 
