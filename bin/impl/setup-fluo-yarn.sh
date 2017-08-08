@@ -39,10 +39,11 @@ if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
 
   tar xzf "$DOWNLOADS/$FLUO_YARN_TARBALL" -C "$INSTALL"/
 
-  YARN_PROPS=$FLUO_YARN_HOME/conf/fluo-yarn.properties
-  $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$YARN_PROPS"
-  $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$YARN_PROPS"
-  $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$YARN_PROPS"
+  yarn_props=$FLUO_YARN_HOME/conf/fluo-yarn.properties
+  $SED "s#.*fluo.yarn.zookeepers=.*#fluo.yarn.zookeepers=$UNO_HOST/fluo-yarn#g" "$yarn_props"
+  $SED "s/.*fluo.yarn.resource.manager=.*/fluo.yarn.resource.manager=$UNO_HOST/g" "$yarn_props"
+  $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$yarn_props"
+  $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$yarn_props"
   $SED "s#FLUO_HOME=.*#FLUO_HOME=$FLUO_HOME#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
 
   "$FLUO_YARN_HOME"/lib/fetch.sh
