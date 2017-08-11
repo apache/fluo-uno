@@ -21,10 +21,20 @@ if [[ -z "$1" || "$1" == "--vars" ]]; then
   echo "export SPARK_HOME=\"$SPARK_HOME\""
   echo "export ACCUMULO_HOME=\"$ACCUMULO_HOME\""
   echo "export FLUO_HOME=\"$FLUO_HOME\""
+  echo "export FLUO_YARN_HOME=\"$FLUO_YARN_HOME\""
 fi
 
 if [[ -z "$1" || "$1" == "--paths" ]]; then
-  echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$SPARK_HOME/bin:$ACCUMULO_HOME/bin:$FLUO_HOME/bin"
+  echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$ACCUMULO_HOME/bin"
+  if [[ -d "$SPARK_HOME" ]]; then
+    echo -n ":$SPARK_HOME/bin"
+  fi
+  if [[ -d "$FLUO_HOME" ]]; then
+    echo -n ":$FLUO_HOME/bin"
+  fi
+  if [[ -d "$FLUO_YARN_HOME" ]]; then
+    echo -n ":$FLUO_YARN_HOME/bin"
+  fi
   if [[ -d "$INFLUXDB_HOME" ]]; then
     echo -n ":$INFLUXDB_HOME/bin"
   fi

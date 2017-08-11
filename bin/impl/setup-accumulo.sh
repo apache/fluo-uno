@@ -38,26 +38,31 @@ mkdir -p "$ACCUMULO_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 
+conf=$ACCUMULO_HOME/conf
+
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-  cp "$ACCUMULO_HOME"/conf/examples/2GB/standalone/* "$ACCUMULO_HOME"/conf/
-  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$ACCUMULO_HOME"/conf/accumulo-site.xml
+  cp "$conf"/examples/2GB/standalone/* "$conf"/
+  $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
+  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$conf"/accumulo-site.xml
 else
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
-  cp "$UNO_HOME"/conf/accumulo/accumulo-site-2.0.xml "$ACCUMULO_HOME"/conf/accumulo-site.xml
+  $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
+  cp "$UNO_HOME"/conf/accumulo/accumulo-site-2.0.xml "$conf"/accumulo-site.xml
 fi
-
-$SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
-$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
-$SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+$SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
+$SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
+$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$conf"/accumulo-env.sh
+$SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-  $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+  $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$conf"/accumulo-env.sh
 else
-  $SED "s#tserver).*#tserver) JAVA_OPTS=\(\"\$\{JAVA_OPTS\[\@\]\}\" '-Xmx$ACCUMULO_TSERV_MEM' '-Xms$ACCUMULO_TSERV_MEM\'\) ;;#" "$ACCUMULO_HOME"/conf/accumulo-env.sh
+  $SED "s#tserver).*#tserver) JAVA_OPTS=\(\"\$\{JAVA_OPTS\[\@\]\}\" '-Xmx$ACCUMULO_TSERV_MEM' '-Xms$ACCUMULO_TSERV_MEM\'\) ;;#" "$conf"/accumulo-env.sh
 fi
-$SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
-$SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
-$SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
-$SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$ACCUMULO_HOME"/conf/accumulo-site.xml
+$SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$conf"/accumulo-site.xml
+$SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$conf"/accumulo-site.xml
+$SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$conf"/accumulo-site.xml
+$SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$conf"/accumulo-site.xml
+$SED "s#UNO_HOST#$UNO_HOST#" "$conf"/accumulo-site.xml
 
 if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
   if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then

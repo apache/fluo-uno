@@ -57,23 +57,8 @@ function fetch_accumulo() {
   fi
 }
 
-# Determine best apache mirror to use
-apache_mirror=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
-
-if [ -z "$apache_mirror" ]; then
-  echo "Failed querying apache.org for best download mirror!"
-  echo "Fetch can only verify existing downloads or build Accumulo/Fluo tarballs from a repo."
-fi
-
-case "$1" in
-spark)
-  download_verify "$apache_mirror/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
-  ;;
-accumulo)
-  fetch_accumulo "$2"
-  ;;
-fluo)
-  if [[ $2 != "--no-deps" ]]; then
+function fetch_fluo() {
+  if [[ $1 != "--no-deps" ]]; then
     fetch_accumulo
   fi
   if [[ -n "$FLUO_REPO" ]]; then
@@ -92,7 +77,48 @@ fluo)
     [[ $FLUO_VERSION =~ .*-incubating ]] && apache_mirror="${apache_mirror}/incubator"
     download_verify "$apache_mirror/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
+}
+
+# Determine best apache mirror to use
+apache_mirror=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
+
+if [ -z "$apache_mirror" ]; then
+  echo "Failed querying apache.org for best download mirror!"
+  echo "Fetch can only verify existing downloads or build Accumulo/Fluo tarballs from a repo."
+fi
+
+case "$1" in
+spark)
+  download_verify "$apache_mirror/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
+accumulo)
+  fetch_accumulo "$2"
+  ;;
+fluo)
+  fetch_fluo "$2"
+  ;;
+fluo-yarn)
+  if [[ $2 != "--no-deps" ]]; then
+    fetch_fluo
+  fi
+  if [[ -n "$FLUO_YARN_REPO" ]]; then
+    rm -f "$DOWNLOADS/$FLUO_YARN_TARBALL"
+    cd "$FLUO_YARN_REPO"
+    mvn clean package -DskipTests -Dformatter.skip
+
+    built_tarball=$FLUO_YARN_REPO/distribution/target/$FLUO_YARN_TARBALL
+    if [[ ! -f "$built_tarball" ]]; then
+      echo "The tarball $built_tarball does not exist after building from the FLUO_YARN_REPO=$FLUO_YARN_REPO"
+      echo "Does your repo contain code matching the FLUO_YARN_VERSION=$FLUO_YARN_VERSION set in uno.conf?"
+      exit 1
+    fi
+    cp "$built_tarball" "$DOWNLOADS"/
+  else
+    [[ $FLUO_VERSION =~ .*-incubating ]] && apache_mirror="${apache_mirror}/incubator"
+    download_verify "$apache_mirror/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+  fi
+  ;;
+ 
 metrics)
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."

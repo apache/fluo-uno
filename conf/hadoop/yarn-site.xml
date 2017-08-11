@@ -18,6 +18,10 @@
 
 <configuration>
   <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>UNO_HOST</value>
+  </property>
+  <property>
     <name>yarn.nodemanager.local-dirs</name>
     <value>file://DATA_DIR/hadoop/yarn/local</value>
   </property>

@@ -13,11 +13,11 @@
   </property>
   <property>
     <name>instance.volumes</name>
-    <value>hdfs://localhost:8020/accumulo</value>
+    <value>hdfs://UNO_HOST:8020/accumulo</value>
   </property>
   <property>
     <name>instance.zookeeper.host</name>
-    <value>localhost:2181</value>
+    <value>UNO_HOST:2181</value>
   </property>
   <property>
     <name>table.durability</name>

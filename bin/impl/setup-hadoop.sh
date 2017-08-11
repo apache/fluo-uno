@@ -36,15 +36,15 @@ mkdir -p "$YARN_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
-cp "$UNO_HOME"/conf/hadoop/* "$HADOOP_PREFIX"/etc/hadoop/
-$SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/hdfs-site.xml
-$SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
-$SED "s#DATA_DIR#$DATA_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/mapred-site.xml
-$SED "s#YARN_LOGS#$YARN_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
-$SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
-$SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-site.xml
-$SED "s#\#export HADOOP_LOG_DIR=[^ ]*#export HADOOP_LOG_DIR=$HADOOP_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/hadoop-env.sh
-$SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$HADOOP_PREFIX"/etc/hadoop/yarn-env.sh
+hadoop_conf="$HADOOP_PREFIX"/etc/hadoop
+cp "$UNO_HOME"/conf/hadoop/* "$hadoop_conf/"
+$SED "s#UNO_HOST#$UNO_HOST#g" "$hadoop_conf/core-site.xml" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml"
+$SED "s#DATA_DIR#$DATA_DIR#g" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml" "$hadoop_conf/mapred-site.xml"
+$SED "s#YARN_LOGS#$YARN_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
+$SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
+$SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
+$SED "s#\#export HADOOP_LOG_DIR=[^ ]*#export HADOOP_LOG_DIR=$HADOOP_LOG_DIR#g" "$hadoop_conf/hadoop-env.sh"
+$SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$hadoop_conf/yarn-env.sh"
 
 "$HADOOP_PREFIX"/bin/hdfs namenode -format
 "$HADOOP_PREFIX"/sbin/start-dfs.sh

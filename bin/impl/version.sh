@@ -27,6 +27,9 @@ accumulo)
 fluo)
   echo -n "$FLUO_VERSION"
   ;;
+fluo-yarn)
+  echo -n "$FLUO_YARN_VERSION"
+  ;;
 spark)
   echo -n "$SPARK_VERSION"
   ;;
