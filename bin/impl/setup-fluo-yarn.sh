@@ -46,6 +46,7 @@ if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
   $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$yarn_props"
   $SED "s#FLUO_HOME=.*#FLUO_HOME=$FLUO_HOME#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
   $SED "s#HADOOP_PREFIX=.*#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
+  $SED "s#ZOOKEEPER_HOME=.*#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
 
   "$FLUO_YARN_HOME"/lib/fetch.sh
 
