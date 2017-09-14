@@ -41,8 +41,19 @@ eval "$(./bin/uno env)"             # Bash-specific command that sets up current
 ```
 
 Accumulo is now ready to use. Verify your installation by checking the [Accumulo Monitor](http://localhost:9995/)
-and [Hadoop NameNode](http://localhost:50070/) status pages. For a more complete understanding of Uno,
-please continue reading.
+and [Hadoop NameNode](http://localhost:50070/) status pages. 
+
+Note that the Accumulo shell can be accessed in one of two ways. The easiest is method is to use the `uno` command.
+```
+./bin/uno ashell
+```
+You can also access the shell directly. The Accumulo installation is initialized using the username `root`
+and password `secret` (set in the `uno.conf` file). Therefore, the shell can be accessed directly using:
+```
+accumulo shell -u root -p secret
+```
+
+For a more complete understanding of Uno, please continue reading.
 
 ## Installation
 
