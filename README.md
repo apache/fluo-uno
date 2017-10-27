@@ -26,6 +26,13 @@ environment :
 
  * [Ubuntu 16.04](/docs/ubuntu1604.md)
 
+If your system is setup correctly, the following command should print `JAVA_HOME` without asking for
+a password.
+
+```bash
+ssh localhost env | grep JAVA_HOME
+```
+
 ## Quickstart
 
 The following commands will get you up and running with an Accumulo instance if you
