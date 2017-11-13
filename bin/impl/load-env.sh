@@ -96,6 +96,11 @@ if [[ ! -d "$INSTALL" ]]; then
   mkdir -p "$INSTALL"
 fi
 
+if [[ -z "$JAVA_HOME" || ! -d "$JAVA_HOME" ]]; then
+  echo "JAVA_HOME must be set in your shell to a valid directory.  Currently, JAVA_HOME=$JAVA_HOME"
+  exit 1
+fi
+
 : "${DATA_DIR:?"DATA_DIR is not set in uno.conf"}"
 : "${FLUO_VERSION:?"FLUO_VERSION is not set in uno.conf"}"
 : "${HADOOP_VERSION:?"HADOOP_VERSION is not set in uno.conf"}"
