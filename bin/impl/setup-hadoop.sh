@@ -44,6 +44,7 @@ $SED "s#YARN_LOGS#$YARN_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#\#export HADOOP_LOG_DIR=[^ ]*#export HADOOP_LOG_DIR=$HADOOP_LOG_DIR#g" "$hadoop_conf/hadoop-env.sh"
+$SED "s#\${JAVA_HOME}#${JAVA_HOME}#g" "$hadoop_conf/hadoop-env.sh"
 $SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$hadoop_conf/yarn-env.sh"
 
 "$HADOOP_PREFIX"/bin/hdfs namenode -format
