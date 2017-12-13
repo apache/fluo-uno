@@ -79,7 +79,12 @@ cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
 "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
 
 echo "Configuring Fluo to send metrics to InfluxDB"
-FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+if [[ $FLUO_VERSION =~ ^1\.[0-1].*$ ]]; then
+  FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
+else
+  FLUO_PROPS=$FLUO_HOME/conf/fluo-app.properties
+fi
+
 $SED "/fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
 {
   echo "fluo.metrics.reporter.graphite.enable=true"
