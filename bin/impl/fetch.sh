@@ -137,7 +137,7 @@ metrics)
   download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
 
   tar xzf "$DOWNLOADS/$INFLUXDB_TARBALL" -C "$BUILD"
-  mv "$BUILD/influxdb_$INFLUXDB_VERSION_x86_64" "$IF_PATH"
+  mv "$BUILD/influxdb_${INFLUXDB_VERSION}_x86_64" "$IF_PATH"
   mkdir "$IF_PATH"/bin
   mv "$IF_PATH/opt/influxdb/versions/$INFLUXDB_VERSION"/* "$IF_PATH"/bin
   rm -rf "$IF_PATH"/opt
