@@ -42,6 +42,7 @@ if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
   yarn_props=$FLUO_YARN_HOME/conf/fluo-yarn.properties
   $SED "s#.*fluo.yarn.zookeepers=.*#fluo.yarn.zookeepers=$UNO_HOST/fluo-yarn#g" "$yarn_props"
   $SED "s/.*fluo.yarn.resource.manager=.*/fluo.yarn.resource.manager=$UNO_HOST/g" "$yarn_props"
+  $SED "s#.*fluo.yarn.dfs.root=.*#fluo.yarn.dfs.root=hdfs://$UNO_HOST:8020/#g" "$yarn_props"
   $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$yarn_props"
   $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$yarn_props"
   $SED "s#FLUO_HOME=.*#FLUO_HOME=$FLUO_HOME#g" "$FLUO_YARN_HOME"/conf/fluo-yarn-env.sh
