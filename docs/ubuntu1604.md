@@ -19,4 +19,13 @@ sed -i '/# for examples/a export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
 
 #set java home in current shell
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+
+# Optional: set OS limits.  Could do this with an editor. Could replace * with user running Uno.  
+cat <<EOF | sudo tee -a /etc/security/limits.conf > /dev/null 
+* hard nproc 65536
+* soft nproc 65536
+* hard nofile 65536
+* soft nofile 65536
+EOF
+
 ```
