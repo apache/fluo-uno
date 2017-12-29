@@ -88,7 +88,7 @@ fi
 $SED "/fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
 {
   echo "fluo.metrics.reporter.graphite.enable=true"
-  echo "fluo.metrics.reporter.graphite.host=localhost"
+  echo "fluo.metrics.reporter.graphite.host=$UNO_HOST"
   echo "fluo.metrics.reporter.graphite.port=2003"
   echo "fluo.metrics.reporter.graphite.frequency=30"
 } >> "$FLUO_PROPS"
@@ -104,9 +104,14 @@ echo "Configuring Grafana..."
 echo "Adding InfluxDB as datasource"
 sleep 10
 retcode=1
+
+GRAFANA_DATA='{"name":"fluo_metrics","type":"influxdb","url":"http://'
+GRAFANA_DATA+=$UNO_HOST
+GRAFANA_DATA+=':8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+
 while [[ $retcode != 0 ]];  do
   curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
-    --data-binary '{"name":"fluo_metrics","type":"influxdb","url":"http://localhost:8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+    --data-binary "$GRAFANA_DATA"
   retcode=$?
   if [[ $retcode != 0 ]]; then
     echo "Failed to add Grafana data source. Retrying in 5 sec.."
