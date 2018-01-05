@@ -1,3 +1,7 @@
+CentOS 7 prep
+-----------------
+
+```bash
 #install stuff
 sudo yum install java-1.8.0-openjdk maven git openssh-server wget perl-Digest-SHA
 sudo yum group install "Development Tools"
@@ -17,3 +21,4 @@ cat <<EOF | sudo tee -a /etc/security/limits.conf > /dev/null
 * hard nofile 65536
 * soft nofile 65536
 EOF
+```
