@@ -76,6 +76,7 @@ $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
 mkdir "$GRAFANA_HOME"/dashboards
 cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
+cp "$ACCUMULO_HOME"/conf/templates/grafana-dashboard.json "$GRAFANA_HOME"/dashboards/
 "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
 
 echo "Configuring Fluo to send metrics to InfluxDB"
@@ -101,23 +102,31 @@ sleep 10
 set +e
 
 echo "Configuring Grafana..."
-echo "Adding InfluxDB as datasource"
-sleep 10
-retcode=1
 
-GRAFANA_DATA='{"name":"fluo_metrics","type":"influxdb","url":"http://'
-GRAFANA_DATA+=$UNO_HOST
-GRAFANA_DATA+=':8086","access":"direct","isDefault":true,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+sleep 5
 
-while [[ $retcode != 0 ]];  do
-  curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
-    --data-binary "$GRAFANA_DATA"
-  retcode=$?
-  if [[ $retcode != 0 ]]; then
-    echo "Failed to add Grafana data source. Retrying in 5 sec.."
-    sleep 5
-  fi
-done
-echo ""
+function add_datasource() {
+  retcode=1
+  while [[ $retcode != 0 ]];  do
+    curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
+      --data-binary "$1"
+    retcode=$?
+    if [[ $retcode != 0 ]]; then
+      echo "Failed to add Grafana data source. Retrying in 5 sec.."
+      sleep 5
+    fi
+  done
+  echo ""
+}
+
+accumulo_data='{"name":"accumulo_metrics","type":"influxdb","url":"http://'
+accumulo_data+=$UNO_HOST
+accumulo_data+=':8086","access":"direct","isDefault":true,"database":"accumulo_metrics","user":"accumulo","password":"secret"}'
+add_datasource $accumulo_data
+
+fluo_data='{"name":"fluo_metrics","type":"influxdb","url":"http://'
+fluo_data+=$UNO_HOST
+fluo_data+=':8086","access":"direct","isDefault":false,"database":"fluo_metrics","user":"fluo","password":"secret"}'
+add_datasource $fluo_data
 
 stty sane
