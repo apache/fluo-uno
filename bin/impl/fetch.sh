@@ -106,7 +106,7 @@ fluo-yarn)
     cd "$FLUO_YARN_REPO"
     mvn clean package -DskipTests -Dformatter.skip
 
-    built_tarball=$FLUO_YARN_REPO/distribution/target/$FLUO_YARN_TARBALL
+    built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL
     if [[ ! -f "$built_tarball" ]]; then
       echo "The tarball $built_tarball does not exist after building from the FLUO_YARN_REPO=$FLUO_YARN_REPO"
       echo "Does your repo contain code matching the FLUO_YARN_VERSION=$FLUO_YARN_VERSION set in uno.conf?"
