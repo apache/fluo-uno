@@ -76,7 +76,7 @@ $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
 mkdir "$GRAFANA_HOME"/dashboards
 cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
-cp "$ACCUMULO_HOME"/conf/templates/grafana-dashboard.json "$GRAFANA_HOME"/dashboards/
+cp "$UNO_HOME"/conf/accumulo/grafana-dashboard.json "$GRAFANA_HOME"/dashboards/
 "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
 
 echo "Configuring Fluo to send metrics to InfluxDB"
