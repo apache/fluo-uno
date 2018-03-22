@@ -64,6 +64,19 @@ $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$conf"/accumulo-site.xml
 $SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$conf"/accumulo-site.xml
 $SED "s#UNO_HOST#$UNO_HOST#" "$conf"/accumulo-site.xml
 
+if [[ "$1" == "--with-metrics" ]]; then
+  metrics_props=hadoop-metrics2-accumulo.properties
+  cp "$conf"/templates/"$metrics_props" "$conf"/
+  $SED "/accumulo.sink.graphite/d" "$conf"/"$metrics_props"
+  {
+    echo "accumulo.sink.graphite.class=org.apache.hadoop.metrics2.sink.GraphiteSink"
+    echo "accumulo.sink.graphite.server_host=localhost"
+    echo "accumulo.sink.graphite.server_port=2004"
+    echo "accumulo.sink.graphite.metrics_prefix=accumulo"
+  } >> "$conf"/"$metrics_props"
+  "$UNO_HOME"/bin/impl/setup-metrics.sh
+fi
+
 if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
   if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
     "$ACCUMULO_HOME"/bin/build_native_library.sh
