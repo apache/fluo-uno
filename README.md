@@ -34,8 +34,8 @@ have satisfied the requirements mentioned above.  Replace `accumulo` with `fluo`
 setup a Fluo instance.
 
 ```bash
-git clone https://github.com/astralway/uno.git
-cd uno
+git clone https://github.com/apache/fluo-uno.git
+cd fluo-uno
 ./bin/uno fetch accumulo            # Fetches binary tarballs of Accumulo and its dependencies
 ./bin/uno setup accumulo            # Sets up Accumulo and its dependencies (Hadoop & Zookeeper)
 eval "$(./bin/uno env)"             # Bash-specific command that sets up current shell
@@ -60,7 +60,7 @@ For a more complete understanding of Uno, please continue reading.
 
 First, clone the Uno repo on a local disk with enough space to run Hadoop, Accumulo, etc:
 
-    git clone https://github.com/astralway/uno.git
+    git clone https://github.com/apache/fluo-uno.git
 
 The `uno` command uses `conf/uno.conf` for its default configuration which should be
 sufficient for most users.
@@ -168,11 +168,11 @@ configuring, initializing, and starting your application.
 [zookeeper]: http://zookeeper.apache.org/
 [hadoop]: http://hadoop.apache.org/
 [mirrors]: http://www.apache.org/dyn/closer.cgi
-[Webindex]: https://github.com/astralway/webindex
-[Phrasecount]: https://github.com/astralway/phrasecount
+[Webindex]: https://github.com/apache/fluo-examples/tree/master/webindex
+[Phrasecount]: https://github.com/apache/fluo-examples/tree/master/phrasecount
 [configure]: https://github.com/apache/fluo/blob/master/docs/install.md#configure-a-fluo-application
 [li]: http://img.shields.io/badge/license-ASL-blue.svg
-[ll]: https://github.com/astralway/uno/blob/master/LICENSE
+[ll]: https://github.com/apache/fluo-uno/blob/master/LICENSE
 [logo]: contrib/uno-logo.png
-[Muchos]: https://github.com/astralway/muchos
+[Muchos]: https://github.com/apache/fluo-muchos
 [ssh-docs]: https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
