@@ -21,8 +21,8 @@ if [[ -z "$ACCUMULO_REPO" ]]; then
 fi
 
 if [[ $1 != "--no-deps" ]]; then
-  "$UNO_HOME"/bin/impl/setup-hadoop.sh
-  "$UNO_HOME"/bin/impl/setup-zookeeper.sh
+  run_setup_script Hadoop
+  run_setup_script ZooKeeper
 fi
 
 pkill -f accumulo.start
@@ -30,7 +30,7 @@ pkill -f accumulo.start
 # stop if any command fails
 set -e
 
-echo "Setting up Apache Accumulo at $ACCUMULO_HOME"
+echo >&0 "Setting up Apache Accumulo at $ACCUMULO_HOME"
 
 rm -rf "$INSTALL"/accumulo-*
 rm -f "$ACCUMULO_LOG_DIR"/*
@@ -78,7 +78,7 @@ if [[ "$1" == "--with-metrics" ]]; then
     echo "accumulo.sink.graphite.server_port=2004"
     echo "accumulo.sink.graphite.metrics_prefix=accumulo"
   } >> "$conf"/"$metrics_props"
-  "$UNO_HOME"/bin/impl/setup-metrics.sh
+  run_setup_script Metrics
 fi
 
 if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
@@ -98,4 +98,3 @@ else
   "$ACCUMULO_HOME"/bin/accumulo-cluster start
 fi
 
-echo "Apache Accumulo setup complete"

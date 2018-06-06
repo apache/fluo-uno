@@ -23,7 +23,7 @@ pkill -f QuorumPeerMain
 # stop if any command fails
 set -e
 
-echo "Setting up Apache Zookeeper at $ZOOKEEPER_HOME"
+echo >&0 "Setting up Apache ZooKeeper at $ZOOKEEPER_HOME"
 rm -rf "$INSTALL"/zookeeper-*
 rm -f "$ZOO_LOG_DIR"/*
 mkdir -p "$ZOO_LOG_DIR"
@@ -36,4 +36,3 @@ $SED "s#DATA_DIR#$DATA_DIR#g" "$ZOOKEEPER_HOME"/conf/zoo.cfg
 rm -rf "$DATA_DIR"/zookeeper
 "$ZOOKEEPER_HOME"/bin/zkServer.sh start
 
-echo "Apache Zookeeper setup complete"

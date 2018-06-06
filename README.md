@@ -37,7 +37,7 @@ setup a Fluo instance.
 git clone https://github.com/apache/fluo-uno.git
 cd fluo-uno
 ./bin/uno fetch accumulo            # Fetches binary tarballs of Accumulo and its dependencies
-./bin/uno setup accumulo            # Sets up Accumulo and its dependencies (Hadoop & Zookeeper)
+./bin/uno setup accumulo            # Sets up Accumulo and its dependencies (Hadoop & ZooKeeper)
 eval "$(./bin/uno env)"             # Bash-specific command that sets up current shell
 ```
 
@@ -74,7 +74,7 @@ vim conf/uno.conf
 
 All commands are run using the `uno` script in `bin/`. Uno has a command that helps you configure
 your shell so that you can run commands from any directory and easily set common environment
-variables in your shell for Uno, Hadoop, Zookeeper, Fluo, and Spark. Run the following command to
+variables in your shell for Uno, Hadoop, ZooKeeper, Fluo, and Spark. Run the following command to
 print this shell configuration. You can also add `--paths` or `--vars` to the command below to limit
 output to PATH or environment variable configuration:
 
@@ -106,7 +106,7 @@ upgrade components and need to download/build the latest version.
 The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
 `uno.conf` and run you local development cluster. The command can be run in several different ways:
 
-1. Sets up Apache Accumulo and its dependencies of Hadoop, Zookeeper. This starts all processes and
+1. Sets up Apache Accumulo and its dependencies of Hadoop, ZooKeeper. This starts all processes and
    will wipe Accumulo/Hadoop if this command was run previously.
 
         uno setup accumulo
@@ -130,7 +130,7 @@ The `setup` command will install the downloaded tarballs to the directory set by
 
         uno setup spark
 
-6. Sets up all components (Fluo, Accumulo, Hadoop, Zookeeper, Spark, metrics service).
+6. Sets up all components (Fluo, Accumulo, Hadoop, ZooKeeper, Spark, metrics service).
 
         uno setup all
 
