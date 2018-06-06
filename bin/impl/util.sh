@@ -19,7 +19,7 @@ function verify_exist_hash() {
   expected_hash=$(echo "${2// /}" | tr '[:upper:]' '[:lower:]')
 
   if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo "The tarball $tarball does not exist in downloads/"
+    echo >&0 "The tarball $tarball does not exist in downloads/"
     exit 1
   fi
 
@@ -30,14 +30,14 @@ function verify_exist_hash() {
     64) HASH_CMD='shasum -a 256' ;;
     128) HASH_CMD='shasum -a 512' ;;
     *)
-      echo "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
+      echo >&0 "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
       exit 1
       ;;
   esac
   actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ "$actual_hash" != "$expected_hash" ]]; then
-    echo "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
+    echo >&0 "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
     exit 1
   fi
 }
@@ -46,8 +46,16 @@ function verify_exist_hash() {
 function check_dirs() {
   for arg in "$@"; do
     if [[ ! -d "${!arg}" ]]; then
-      echo "$arg=${!arg} is not a valid directory. Please make sure it exists"
+      echo >&0 "$arg=${!arg} is not a valid directory. Please make sure it exists"
       exit 1
     fi
   done
+}
+
+function run_setup_script() {
+  local SCRIP; SCRIP=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
+  local L_DIR; L_DIR="$LOGS_DIR/setup"
+  mkdir -p "$L_DIR"
+  shift
+  "$UNO_HOME/bin/impl/setup-$SCRIP.sh" "$@" 1>"$L_DIR/$SCRIP.stdout" 2>"$L_DIR/$SCRIP.stderr"
 }

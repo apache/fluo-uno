@@ -40,26 +40,28 @@ fetch)
   fi
 	;;
 setup)
+  [[ -n $LOGS_DIR ]] && rm -f "$LOGS_DIR"/setup/*.std{out,err}
+  echo "Beginning setup (detailed logs in $LOGS_DIR/setup)..."
   case "$2" in
     all)
-      "$bin"/impl/setup-fluo.sh
-      "$bin"/impl/setup-spark.sh
-      "$bin"/impl/setup-metrics.sh
+      run_setup_script Fluo
+      run_setup_script Spark
+      run_setup_script Metrics
       ;;
     accumulo)
-      "$bin"/impl/setup-accumulo.sh "$3"
+      run_setup_script Accumulo "$3"
       ;;
     fluo)
-      "$bin"/impl/setup-fluo.sh "$3"
+      run_setup_script Fluo "$3"
       ;;
     fluo-yarn)
-      "$bin"/impl/setup-fluo-yarn.sh "$3"
+      run_setup_script "Fluo Yarn" "$3"
       ;;
     spark)
-      "$bin"/impl/setup-spark.sh
+      run_setup_script Spark
       ;;
     metrics)
-      "$bin"/impl/setup-metrics.sh
+      run_setup_script Metrics
       ;;
     *)
       echo "Usage: uno setup <component> [--no-deps]"
@@ -75,6 +77,12 @@ setup)
       exit 1
       ;;
   esac
+  if [[ "$?" == 0 ]]; then
+    echo "Setup complete."
+  else
+    echo "Setup failed!"
+    false
+  fi
   ;;
 kill)
   "$bin"/impl/kill.sh "${@:2}"

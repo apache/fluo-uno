@@ -24,7 +24,7 @@ pkill -f hadoop.yarn
 # stop if any command fails
 set -e
 
-echo "Setting up Apache Hadoop at $HADOOP_PREFIX"
+echo >&0 "Setting up Apache Hadoop at $HADOOP_PREFIX"
 
 rm -rf "$INSTALL"/hadoop-*
 rm -f "$HADOOP_LOG_DIR"/*
@@ -51,4 +51,3 @@ $SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$hadoop_conf/yarn-env.
 "$HADOOP_PREFIX"/sbin/start-dfs.sh
 "$HADOOP_PREFIX"/sbin/start-yarn.sh
 
-echo "Apache Hadoop setup complete"

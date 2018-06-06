@@ -24,11 +24,11 @@ if [[ -z "$FLUO_REPO" ]]; then
 fi
 
 if [[ $1 != "--no-deps" ]]; then
-  "$UNO_HOME"/bin/impl/setup-accumulo.sh
+  run_setup_script Accumulo
 fi
 
 if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
-  echo "Setting up Apache Fluo at $FLUO_HOME"
+  echo >&0 "Setting up Apache Fluo at $FLUO_HOME"
   # Don't stop if pkills fail
   set +e
   pkill -f fluo.yarn
@@ -70,10 +70,8 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
 
   "$FLUO_HOME"/lib/fetch.sh extra
 
-  echo "Apache Fluo setup complete"
-
   stty sane
 else
-  echo "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
-  echo "Apache Fluo will not be set up!"
+  echo >&0 "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
+  echo >&0 "Apache Fluo will not be set up!"
 fi
