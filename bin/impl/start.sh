@@ -26,7 +26,7 @@ case "$1" in
       tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
       if [[ -z "$tmp" ]]; then
         "$ZOOKEEPER_HOME"/bin/zkServer.sh start
-      else echo "Zookeeper   already running at: $tmp"
+      else echo "ZooKeeper   already running at: $tmp"
       fi
 
       tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
@@ -73,7 +73,7 @@ case "$1" in
     tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
     if [[ -z "$tmp" ]]; then
       "$ZOOKEEPER_HOME"/bin/zkServer.sh start
-    else echo "Zookeeper   already running at: $tmp"
+    else echo "ZooKeeper   already running at: $tmp"
     fi
     ;;
   metrics)
@@ -100,9 +100,9 @@ case "$1" in
   *)
     echo "Usage: uno start <component> [--no-deps]"
     echo -e "\nPossible components:\n"
-    echo "    accumulo   Start Apache Accumulo plus dependencies: Hadoop, Zookeeper"
+    echo "    accumulo   Start Apache Accumulo plus dependencies: Hadoop, ZooKeeper"
     echo "    hadoop     Start Apache Hadoop"
-    echo "    zookeeper  Start Apache Zookeeper"
+    echo "    zookeeper  Start Apache ZooKeeper"
     echo "    metrics    Start InfluxDB and Grafana"
     echo "Options:"
     echo "    --no-deps  Dependencies will start unless this option is specified. Only works for accumulo component."

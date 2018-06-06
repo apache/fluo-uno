@@ -77,9 +77,9 @@ case "$1" in
   *)
     echo "Usage: uno stop <component> [--no-deps]"
     echo -e "\nPossible components:\n"
-    echo "    accumulo   Stop Apache Accumulo plus dependencies: Hadoop, Zookeeper"
+    echo "    accumulo   Stop Apache Accumulo plus dependencies: Hadoop, ZooKeeper"
     echo "    hadoop     Stop Apache Hadoop"
-    echo "    zookeeper  Stop Apache Zookeeper"
+    echo "    zookeeper  Stop Apache ZooKeeper"
     echo "Options:"
     echo "    --no-deps  Dependencies will stop unless this option is specified. Only works for accumulo component."
     exit 1
