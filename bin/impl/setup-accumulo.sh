@@ -50,8 +50,8 @@ else
   cp "$UNO_HOME"/conf/accumulo/accumulo-site-2.0.xml "$conf"/accumulo-site.xml
   $SED "s#instance[.]name=#instance.name=$ACCUMULO_INSTANCE#" "$conf"/accumulo-client.properties
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
-  $SED "s#auth[.]username=#auth.username=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
-  $SED "s#auth[.]password=#auth.password=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
+  $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
+  $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
 fi
 $SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
