@@ -19,11 +19,11 @@ source "$UNO_HOME"/bin/impl/util.sh
 verify_exist_hash "$SPARK_TARBALL" "$SPARK_HASH"
 
 if [[ ! -d "$HADOOP_PREFIX" ]]; then
-  printToConsole "Apache Hadoop needs to be setup before Apache Spark can be setup."
+  print_to_console "Apache Hadoop needs to be setup before Apache Spark can be setup."
   exit 1
 fi
 
-printToConsole "Setting up Apache Spark at $SPARK_HOME"
+print_to_console "Setting up Apache Spark at $SPARK_HOME"
 
 pkill -f org.apache.spark.deploy.history.HistoryServer
 

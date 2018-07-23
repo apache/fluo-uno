@@ -28,7 +28,7 @@ if [[ $1 != "--no-deps" ]]; then
 fi
 
 if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
-  printToConsole "Setting up Apache Fluo YARN launcher at $FLUO_YARN_HOME"
+  print_to_console "Setting up Apache Fluo YARN launcher at $FLUO_YARN_HOME"
   # Don't stop if pkills fail
   set +e
   pkill -f "fluo\.yarn"
@@ -53,6 +53,6 @@ if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
 
   stty sane
 else
-  printToConsole "WARNING: Apache Fluo YARN launcher tarball '$FLUO_YARN_TARBALL' was not found in $DOWNLOADS."
-  printToConsole "Apache Fluo YARN launcher will not be set up!"
+  print_to_console "WARNING: Apache Fluo YARN launcher tarball '$FLUO_YARN_TARBALL' was not found in $DOWNLOADS."
+  print_to_console "Apache Fluo YARN launcher will not be set up!"
 fi

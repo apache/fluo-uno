@@ -19,7 +19,7 @@ function verify_exist_hash() {
   expected_hash=$(echo "${2// /}" | tr '[:upper:]' '[:lower:]')
 
   if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    printToConsole "The tarball $tarball does not exist in downloads/"
+    print_to_console "The tarball $tarball does not exist in downloads/"
     exit 1
   fi
 
@@ -30,14 +30,14 @@ function verify_exist_hash() {
     64) HASH_CMD='shasum -a 256' ;;
     128) HASH_CMD='shasum -a 512' ;;
     *)
-      printToConsole "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
+      print_to_console "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
       exit 1
       ;;
   esac
   actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ "$actual_hash" != "$expected_hash" ]]; then
-    printToConsole "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
+    print_to_console "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
     exit 1
   fi
 }
@@ -46,7 +46,7 @@ function verify_exist_hash() {
 function check_dirs() {
   for arg in "$@"; do
     if [[ ! -d "${!arg}" ]]; then
-      printToConsole "$arg=${!arg} is not a valid directory. Please make sure it exists"
+      print_to_console "$arg=${!arg} is not a valid directory. Please make sure it exists"
       exit 1
     fi
   done
@@ -60,22 +60,23 @@ function run_setup_script() {
   "$UNO_HOME/bin/impl/setup-$SCRIP.sh" "$@" 1>"$L_DIR/$SCRIP.stdout" 2>"$L_DIR/$SCRIP.stderr"
 }
 
-function saveConsole {
-  UNO_CONSOLE=''
-  for fd in {0..200}; do
-    rco="$(true 2>/dev/null >&${fd}; echo $?)"
-    rci="$(true 2>/dev/null <&${fd}; echo $?)"
-    [[ "${rco}${rci}" = "11" ]] && UNO_CONSOLE=${fd} && break
-  done
+function save_console_fd {
+  if [ -z "$UNO_CONSOLE_FD" ]; then
+    for fd in {0..200}; do
+      local rco; rco="$(true 2>/dev/null >&${fd}; echo $?)"
+      local rci; rci="$(true 2>/dev/null <&${fd}; echo $?)"
+      [[ "${rco}${rci}" = "11" ]] && UNO_CONSOLE_FD=${fd} && break
+    done
 
-  exec {UNO_CONSOLE}>&1
-  export UNO_CONSOLE
+    exec {UNO_CONSOLE_FD}>&1
+    export UNO_CONSOLE_FD
+  fi
 }
 
-function printToConsole {
-  if [ -z "$UNO_CONSOLE" ]; then
-    echo $1
+function print_to_console {
+  if [ -z "$UNO_CONSOLE_FD" ]; then
+    echo "$@"
   else
-    echo >&${UNO_CONSOLE} $1
+    echo "$@" >&${UNO_CONSOLE_FD}
   fi
 }
