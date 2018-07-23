@@ -62,6 +62,7 @@ function run_setup_script() {
 
 function save_console_fd {
   if [ -z "$UNO_CONSOLE_FD" ]; then
+    # modified from https://stackoverflow.com/questions/41603787/how-to-find-next-available-file-descriptor-in-bash
     for fd in {0..200}; do
       local rco; rco="$(true 2>/dev/null >&${fd}; echo $?)"
       local rci; rci="$(true 2>/dev/null <&${fd}; echo $?)"
