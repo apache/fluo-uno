@@ -17,11 +17,11 @@
 source "$UNO_HOME"/bin/impl/util.sh
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  echo >&0 "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
+  printToConsole "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
   exit 1
 fi
 
-echo >&0 "Killing InfluxDB & Grafana (if running)"
+printToConsole "Killing InfluxDB & Grafana (if running)"
 pkill -f influxdb
 pkill -f grafana-server
 
@@ -35,36 +35,36 @@ verify_exist_hash "$GRAFANA_TARBALL" "$GRAFANA_HASH"
 INFLUXDB_TARBALL=influxdb-"$INFLUXDB_VERSION".tar.gz
 GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".tar.gz
 if [[ ! -f "$DOWNLOADS/build/$INFLUXDB_TARBALL" ]]; then
-  echo >&0 "InfluxDB tarball $INFLUXDB_TARBALL does not exists in downloads/build/"
+  printToConsole "InfluxDB tarball $INFLUXDB_TARBALL does not exists in downloads/build/"
   exit 1
 fi
 if [[ ! -f "$DOWNLOADS/build/$GRAFANA_TARBALL" ]]; then
-  echo >&0 "Grafana tarball $GRAFANA_TARBALL does not exists in downloads/build"
+  printToConsole "Grafana tarball $GRAFANA_TARBALL does not exists in downloads/build"
   exit 1
 fi
 
 if [[ ! -d "$FLUO_HOME" ]]; then
-  echo >&0 "Fluo must be installed before setting up metrics"
+  printToConsole "Fluo must be installed before setting up metrics"
   exit 1
 fi
 
 # stop if any command fails
 set -e
 
-echo >&0 "Removing previous versions of InfluxDB & Grafana"
+printToConsole "Removing previous versions of InfluxDB & Grafana"
 rm -rf "$INSTALL"/influxdb-*
 rm -rf "$INSTALL"/grafana-*
 
-echo >&0 "Remove previous log and data dirs"
+printToConsole "Remove previous log and data dirs"
 rm -f "$LOGS_DIR"/metrics/*
 rm -rf "$DATA_DIR"/influxdb
 mkdir -p "$LOGS_DIR"/metrics
 
-echo >&0 "Setting up metrics (influxdb + grafana)..."
+printToConsole "Setting up metrics (influxdb + grafana)..."
 tar xzf "$DOWNLOADS/build/$INFLUXDB_TARBALL" -C "$INSTALL"
 "$INFLUXDB_HOME"/bin/influxd config -config "$UNO_HOME"/conf/influxdb/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
 if [[ ! -f "$INFLUXDB_HOME"/influxdb.conf ]]; then
-  echo >&0 "Failed to create $INFLUXDB_HOME/influxdb.conf"
+  printToConsole "Failed to create $INFLUXDB_HOME/influxdb.conf"
   exit 1
 fi
 $SED "s#DATA_DIR#$DATA_DIR#g" "$INFLUXDB_HOME"/influxdb.conf
@@ -79,7 +79,7 @@ cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
 cp "$UNO_HOME"/conf/grafana/accumulo-dashboard.json "$GRAFANA_HOME"/dashboards/
 "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
 
-echo >&0 "Configuring Fluo to send metrics to InfluxDB"
+printToConsole "Configuring Fluo to send metrics to InfluxDB"
 if [[ $FLUO_VERSION =~ ^1\.[0-1].*$ ]]; then
   FLUO_PROPS=$FLUO_HOME/conf/fluo.properties
 else
@@ -94,14 +94,14 @@ $SED "/fluo.metrics.reporter.graphite/d" "$FLUO_PROPS"
   echo "fluo.metrics.reporter.graphite.frequency=30"
 } >> "$FLUO_PROPS"
 
-echo >&0 "Configuring InfluxDB..."
+printToConsole "Configuring InfluxDB..."
 sleep 10
 "$INFLUXDB_HOME"/bin/influx -import -path "$FLUO_HOME"/contrib/influxdb/fluo_metrics_setup.txt
 
 # allow commands to fail
 set +e
 
-echo >&0 "Configuring Grafana..."
+printToConsole "Configuring Grafana..."
 
 sleep 5
 
@@ -112,11 +112,11 @@ function add_datasource() {
       --data-binary "$1"
     retcode=$?
     if [[ $retcode != 0 ]]; then
-      echo >&0 "Failed to add Grafana data source. Retrying in 5 sec.."
+      printToConsole "Failed to add Grafana data source. Retrying in 5 sec.."
       sleep 5
     fi
   done
-  echo >&0 ""
+  printToConsole ""
 }
 
 accumulo_data='{"name":"accumulo_metrics","type":"influxdb","url":"http://'

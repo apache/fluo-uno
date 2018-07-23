@@ -23,7 +23,7 @@ pkill -f QuorumPeerMain
 # stop if any command fails
 set -e
 
-echo >&0 "Setting up Apache ZooKeeper at $ZOOKEEPER_HOME"
+printToConsole "Setting up Apache ZooKeeper at $ZOOKEEPER_HOME"
 rm -rf "$INSTALL"/zookeeper-*
 rm -f "$ZOO_LOG_DIR"/*
 mkdir -p "$ZOO_LOG_DIR"

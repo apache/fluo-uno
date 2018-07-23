@@ -30,7 +30,7 @@ pkill -f accumulo.start
 # stop if any command fails
 set -e
 
-echo >&0 "Setting up Apache Accumulo at $ACCUMULO_HOME"
+printToConsole "Setting up Apache Accumulo at $ACCUMULO_HOME"
 
 rm -rf "$INSTALL"/accumulo-*
 rm -f "$ACCUMULO_LOG_DIR"/*

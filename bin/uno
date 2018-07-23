@@ -42,6 +42,7 @@ fetch)
 setup)
   [[ -n $LOGS_DIR ]] && rm -f "$LOGS_DIR"/setup/*.std{out,err}
   echo "Beginning setup (detailed logs in $LOGS_DIR/setup)..."
+  saveConsole
   case "$2" in
     all)
       run_setup_script Fluo
