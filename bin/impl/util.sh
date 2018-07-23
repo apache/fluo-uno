@@ -62,13 +62,8 @@ function run_setup_script() {
 
 function save_console_fd {
   if [ -z "$UNO_CONSOLE_FD" ]; then
-    # modified from https://stackoverflow.com/questions/41603787/how-to-find-next-available-file-descriptor-in-bash
-    for fd in {0..200}; do
-      local rco; rco="$(true 2>/dev/null >&${fd}; echo $?)"
-      local rci; rci="$(true 2>/dev/null <&${fd}; echo $?)"
-      [[ "${rco}${rci}" = "11" ]] && UNO_CONSOLE_FD=${fd} && break
-    done
-
+    # Allocate an unused file descriptor and make it dup stdouy
+    # https://stackoverflow.com/a/41620630/7298689
     exec {UNO_CONSOLE_FD}>&1
     export UNO_CONSOLE_FD
   fi
