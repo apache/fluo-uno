@@ -28,7 +28,7 @@ if [[ $1 != "--no-deps" ]]; then
 fi
 
 if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
-  echo >&0 "Setting up Apache Fluo at $FLUO_HOME"
+  print_to_console "Setting up Apache Fluo at $FLUO_HOME"
   # Don't stop if pkills fail
   set +e
   pkill -f fluo.yarn
@@ -72,6 +72,6 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
 
   stty sane
 else
-  echo >&0 "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
-  echo >&0 "Apache Fluo will not be set up!"
+  print_to_console "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
+  print_to_console "Apache Fluo will not be set up!"
 fi

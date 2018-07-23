@@ -19,7 +19,7 @@ function verify_exist_hash() {
   expected_hash=$(echo "${2// /}" | tr '[:upper:]' '[:lower:]')
 
   if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo >&0 "The tarball $tarball does not exist in downloads/"
+    print_to_console "The tarball $tarball does not exist in downloads/"
     exit 1
   fi
 
@@ -30,14 +30,14 @@ function verify_exist_hash() {
     64) HASH_CMD='shasum -a 256' ;;
     128) HASH_CMD='shasum -a 512' ;;
     *)
-      echo >&0 "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
+      print_to_console "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
       exit 1
       ;;
   esac
   actual_hash=$($HASH_CMD "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ "$actual_hash" != "$expected_hash" ]]; then
-    echo >&0 "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
+    print_to_console "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
     exit 1
   fi
 }
@@ -46,7 +46,7 @@ function verify_exist_hash() {
 function check_dirs() {
   for arg in "$@"; do
     if [[ ! -d "${!arg}" ]]; then
-      echo >&0 "$arg=${!arg} is not a valid directory. Please make sure it exists"
+      print_to_console "$arg=${!arg} is not a valid directory. Please make sure it exists"
       exit 1
     fi
   done
@@ -58,4 +58,21 @@ function run_setup_script() {
   mkdir -p "$L_DIR"
   shift
   "$UNO_HOME/bin/impl/setup-$SCRIP.sh" "$@" 1>"$L_DIR/$SCRIP.stdout" 2>"$L_DIR/$SCRIP.stderr"
+}
+
+function save_console_fd {
+  if [[ -z "$UNO_CONSOLE_FD" ]]; then
+    # Allocate an unused file descriptor and make it dup stdout
+    # https://stackoverflow.com/a/41620630/7298689
+    exec {UNO_CONSOLE_FD}>&1
+    export UNO_CONSOLE_FD
+  fi
+}
+
+function print_to_console {
+  if [[ -z "$UNO_CONSOLE_FD" ]]; then
+    echo "$@"
+  else
+    echo "$@" >&${UNO_CONSOLE_FD}
+  fi
 }

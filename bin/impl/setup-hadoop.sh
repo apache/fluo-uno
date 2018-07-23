@@ -24,7 +24,7 @@ pkill -f hadoop.yarn
 # stop if any command fails
 set -e
 
-echo >&0 "Setting up Apache Hadoop at $HADOOP_PREFIX"
+print_to_console "Setting up Apache Hadoop at $HADOOP_PREFIX"
 
 rm -rf "$INSTALL"/hadoop-*
 rm -f "$HADOOP_LOG_DIR"/*
