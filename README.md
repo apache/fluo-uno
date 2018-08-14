@@ -72,6 +72,16 @@ your environment. Inside this script the variable `UNO_HOME` defaults to the roo
 vim conf/uno.conf
 ```
 
+If you would like to avoid modifying `uno.conf` because it is managed by git,
+there is a second way to configure uno.  If `conf/uno-local.conf` exists then
+it is used instead of `uno.conf`.  After pulling the latest changes to
+Uno, a tool like meld can be used to compare `uno.conf` and `uno-local.conf`.
+
+```bash
+cp conf/uno.conf conf/uno-local.conf
+vim conf/uno-local.conf
+```
+
 All commands are run using the `uno` script in `bin/`. Uno has a command that helps you configure
 your shell so that you can run commands from any directory and easily set common environment
 variables in your shell for Uno, Hadoop, ZooKeeper, Fluo, and Spark. Run the following command to

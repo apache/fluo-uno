@@ -42,7 +42,9 @@ AH=$ACCUMULO_HOME
 FH=$FLUO_HOME
 
 # Load env configuration
-if [[ -f "$UNO_HOME/conf/uno.conf" ]]; then
+if [[ -f "$UNO_HOME/conf/uno-local.conf" ]]; then
+  source "$UNO_HOME"/conf/uno-local.conf
+elif [[ -f "$UNO_HOME/conf/uno.conf" ]]; then
   source "$UNO_HOME"/conf/uno.conf
 else
   echo "ERROR: Configuration file $UNO_HOME/conf/uno.conf does not exist" 1>&2
