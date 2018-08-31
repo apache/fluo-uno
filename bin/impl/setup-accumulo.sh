@@ -41,13 +41,15 @@ tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 conf=$ACCUMULO_HOME/conf
 
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  accumulo_conf=$conf/accumulo-site.xml
   cp "$conf"/examples/2GB/standalone/* "$conf"/
   $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
-  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$conf"/accumulo-site.xml
+  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$accumulo_conf"
 else
+  accumulo_conf=$conf/accumulo.properties
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
   $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
-  cp "$UNO_HOME"/conf/accumulo/accumulo-site-2.0.xml "$conf"/accumulo-site.xml
+  cp "$UNO_HOME"/conf/accumulo/accumulo-2.0.properties "$accumulo_conf"
   $SED "s#instance[.]name=#instance.name=$ACCUMULO_INSTANCE#" "$conf"/accumulo-client.properties
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
@@ -62,11 +64,11 @@ if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
 else
   $SED "s#tserver).*#tserver) JAVA_OPTS=\(\"\$\{JAVA_OPTS\[\@\]\}\" '-Xmx$ACCUMULO_TSERV_MEM' '-Xms$ACCUMULO_TSERV_MEM\'\) ;;#" "$conf"/accumulo-env.sh
 fi
-$SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$conf"/accumulo-site.xml
-$SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$conf"/accumulo-site.xml
-$SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$conf"/accumulo-site.xml
-$SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$conf"/accumulo-site.xml
-$SED "s#UNO_HOST#$UNO_HOST#" "$conf"/accumulo-site.xml
+$SED "s#ACCUMULO_DCACHE_SIZE#$ACCUMULO_DCACHE_SIZE#" "$accumulo_conf"
+$SED "s#ACCUMULO_ICACHE_SIZE#$ACCUMULO_ICACHE_SIZE#" "$accumulo_conf"
+$SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$accumulo_conf"
+$SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$accumulo_conf"
+$SED "s#UNO_HOST#$UNO_HOST#" "$accumulo_conf"
 
 if [[ "$1" == "--with-metrics" ]]; then
   metrics_props=hadoop-metrics2-accumulo.properties
