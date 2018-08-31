@@ -20,5 +20,5 @@
 # This file is sourced when running various Spark programs.
 # Copy it as spark-env.sh and edit that to configure Spark for your site.
 
-SPARK_DIST_CLASSPATH=$("$HADOOP_PREFIX"/bin/hadoop classpath)
+SPARK_DIST_CLASSPATH=$("$HADOOP_HOME"/bin/hadoop classpath)
 export SPARK_DIST_CLASSPATH

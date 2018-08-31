@@ -64,7 +64,7 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
   $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$fluo_props"
   $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$fluo_props"
 
-  $SED "s#HADOOP_PREFIX=.*#HADOOP_PREFIX=$HADOOP_PREFIX#g" "$FLUO_HOME"/conf/fluo-env.sh
+  $SED "s#HADOOP_PREFIX=.*#HADOOP_PREFIX=$HADOOP_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ACCUMULO_HOME=.*o#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ZOOKEEPER_HOME=.*#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
 

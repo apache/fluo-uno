@@ -31,7 +31,7 @@
   </property>
   <property>
     <name>yarn.nodemanager.log-dirs</name>
-    <value>YARN_LOGS</value>
+    <value>HADOOP_LOG_DIR</value>
   </property>
   <property>
     <name>yarn.nodemanager.aux-services</name>

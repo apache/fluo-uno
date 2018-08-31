@@ -34,7 +34,7 @@ then
   exit 1
 fi
 
-HP=$HADOOP_PREFIX
+HH=$HADOOP_HOME
 HC=$HADOOP_CONF_DIR
 ZH=$ZOOKEEPER_HOME
 SH=$SPARK_HOME
@@ -53,8 +53,8 @@ fi
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
-  if [[ -n "$HP" && "$HP" != "$HADOOP_PREFIX" ]]; then
-    echo "HADOOP_PREFIX in your shell env '$HP' needs to match your uno uno.conf '$HADOOP_PREFIX'"
+  if [[ -n "$HH" && "$HH" != "$HADOOP_HOME" ]]; then
+    echo "HADOOP_HOME in your shell env '$HH' needs to match your uno uno.conf '$HADOOP_HOME'"
     exit 1
   fi
   if [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]]; then
@@ -115,7 +115,7 @@ fi
 : "${ZOOKEEPER_TARBALL:?"ZOOKEEPER_TARBALL is not set in uno.conf"}"
 : "${FLUO_HOME:?"FLUO_HOME is not set in uno.conf"}"
 : "${ZOOKEEPER_HOME:?"ZOOKEEPER_HOME is not set in uno.conf"}"
-: "${HADOOP_PREFIX:?"HADOOP_PREFIX is not set in uno.conf"}"
+: "${HADOOP_HOME:?"HADOOP_HOME is not set in uno.conf"}"
 : "${ACCUMULO_HOME:?"ACCUMULO_HOME is not set in uno.conf"}"
 : "${ACCUMULO_INSTANCE:?"ACCUMULO_INSTANCE is not set in uno.conf"}"
 : "${ACCUMULO_USER:?"ACCUMULO_USER is not set in uno.conf"}"
@@ -123,7 +123,6 @@ fi
 : "${LOGS_DIR:?"LOGS_DIR is not set in uno.conf"}"
 : "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in uno.conf"}"
 : "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in uno.conf"}"
-: "${YARN_LOG_DIR:?"YARN_LOG_DIR is not set in uno.conf"}"
 : "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in uno.conf"}"
 
 hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }

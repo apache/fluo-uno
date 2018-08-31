@@ -57,7 +57,7 @@ else
 fi
 $SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
-$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_PREFIX#" "$conf"/accumulo-env.sh
+$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
 $SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$conf"/accumulo-env.sh
@@ -91,7 +91,7 @@ if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
   fi
 fi
 
-"$HADOOP_PREFIX"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
+"$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
 
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
