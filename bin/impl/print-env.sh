@@ -15,7 +15,7 @@
 # limitations under the License.
 
 if [[ -z "$1" || "$1" == "--vars" ]]; then
-  if [[ $HADOOP_VERSION =~ ^1\..*$ ]]; then
+  if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
     echo "export HADOOP_PREFIX=\"$HADOOP_HOME\""
   else
     echo "export HADOOP_HOME=\"$HADOOP_HOME\""
