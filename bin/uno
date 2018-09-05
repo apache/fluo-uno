@@ -104,6 +104,13 @@ env)
 version)
   "$bin"/impl/version.sh "${@:2}"
   ;;
+wipe)
+  "$bin"/impl/kill.sh
+  if [[ -d "$INSTALL" ]]; then
+    echo "removing $INSTALL"
+    rm -rf "$INSTALL"
+  fi
+  ;;
 *)
   echo -e "Usage: uno <command> (<argument>)\n"
   echo -e "Possible commands:\n"
@@ -114,11 +121,12 @@ version)
   echo "                         Run 'uno setup' for list of components."
   echo "  start <component>      Start ZooKeeper, Hadoop, Accumulo, if not running."
   echo "  stop  <component>      Stop Accumulo, Hadoop, ZooKeeper, if running."
-  echo "  kill                   Kills all software"
+  echo "  kill                   Kills all processes"
   echo "  ashell                 Runs the Accumulo shell"
   echo "  env                    Prints out shell configuration for PATH and common environment variables."
   echo "                         Add '--paths' or '--vars' command to limit what is printed."
   echo "  version <dep>          Prints out configured version for dependency"
+  echo "  wipe                   Kills all processes and clears install directory"
   echo " "
   exit 1
 esac

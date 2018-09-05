@@ -16,6 +16,11 @@
 
 source "$UNO_HOME"/bin/impl/util.sh
 
+pkill -f accumulo.start
+
+# stop if any command fails
+set -e
+
 if [[ -z "$ACCUMULO_REPO" ]]; then
   verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
 fi
@@ -25,12 +30,7 @@ if [[ $1 != "--no-deps" ]]; then
   run_setup_script ZooKeeper
 fi
 
-pkill -f accumulo.start
-
-# stop if any command fails
-set -e
-
-print_to_console "Setting up Apache Accumulo at $ACCUMULO_HOME"
+print_to_console "Setting up Apache Accumulo $ACCUMULO_VERSION at $ACCUMULO_HOME"
 print_to_console "    * Accumulo Monitor: http://localhost:9995/"
 print_to_console "    * view logs at $ACCUMULO_LOG_DIR"
 

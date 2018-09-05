@@ -16,13 +16,13 @@
 
 source "$UNO_HOME"/bin/impl/util.sh
 
-verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
-
 pkill -f hadoop.hdfs
 pkill -f hadoop.yarn
 
 # stop if any command fails
 set -e
+
+verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
 
 namenode_port=9870
 if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
@@ -30,7 +30,7 @@ if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
   export HADOOP_PREFIX=$HADOOP_HOME
 fi
 
-print_to_console "Setting up Apache Hadoop at $HADOOP_HOME"
+print_to_console "Setting up Apache Hadoop $HADOOP_VERSION at $HADOOP_HOME"
 print_to_console "    * NameNode status: http://localhost:$namenode_port/"
 print_to_console "    * ResourceManager status: http://localhost:8088/"
 print_to_console "    * view logs at $HADOOP_LOG_DIR"

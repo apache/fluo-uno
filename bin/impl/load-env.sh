@@ -51,31 +51,36 @@ else
   exit 1
 fi
 
+function env_error() {
+  echo 'Make your shell env match uno.conf by running: eval "$(./bin/uno env)"'
+  exit 1
+}
+
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
   if [[ -n "$HH" && "$HH" != "$HADOOP_HOME" ]]; then
     echo "HADOOP_HOME in your shell env '$HH' needs to match your uno uno.conf '$HADOOP_HOME'"
-    exit 1
+    env_error
   fi
   if [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]]; then
     echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your uno uno.conf '$HADOOP_CONF_DIR'"
-    exit 1
+    env_error
   fi
   if [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]]; then
     echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your uno uno.conf '$ZOOKEEPER_HOME'"
-    exit 1
+    env_error
   fi
   if [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]]; then
     echo "SPARK_HOME in your shell env '$SH' needs to match your uno uno.conf '$SPARK_HOME'"
-    exit 1
+    env_error
   fi
   if [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]]; then
     echo "ACCUMULO_HOME in your shell env '$AH' needs to match your uno uno.conf '$ACCUMULO_HOME'"
-    exit 1
+    env_error
   fi
   if [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]]; then
     echo "FLUO_HOME in your shell env '$FH' needs to match your uno uno.conf '$FLUO_HOME'"
-    exit 1
+    env_error
   fi
 fi
 
@@ -124,6 +129,19 @@ fi
 : "${ACCUMULO_LOG_DIR:?"ACCUMULO_LOG_DIR is not set in uno.conf"}"
 : "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in uno.conf"}"
 : "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in uno.conf"}"
+
+if [[ -z "$HADOOP_HASH" ]]; then
+  echo "HADOOP_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
+  exit 1
+fi
+if [[ -z "$ZOOKEEPER_HASH" ]]; then
+  echo "ZOOKEEPER_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
+  exit 1
+fi
+if [[ -z "$ACCUMULO_HASH" ]]; then
+  echo "ACCUMULO_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
+  exit 1
+fi
 
 hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
 hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
