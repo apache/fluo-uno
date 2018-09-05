@@ -24,8 +24,16 @@ pkill -f hadoop.yarn
 # stop if any command fails
 set -e
 
+namenode_port=9870
+if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
+  namenode_port=50070
+  export HADOOP_PREFIX=$HADOOP_HOME
+fi
+
 print_to_console "Setting up Apache Hadoop at $HADOOP_HOME"
-print_to_console "Apache Hadoop logs are at $HADOOP_LOG_DIR"
+print_to_console "    * NameNode status: http://localhost:$namenode_port/"
+print_to_console "    * ResourceManager status: http://localhost:8088/"
+print_to_console "    * view logs at $HADOOP_LOG_DIR"
 
 rm -rf "$INSTALL"/hadoop-*
 rm -f "$HADOOP_LOG_DIR"/*
