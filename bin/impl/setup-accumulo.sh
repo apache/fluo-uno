@@ -31,6 +31,8 @@ pkill -f accumulo.start
 set -e
 
 print_to_console "Setting up Apache Accumulo at $ACCUMULO_HOME"
+print_to_console "    * Accumulo Monitor: http://localhost:9995/"
+print_to_console "    * view logs at $ACCUMULO_LOG_DIR"
 
 rm -rf "$INSTALL"/accumulo-*
 rm -f "$ACCUMULO_LOG_DIR"/*
@@ -45,11 +47,13 @@ if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   cp "$conf"/examples/2GB/standalone/* "$conf"/
   $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
   cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$accumulo_conf"
+  $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
 else
   accumulo_conf=$conf/accumulo.properties
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
   $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
   cp "$UNO_HOME"/conf/accumulo/accumulo-2.0.properties "$accumulo_conf"
+  $SED "s#export HADOOP_HOME=[^ ]*#export HADOOP_HOME=$HADOOP_HOME#" "$conf"/accumulo-env.sh
   $SED "s#instance[.]name=#instance.name=$ACCUMULO_INSTANCE#" "$conf"/accumulo-client.properties
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
@@ -57,7 +61,6 @@ else
 fi
 $SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
-$SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
 $SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   $SED "s#ACCUMULO_TSERVER_OPTS=.*#ACCUMULO_TSERVER_OPTS=\"-Xmx$ACCUMULO_TSERV_MEM -Xms$ACCUMULO_TSERV_MEM\"#" "$conf"/accumulo-env.sh

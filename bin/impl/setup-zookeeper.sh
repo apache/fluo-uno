@@ -24,6 +24,8 @@ pkill -f QuorumPeerMain
 set -e
 
 print_to_console "Setting up Apache ZooKeeper at $ZOOKEEPER_HOME"
+print_to_console "    * view logs at $ZOO_LOG_DIR"
+
 rm -rf "$INSTALL"/zookeeper-*
 rm -f "$ZOO_LOG_DIR"/*
 mkdir -p "$ZOO_LOG_DIR"
