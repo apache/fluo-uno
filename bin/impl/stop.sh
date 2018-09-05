@@ -29,14 +29,14 @@ case "$1" in
     fi
 
     if [[ "$2" != "--no-deps" ]]; then
-      check_dirs ZOOKEEPER_HOME HADOOP_PREFIX
+      check_dirs ZOOKEEPER_HOME HADOOP_HOME
 
       if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-        "$HADOOP_PREFIX"/sbin/stop-yarn.sh
+        "$HADOOP_HOME"/sbin/stop-yarn.sh
       fi
 
       if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-        "$HADOOP_PREFIX"/sbin/stop-dfs.sh
+        "$HADOOP_HOME"/sbin/stop-dfs.sh
       fi
 
       if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
@@ -45,14 +45,14 @@ case "$1" in
     fi
     ;;
   hadoop)
-    check_dirs HADOOP_PREFIX
+    check_dirs HADOOP_HOME
     
     if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-      "$HADOOP_PREFIX"/sbin/stop-yarn.sh
+      "$HADOOP_HOME"/sbin/stop-yarn.sh
     fi
 
     if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-      "$HADOOP_PREFIX"/sbin/stop-dfs.sh
+      "$HADOOP_HOME"/sbin/stop-dfs.sh
     fi
     ;;
   zookeeper)

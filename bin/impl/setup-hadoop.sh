@@ -24,30 +24,32 @@ pkill -f hadoop.yarn
 # stop if any command fails
 set -e
 
-print_to_console "Setting up Apache Hadoop at $HADOOP_PREFIX"
+print_to_console "Setting up Apache Hadoop at $HADOOP_HOME"
+print_to_console "Apache Hadoop logs are at $HADOOP_LOG_DIR"
 
 rm -rf "$INSTALL"/hadoop-*
 rm -f "$HADOOP_LOG_DIR"/*
-rm -rf "$YARN_LOG_DIR"/application_*
-rm -f "$YARN_LOG_DIR"/*
+rm -rf "$HADOOP_LOG_DIR"/application_*
 rm -rf "$DATA_DIR"/hadoop
 mkdir -p "$HADOOP_LOG_DIR"
-mkdir -p "$YARN_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
-hadoop_conf="$HADOOP_PREFIX"/etc/hadoop
+hadoop_conf="$HADOOP_HOME"/etc/hadoop
 cp "$UNO_HOME"/conf/hadoop/* "$hadoop_conf/"
 $SED "s#UNO_HOST#$UNO_HOST#g" "$hadoop_conf/core-site.xml" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml"
 $SED "s#DATA_DIR#$DATA_DIR#g" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml" "$hadoop_conf/mapred-site.xml"
-$SED "s#YARN_LOGS#$YARN_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
+$SED "s#HADOOP_LOG_DIR#$HADOOP_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
-$SED "s#\#export HADOOP_LOG_DIR=[^ ]*#export HADOOP_LOG_DIR=$HADOOP_LOG_DIR#g" "$hadoop_conf/hadoop-env.sh"
-$SED "s#\${JAVA_HOME}#${JAVA_HOME}#g" "$hadoop_conf/hadoop-env.sh"
-$SED "s#YARN_LOG_DIR=[^ ]*#YARN_LOG_DIR=$YARN_LOG_DIR#g" "$hadoop_conf/yarn-env.sh"
 
-"$HADOOP_PREFIX"/bin/hdfs namenode -format
-"$HADOOP_PREFIX"/sbin/start-dfs.sh
-"$HADOOP_PREFIX"/sbin/start-yarn.sh
+echo "export JAVA_HOME=$JAVA_HOME" >> "$hadoop_conf/hadoop-env.sh"
+echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/hadoop-env.sh"
+if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
+  echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
+fi
+
+"$HADOOP_HOME"/bin/hdfs namenode -format
+"$HADOOP_HOME"/sbin/start-dfs.sh
+"$HADOOP_HOME"/sbin/start-yarn.sh
 

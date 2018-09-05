@@ -18,7 +18,7 @@ source "$UNO_HOME"/bin/impl/util.sh
 
 verify_exist_hash "$SPARK_TARBALL" "$SPARK_HASH"
 
-if [[ ! -d "$HADOOP_PREFIX" ]]; then
+if [[ ! -d "$HADOOP_HOME" ]]; then
   print_to_console "Apache Hadoop needs to be setup before Apache Spark can be setup."
   exit 1
 fi

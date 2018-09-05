@@ -21,7 +21,7 @@ case "$1" in
     check_dirs ACCUMULO_HOME
 
     if [[ "$2" != "--no-deps" ]]; then
-      check_dirs ZOOKEEPER_HOME HADOOP_PREFIX
+      check_dirs ZOOKEEPER_HOME HADOOP_HOME
 
       tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
       if [[ -z "$tmp" ]]; then
@@ -31,13 +31,13 @@ case "$1" in
 
       tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
       if [[ -z "$tmp" ]]; then
-        "$HADOOP_PREFIX"/sbin/start-dfs.sh
+        "$HADOOP_HOME"/sbin/start-dfs.sh
       else echo "Hadoop DFS  already running at: $tmp"  
       fi
       
       tmp="$(pgrep -f hadoop\\.yarn | tr '\n' ' ')"
       if [[ -z "$tmp" ]]; then
-        "$HADOOP_PREFIX"/sbin/start-yarn.sh
+        "$HADOOP_HOME"/sbin/start-yarn.sh
       else echo "Hadoop Yarn already running at: $tmp"  
       fi
     fi
@@ -53,17 +53,17 @@ case "$1" in
     fi
     ;;
   hadoop)
-    check_dirs HADOOP_PREFIX
+    check_dirs HADOOP_HOME
     
     tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
     if [[ -z "$tmp" ]]; then
-      "$HADOOP_PREFIX"/sbin/start-dfs.sh
+      "$HADOOP_HOME"/sbin/start-dfs.sh
     else echo "Hadoop DFS  already running at: $tmp"  
     fi
 
     tmp="$(pgrep -f hadoop\\.yarn | tr '\n' ' ')"
     if [[ -z "$tmp" ]]; then
-      "$HADOOP_PREFIX"/sbin/start-yarn.sh
+      "$HADOOP_HOME"/sbin/start-yarn.sh
     else echo "Hadoop Yarn already running at: $tmp"  
     fi
     ;;

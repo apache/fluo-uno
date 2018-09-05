@@ -16,22 +16,46 @@
 
 source "$UNO_HOME"/bin/impl/util.sh
 
-function download_verify() {
-  url_prefix=$1
-  tarball=$2
-  expected_hash=$3
+function download_other() {
+  local url_prefix=$1
+  local tarball=$2
+  local expected_hash=$3
 
-  if [ -n "$apache_mirror" ]; then
-    wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
-  fi 
+  wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
   verify_exist_hash "$tarball" "$expected_hash"
   echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
 }
 
+function download_apache() {
+  local url_prefix=$1
+  local tarball=$2
+  local expected_hash=$3
+
+  if [ -n "$apache_mirror" ]; then
+    wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
+  fi 
+
+  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
+    echo "Downloading $tarball from Apache archive"
+    wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
+  fi
+
+  verify_exist_hash "$tarball" "$expected_hash"
+  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
+}
+
+function fetch_hadoop() {
+  download_apache "hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
+}
+
+function fetch_zookeeper() {
+  download_apache "zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
+}
+
 function fetch_accumulo() {
   if [[ $1 != "--no-deps" ]]; then
-    download_verify "$apache_mirror/zookeeper/zookeeper-$ZOOKEEPER_VERSION" "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
-    download_verify "$apache_mirror/hadoop/common/hadoop-$HADOOP_VERSION" "$HADOOP_TARBALL" "$HADOOP_HASH"
+    fetch_hadoop
+    fetch_zookeeper
   fi
 
   if [[ -n "$ACCUMULO_REPO" ]]; then
@@ -53,7 +77,7 @@ function fetch_accumulo() {
     popd
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
-    download_verify "$apache_mirror/accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
+    download_apache "accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
 }
 
@@ -75,7 +99,7 @@ function fetch_fluo() {
     cp "$fluo_built_tarball" "$DOWNLOADS"/
   else
     [[ $FLUO_VERSION =~ .*-incubating ]] && apache_mirror="${apache_mirror}/incubator"
-    download_verify "$apache_mirror/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+    download_apache "fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
 }
 
@@ -89,7 +113,7 @@ fi
 
 case "$1" in
 spark)
-  download_verify "$apache_mirror/spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
+  download_apache "spark/spark-$SPARK_VERSION" "$SPARK_TARBALL" "$SPARK_HASH"
   ;;
 accumulo)
   fetch_accumulo "$2"
@@ -115,10 +139,12 @@ fluo-yarn)
     cp "$built_tarball" "$DOWNLOADS"/
   else
     [[ $FLUO_VERSION =~ .*-incubating ]] && apache_mirror="${apache_mirror}/incubator"
-    download_verify "$apache_mirror/fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
+    download_apache "fluo/fluo/$FLUO_VERSION" "$FLUO_TARBALL" "$FLUO_HASH"
   fi
   ;;
- 
+hadoop)
+  fetch_hadoop
+  ;;
 metrics)
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
@@ -134,7 +160,7 @@ metrics)
   GF_PATH=$BUILD/$GF_DIR
 
   INFLUXDB_TARBALL=influxdb_"$INFLUXDB_VERSION"_x86_64.tar.gz
-  download_verify https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
+  download_other https://s3.amazonaws.com/influxdb "$INFLUXDB_TARBALL" "$INFLUXDB_HASH"
 
   tar xzf "$DOWNLOADS/$INFLUXDB_TARBALL" -C "$BUILD"
   mv "$BUILD/influxdb_${INFLUXDB_VERSION}_x86_64" "$IF_PATH"
@@ -147,7 +173,7 @@ metrics)
   rm -rf "$IF_PATH"
 
   GRAFANA_TARBALL=grafana-"$GRAFANA_VERSION".linux-x64.tar.gz
-  download_verify https://grafanarel.s3.amazonaws.com/builds "$GRAFANA_TARBALL" "$GRAFANA_HASH"
+  download_other https://grafanarel.s3.amazonaws.com/builds "$GRAFANA_TARBALL" "$GRAFANA_HASH"
 
   tar xzf "$DOWNLOADS/$GRAFANA_TARBALL" -C "$BUILD"
 
@@ -155,14 +181,19 @@ metrics)
   tar czf grafana-"$GRAFANA_VERSION".tar.gz "$GF_DIR"
   rm -rf "$GF_PATH"
   ;;
+zookeeper)
+  fetch_zookeeper
+  ;;
 *)
   echo "Usage: uno fetch <component>"
   echo -e "\nPossible components:\n"
   echo "    all        Fetches all binary tarballs of the following components"
   echo "    accumulo   Downloads Accumulo, Hadoop & ZooKeeper. Builds Accumulo if repo set in uno.conf"
   echo "    fluo       Downloads Fluo, Accumulo, Hadoop & ZooKeeper. Builds Fluo or Accumulo if repo set in uno.conf"
+  echo "    hadoop     Downloads Hadoop"
   echo "    metrics    Downloads InfluxDB and Grafana"
   echo "    spark      Downloads Spark"
+  echo "    zookeeper  Downloads ZooKeeper"
   echo "Options:"
   echo "    --no-deps  Dependencies will be fetched unless this option is specified. Only works for fluo & accumulo components."
   exit 1

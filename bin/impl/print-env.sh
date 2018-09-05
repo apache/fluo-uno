@@ -15,7 +15,11 @@
 # limitations under the License.
 
 if [[ -z "$1" || "$1" == "--vars" ]]; then
-  echo "export HADOOP_PREFIX=\"$HADOOP_PREFIX\""
+  if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
+    echo "export HADOOP_PREFIX=\"$HADOOP_HOME\""
+  else
+    echo "export HADOOP_HOME=\"$HADOOP_HOME\""
+  fi
   echo "export HADOOP_CONF_DIR=\"$HADOOP_CONF_DIR\""
   echo "export ZOOKEEPER_HOME=\"$ZOOKEEPER_HOME\""
   echo "export SPARK_HOME=\"$SPARK_HOME\""
@@ -25,7 +29,7 @@ if [[ -z "$1" || "$1" == "--vars" ]]; then
 fi
 
 if [[ -z "$1" || "$1" == "--paths" ]]; then
-  echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_PREFIX/bin:$ZOOKEEPER_HOME/bin:$ACCUMULO_HOME/bin"
+  echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_HOME/bin:$ZOOKEEPER_HOME/bin:$ACCUMULO_HOME/bin"
   if [[ -d "$SPARK_HOME" ]]; then
     echo -n ":$SPARK_HOME/bin"
   fi
