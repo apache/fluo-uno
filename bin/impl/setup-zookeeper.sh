@@ -16,14 +16,14 @@
 
 source "$UNO_HOME"/bin/impl/util.sh
 
-verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
-
 pkill -f QuorumPeerMain
 
 # stop if any command fails
 set -e
 
-print_to_console "Setting up Apache ZooKeeper at $ZOOKEEPER_HOME"
+verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
+
+print_to_console "Setting up Apache ZooKeeper $ZOOKEEPER_VERSION at $ZOOKEEPER_HOME"
 print_to_console "    * view logs at $ZOO_LOG_DIR"
 
 rm -rf "$INSTALL"/zookeeper-*
