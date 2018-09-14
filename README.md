@@ -54,6 +54,11 @@ and password `secret` (set in the `uno.conf` file). Therefore, the shell can be 
 accumulo shell -u root -p secret
 ```
 
+When you're all done testing out Accumulo you can clean up:
+```
+./bin/uno wipe
+```
+
 For a more complete understanding of Uno, please continue reading.
 
 ## Installation
@@ -113,7 +118,7 @@ upgrade components and need to download/build the latest version.
 
 ## Setup command
 
-The `setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
+The `uno setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
 `uno.conf` and run you local development cluster. The command can be run in several different ways:
 
 1. Sets up Apache Accumulo and its dependencies of Hadoop, ZooKeeper. This starts all processes and
@@ -160,6 +165,13 @@ to administer Fluo:
 
 If you run some tests and then want a fresh cluster, run the `setup` command again which will
 kill all running processes, clear any data and logs, and restart your cluster.
+
+## Wipe command
+
+The `uno wipe` command will kill all running processes for your local development cluster and clear
+all the data and logs. It does *not* delete the binary tarballs downloaded by the `fetch` command
+so you can use `setup` directly again in the future. If you need to reclaim the space used by
+the binary tarballs you'll have to manually delete them.
 
 ## Running Apache Fluo applications
 
