@@ -36,23 +36,36 @@ print_to_console "    * ResourceManager status: http://localhost:8088/"
 print_to_console "    * view logs at $HADOOP_LOG_DIR"
 
 rm -rf "$INSTALL"/hadoop-*
-rm -f "$HADOOP_LOG_DIR"/*
-rm -rf "$HADOOP_LOG_DIR"/application_*
+rm -rf "$HADOOP_LOG_DIR"/*
 rm -rf "$DATA_DIR"/hadoop
 mkdir -p "$HADOOP_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
 hadoop_conf="$HADOOP_HOME"/etc/hadoop
-cp "$UNO_HOME"/conf/hadoop/* "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/core-site.xml "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/hdfs-site.xml "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/yarn-site.xml "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/capacity-scheduler.xml "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/masters "$hadoop_conf/"
+if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
+  cp "$UNO_HOME"/conf/hadoop/workers "$hadoop_conf/slaves"
+  cp "$UNO_HOME"/conf/hadoop/mapred-site-2.xml "$hadoop_conf/mapred-site.xml"
+else
+  cp "$UNO_HOME"/conf/hadoop/workers "$hadoop_conf/"
+  cp "$UNO_HOME"/conf/hadoop/mapred-site.xml "$hadoop_conf/"
+fi
+
 $SED "s#UNO_HOST#$UNO_HOST#g" "$hadoop_conf/core-site.xml" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml"
 $SED "s#DATA_DIR#$DATA_DIR#g" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml" "$hadoop_conf/mapred-site.xml"
+$SED "s#HADOOP_HOME#$HADOOP_HOME#g" "$hadoop_conf/mapred-site.xml"
 $SED "s#HADOOP_LOG_DIR#$HADOOP_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
 
 echo "export JAVA_HOME=$JAVA_HOME" >> "$hadoop_conf/hadoop-env.sh"
 echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/hadoop-env.sh"
+echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME" >> "$hadoop_conf/hadoop-env.sh"
 if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
   echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
 fi
