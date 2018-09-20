@@ -59,10 +59,14 @@ function fetch_accumulo() {
   fi
 
   if [[ -n "$ACCUMULO_REPO" ]]; then
+    declare -a maven_args=(-DskipTests -DskipFormat)
+    if [[ "${HADOOP_VERSION}" = 3.* ]]; then
+      maven_args=("${maven_args[@]}" '-Dhadoop.profile=3')
+    fi
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
     cd "$ACCUMULO_REPO"
-    mvn clean package -DskipTests -DskipFormat
+    mvn clean package "${maven_args[@]}"
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
     if [[ ! -f "$accumulo_built_tarball" ]]; then
       echo
