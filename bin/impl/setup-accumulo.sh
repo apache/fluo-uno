@@ -73,6 +73,15 @@ $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$accumulo_conf"
 $SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$accumulo_conf"
 $SED "s#UNO_HOST#$UNO_HOST#" "$accumulo_conf"
 
+cp "$UNO_HOME/conf/accumulo/accumulo-it.properties" "$conf"
+it_props="$conf/accumulo-it.properties"
+$SED "s#ACCUMULO_USER#$ACCUMULO_USER#" "$it_props"
+$SED "s#ACCUMULO_PASSWORD#$ACCUMULO_PASSWORD#" "$it_props"
+$SED "s#UNO_HOST#$UNO_HOST#" "$it_props"
+$SED "s#ACCUMULO_INSTANCE#$ACCUMULO_INSTANCE#" "$it_props"
+$SED "s#HADOOP_CONF_DIR#$HADOOP_CONF_DIR#" "$it_props"
+$SED "s#ACCUMULO_HOME#$ACCUMULO_HOME#" "$it_props"
+
 if [[ "$1" == "--with-metrics" ]]; then
   metrics_props=hadoop-metrics2-accumulo.properties
   cp "$conf"/templates/"$metrics_props" "$conf"/
