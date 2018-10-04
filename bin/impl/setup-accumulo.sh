@@ -59,9 +59,10 @@ else
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
   if [[ "$ACCUMULO_CRYPTO" == "true" ]]; then
-    openssl rand -out $ACCUMULO_HOME/testkeyfile.key 32
+    encrypt_key=$ACCUMULO_HOME/conf/data-encryption.key
+    openssl rand -out $encrypt_key 32
     echo "instance.crypto.opts.key.provider=uri" >> "$accumulo_conf"
-    echo "instance.crypto.opts.key.location=file://$ACCUMULO_HOME/conf/data-encryption.key" >> "$accumulo_conf"
+    echo "instance.crypto.opts.key.location=file://$encrypt_key" >> "$accumulo_conf"
     echo "instance.crypto.service=org.apache.accumulo.core.security.crypto.impl.AESCryptoService" >> "$accumulo_conf"
   fi
 fi
