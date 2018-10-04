@@ -42,17 +42,18 @@ tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 
 conf=$ACCUMULO_HOME/conf
 
+cp "$UNO_HOME"/conf/accumulo/common/* "$conf"
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   accumulo_conf=$conf/accumulo-site.xml
   cp "$conf"/examples/2GB/standalone/* "$conf"/
   $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
-  cp "$UNO_HOME"/conf/accumulo/accumulo-site-1.0.xml "$accumulo_conf"
+  cp "$UNO_HOME"/conf/accumulo/1/* "$conf"
   $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
 else
   accumulo_conf=$conf/accumulo.properties
+  cp "$UNO_HOME"/conf/accumulo/2/* "$conf"
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
   $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
-  cp "$UNO_HOME"/conf/accumulo/accumulo-2.0.properties "$accumulo_conf"
   $SED "s#export HADOOP_HOME=[^ ]*#export HADOOP_HOME=$HADOOP_HOME#" "$conf"/accumulo-env.sh
   $SED "s#instance[.]name=#instance.name=$ACCUMULO_INSTANCE#" "$conf"/accumulo-client.properties
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
@@ -80,7 +81,6 @@ $SED "s#ACCUMULO_IMAP_SIZE#$ACCUMULO_IMAP_SIZE#" "$accumulo_conf"
 $SED "s#ACCUMULO_USE_NATIVE_MAP#$ACCUMULO_USE_NATIVE_MAP#" "$accumulo_conf"
 $SED "s#UNO_HOST#$UNO_HOST#" "$accumulo_conf"
 
-cp "$UNO_HOME/conf/accumulo/accumulo-it.properties" "$conf"
 it_props="$conf/accumulo-it.properties"
 $SED "s#ACCUMULO_USER#$ACCUMULO_USER#" "$it_props"
 $SED "s#ACCUMULO_PASSWORD#$ACCUMULO_PASSWORD#" "$it_props"

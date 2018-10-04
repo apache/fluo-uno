@@ -43,17 +43,11 @@ mkdir -p "$HADOOP_LOG_DIR"
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
 hadoop_conf="$HADOOP_HOME"/etc/hadoop
-cp "$UNO_HOME"/conf/hadoop/core-site.xml "$hadoop_conf/"
-cp "$UNO_HOME"/conf/hadoop/hdfs-site.xml "$hadoop_conf/"
-cp "$UNO_HOME"/conf/hadoop/yarn-site.xml "$hadoop_conf/"
-cp "$UNO_HOME"/conf/hadoop/capacity-scheduler.xml "$hadoop_conf/"
-cp "$UNO_HOME"/conf/hadoop/masters "$hadoop_conf/"
+cp "$UNO_HOME"/conf/hadoop/common/* "$hadoop_conf/"
 if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
-  cp "$UNO_HOME"/conf/hadoop/workers "$hadoop_conf/slaves"
-  cp "$UNO_HOME"/conf/hadoop/mapred-site-2.xml "$hadoop_conf/mapred-site.xml"
+  cp "$UNO_HOME"/conf/hadoop/2/* "$hadoop_conf/"
 else
-  cp "$UNO_HOME"/conf/hadoop/workers "$hadoop_conf/"
-  cp "$UNO_HOME"/conf/hadoop/mapred-site.xml "$hadoop_conf/"
+  cp "$UNO_HOME"/conf/hadoop/3/* "$hadoop_conf/"
 fi
 
 $SED "s#UNO_HOST#$UNO_HOST#g" "$hadoop_conf/core-site.xml" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml"
