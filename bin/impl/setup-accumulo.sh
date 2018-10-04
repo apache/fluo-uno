@@ -58,6 +58,12 @@ else
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
+  if [[ "$ACCUMULO_CRYPTO" == "true" ]]; then
+    openssl rand -out $ACCUMULO_HOME/testkeyfile.key 32
+    echo "instance.crypto.opts.key.provider=uri" >> "$accumulo_conf"
+    echo "instance.crypto.opts.key.location=file://$ACCUMULO_HOME/conf/data-encryption.key" >> "$accumulo_conf"
+    echo "instance.crypto.service=org.apache.accumulo.core.security.crypto.impl.AESCryptoService" >> "$accumulo_conf"
+  fi
 fi
 $SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
