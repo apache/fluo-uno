@@ -15,32 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-case "$1" in
-hadoop)
-  echo -n "$HADOOP_VERSION"
-  ;;
-zookeeper)
-  echo -n "$ZOOKEEPER_VERSION"
-  ;;
-accumulo)
-  echo -n "$ACCUMULO_VERSION"
-  ;;
-fluo)
-  echo -n "$FLUO_VERSION"
-  ;;
-fluo-yarn)
-  echo -n "$FLUO_YARN_VERSION"
-  ;;
-spark)
-  echo -n "$SPARK_VERSION"
-  ;;
-influxdb)
-  echo -n "$INFLUXDB_VERSION"
-  ;;
-grafana)
-  echo -n "$GRAFANA_VERSION"
-  ;;
-*)
-  echo "You must specify a valid depedency (i.e hadoop, zookeeper, accumulo, etc)"
-  exit 1
-esac
+source "$UNO_HOME"/bin/impl/util.sh
+
+pkill -f accumulo.start
+
+# stop if any command fails
+set -e
+
+if [[ $1 != "--no-deps" ]]; then
+  run_component hadoop
+  run_component zookeeper
+fi
+
+"$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
+"$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
+if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  "$ACCUMULO_HOME"/bin/start-all.sh
+else
+  "$ACCUMULO_HOME"/bin/accumulo-cluster start
+fi
+
+print_to_console "Apache Accumulo $ACCUMULO_VERSION is running"
+print_to_console "    * Accumulo Monitor: http://localhost:9995/"
+print_to_console "    * view logs at $ACCUMULO_LOG_DIR"

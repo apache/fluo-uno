@@ -109,17 +109,16 @@ With `uno` script set up, you can now use it to download, configure, and run Flu
 The `uno fetch <component>` command fetches the tarballs of a component and its dependencies for later
 use by the `setup` command. By default, the `fetch` command downloads tarballs but you can configure it
 to build Fluo or Accumulo from a local git repo by setting `FLUO_REPO` or `ACCUMULO_REPO` in `uno.conf`.
-
-If `uno fetch all` is run, all possible components will be either downloaded or built. If you
-would like to only fetch certain components, run `uno fetch` to see a list of possible components.
+Run `uno fetch` to see a list of possible components.
 
 After the `fetch` command is run for the first time, it only needs to run again if you want to
 upgrade components and need to download/build the latest version.
 
 ## Setup command
 
-The `uno setup` command will install the downloaded tarballs to the directory set by `$INSTALL` in your
-`uno.conf` and run you local development cluster. The command can be run in several different ways:
+The `uno setup` command combines `uno install` and `uno run` into one command.  It will install the
+downloaded tarballs to the directory set by `$INSTALL` in your `uno.conf` and run you local development
+cluster. The command can be run in several different ways:
 
 1. Sets up Apache Accumulo and its dependencies of Hadoop, ZooKeeper. This starts all processes and
    will wipe Accumulo/Hadoop if this command was run previously.
@@ -137,34 +136,36 @@ The `uno setup` command will install the downloaded tarballs to the directory se
         uno setup fluo --no-deps
         uno setup accumulo --no-deps
 
-4. Sets up metrics service (InfluxDB + Grafana).
-
-        uno setup metrics
-
-5. Sets up Apache Spark and starts Spark's History Server.
-
-        uno setup spark
-
-6. Sets up all components (Fluo, Accumulo, Hadoop, ZooKeeper, Spark, metrics service).
-
-        uno setup all
-
 You can confirm that everything started by checking the monitoring pages below:
 
  * [Hadoop NameNode](http://localhost:50070/)
  * [Hadoop ResourceManager](http://localhost:8088/)
  * [Accumulo Monitor](http://localhost:9995/)
- * [Spark HistoryServer](http://localhost:18080/)
- * [Grafana](http://localhost:3000/) (optional)
- * [InfluxDB Admin](http://localhost:8083/) (optional)
-
-You can verify that Fluo was installed correctly by running the `fluo` command which you can use
-to administer Fluo:
-
-    ./install/fluo-1.0.0-beta-1/bin/fluo
 
 If you run some tests and then want a fresh cluster, run the `setup` command again which will
 kill all running processes, clear any data and logs, and restart your cluster.
+
+## Plugins
+
+Uno is focused on running Accumulo & Fluo.  Optional features and service can be run using plugins.
+These plugins can optionally execute after the `install` or `run` commands.  They are configured by
+setting `POST_INSTALL_PLUGINS` and `POST_RUN_PLUGINS` in `uno.conf`.
+
+### Post install plugins
+
+These plugins can optionally execute after the `install` command for Accumulo and Fluo:
+
+* `accumulo-encryption` - Turns on Accumulo encryption
+* `influx-metrics` - Install and run metrics service using InfluxDB & Grafana
+  * [Grafana](http://localhost:3000/)
+  * [InfluxDB Admin](http://localhost:8083/)
+
+### Post run plugins
+
+These plugins can optionally execute after the `run` command for Accumulo and Fluo:
+
+* `spark` - Install Apache Spark and start Spark's History server
+  * [Spark HistoryServer](http://localhost:18080/)
 
 ## Wipe command
 

@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Uno authors (see AUTHORS)
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -76,24 +77,9 @@ case "$1" in
     else echo "ZooKeeper   already running at: $tmp"
     fi
     ;;
-  metrics)
-    tmp="$(pgrep -f influxd | tr '\n' ' ')"
-    if [[ -z "$tmp" ]]; then
-      "$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
-    else echo "InfluxDB already running at: $tmp"
-    fi
-    tmp="$(pgrep -f grafana-server | tr '\n' ' ')"
-    if [[ -z "$tmp" ]]; then
-      "$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
-    else echo "Grafana already running at: $tmp"
-    fi
-    ;;
 
   # NYI
   # fluo)
-  #   
-  #   ;;
-  # spark)
   #   
   #   ;;
 
@@ -103,7 +89,6 @@ case "$1" in
     echo "    accumulo   Start Apache Accumulo plus dependencies: Hadoop, ZooKeeper"
     echo "    hadoop     Start Apache Hadoop"
     echo "    zookeeper  Start Apache ZooKeeper"
-    echo "    metrics    Start InfluxDB and Grafana"
     echo "Options:"
     echo "    --no-deps  Dependencies will start unless this option is specified. Only works for accumulo component."
     exit 1

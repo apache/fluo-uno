@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Uno authors (see AUTHORS)
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,105 +29,66 @@ source "$bin"/impl/load-env.sh "$1"
 source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
-fetch)
-  hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
-  hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
-  if [[ "$2" == "all" ]]; then
-    "$bin"/impl/fetch.sh fluo && \
-    "$bin"/impl/fetch.sh spark && \
-    "$bin"/impl/fetch.sh metrics
-  else
-    "$bin"/impl/fetch.sh "$2" "$3"
-  fi
-	;;
-setup)
-  [[ -n $LOGS_DIR ]] && rm -f "$LOGS_DIR"/setup/*.std{out,err}
-  echo "Beginning setup (detailed logs in $LOGS_DIR/setup)..."
-  save_console_fd
-  case "$2" in
-    all)
-      run_setup_script Fluo
-      run_setup_script Spark
-      run_setup_script Metrics
-      ;;
-    accumulo)
-      run_setup_script Accumulo "$3"
-      ;;
-    fluo)
-      run_setup_script Fluo "$3"
-      ;;
-    fluo-yarn)
-      run_setup_script "Fluo Yarn" "$3"
-      ;;
-    spark)
-      run_setup_script Spark
-      ;;
-    metrics)
-      run_setup_script Metrics
-      ;;
-    *)
-      echo "Usage: uno setup <component> [--no-deps]"
-      echo -e "\nPossible components:\n"
-      echo "    all        Sets up all of the following components"
-      echo "    accumulo   Sets up Apache Accumulo and its dependencies (Hadoop & ZooKeeper)"
-      echo "    spark      Sets up Apache Spark"
-      echo "    fluo       Sets up Apache Fluo and its dependencies (Accumulo, Hadoop, & ZooKeeper)"
-      echo "    fluo-yarn  Sets up Apache Fluo YARN and its dependencies (Fluo, Accumulo, Hadoop, & ZooKeeper)"
-      echo -e "    metrics    Sets up metrics service (InfluxDB + Grafana)\n"
-      echo "Options:"
-      echo "    --no-deps  Dependencies will be setup unless this option is specified. Only works for fluo & accumulo components."
-      exit 1
-      ;;
-  esac
-  if [[ "$?" == 0 ]]; then
-    echo "Setup complete."
-  else
-    echo "Setup failed!"
-    false
-  fi
-  ;;
-kill)
-  "$bin"/impl/kill.sh "${@:2}"
-	;;
-ashell)
-  check_dirs ACCUMULO_HOME
-  "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
-	;;
-start)
-  "$bin"/impl/start.sh "${@:2}"
-  ;;
-stop)
-  "$bin"/impl/stop.sh "${@:2}"
-  ;;
-env)
-  "$bin"/impl/print-env.sh "${@:2}"
-  ;;
-version)
-  "$bin"/impl/version.sh "${@:2}"
-  ;;
-wipe)
-  "$bin"/impl/kill.sh
-  if [[ -d "$INSTALL" ]]; then
-    echo "removing $INSTALL"
-    rm -rf "$INSTALL"
-  fi
-  ;;
-*)
-  echo -e "Usage: uno <command> (<argument>)\n"
-  echo -e "Possible commands:\n"
-  echo "  fetch <component>      Fetches binary tarballs of component and it dependencies by either building or downloading"
-  echo "                         the tarball (as configured by uno.conf). Run 'uno fetch all' to fetch all binary tarballs."
-  echo "                         Run 'uno fetch' for a list of possible components."
-  echo "  setup <component>      Sets up component and its dependencies (clearing any existing data)"
-  echo "                         Run 'uno setup' for list of components."
-  echo "  start <component>      Start ZooKeeper, Hadoop, Accumulo, if not running."
-  echo "  stop  <component>      Stop Accumulo, Hadoop, ZooKeeper, if running."
-  echo "  kill                   Kills all processes"
-  echo "  ashell                 Runs the Accumulo shell"
-  echo "  env                    Prints out shell configuration for PATH and common environment variables."
-  echo "                         Add '--paths' or '--vars' command to limit what is printed."
-  echo "  version <dep>          Prints out configured version for dependency"
-  echo "  wipe                   Kills all processes and clears install directory"
-  echo " "
-  exit 1
+  ashell)
+    check_dirs ACCUMULO_HOME
+    "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
+    ;;
+  env)
+    "$bin"/impl/print-env.sh "${@:2}"
+    ;;
+  fetch)
+    hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
+    hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
+    if [[ "$2" == "all" ]]; then
+      "$bin"/impl/fetch.sh fluo
+    else
+      "$bin"/impl/fetch.sh "$2" "$3"
+    fi
+    ;;
+  install)
+    "$bin"/impl/install.sh "${@:2}"
+    ;;
+  kill)
+    "$bin"/impl/kill.sh "${@:2}"
+    ;;
+  run)
+    "$bin"/impl/run.sh "${@:2}"
+    ;;
+  setup)
+    "$bin"/impl/setup.sh "${@:2}"
+    ;;
+  start)
+    "$bin"/impl/start.sh "${@:2}"
+    ;;
+  stop)
+    "$bin"/impl/stop.sh "${@:2}"
+    ;;
+  version)
+    "$bin"/impl/version.sh "${@:2}"
+    ;;
+  wipe)
+    "$bin"/impl/kill.sh
+    if [[ -d "$INSTALL" ]]; then
+      echo "removing $INSTALL"
+      rm -rf "$INSTALL"
+    fi
+    ;;
+  *)
+    echo -e "Usage: uno <command> (<argument>)\n"
+    echo -e "Possible commands:\n"
+    echo "  fetch <component>      Fetches binary tarballs of component and it dependencies by either building or downloading"
+    echo "                         the tarball (as configured by uno.conf). Run 'uno fetch all' to fetch all binary tarballs."
+    echo "  install <component>    Installs component and its dependencies (clearing any existing data)"
+    echo "  run <component>        Runs component and its dependencies (clearing any existing data)"
+    echo "  setup <component>      Installs and runs component and its dependencies (clearing any existing data)"
+    echo "  start <component>      Start ZooKeeper, Hadoop, Accumulo, if not running."
+    echo "  stop  <component>      Stop Accumulo, Hadoop, ZooKeeper, if running."
+    echo "  kill                   Kills all processes"
+    echo "  ashell                 Runs the Accumulo shell"
+    echo "  env                    Prints out shell configuration for PATH and common environment variables."
+    echo "                         Add '--paths' or '--vars' command to limit what is printed."
+    echo "  version <dep>          Prints out configured version for dependency"
+    echo -e "  wipe                   Kills all processes and clears install directory\n"
+    echo "Possible components: accumulo, fluo, fluo-yarn, hadoop, zookeeper"
+    exit 1
 esac

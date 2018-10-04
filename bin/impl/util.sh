@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Uno authors (see AUTHORS)
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,12 +53,63 @@ function check_dirs() {
   done
 }
 
-function run_setup_script() {
-  local SCRIP; SCRIP=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
-  local L_DIR; L_DIR="$LOGS_DIR/setup"
-  mkdir -p "$L_DIR"
+function post_install_plugins() {
+  for plugin in $POST_INSTALL_PLUGINS
+  do
+    echo "Executing post install plugin: $plugin"
+    plugin_script="${UNO_HOME}/plugins/${plugin}.sh"
+    if [[ ! -f "$plugin_script" ]]; then
+      echo "Plugin does not exist: $plugin_script"
+      exit 1
+    fi
+    $plugin_script
+  done  
+}
+
+function post_run_plugins() {
+  for plugin in $POST_RUN_PLUGINS
+  do
+    echo "Executing post run plugin: $plugin"
+    plugin_script="${UNO_HOME}/plugins/${plugin}.sh"
+    if [[ ! -f "$plugin_script" ]]; then
+      echo "Plugin does not exist: $plugin_script"
+      exit 1
+    fi
+    $plugin_script
+  done  
+}
+
+function install_component() {
+  local component; component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
   shift
-  "$UNO_HOME/bin/impl/setup-$SCRIP.sh" "$@" 1>"$L_DIR/$SCRIP.stdout" 2>"$L_DIR/$SCRIP.stderr"
+  "$UNO_HOME/bin/impl/install/$component.sh" "$@"
+  case "$component" in
+    accumulo|fluo)
+      post_install_plugins
+      ;;
+    *)
+      ;;
+  esac
+}
+
+function run_component() {
+  local component; component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
+  local logs; logs="$LOGS_DIR/setup"
+  mkdir -p "$logs"
+  shift
+  "$UNO_HOME/bin/impl/run/$component.sh" "$component" "$@" 1>"$logs/${component}.out" 2>"$logs/${component}.err"
+  case "$component" in
+    accumulo|fluo)
+      post_run_plugins
+      ;;
+    *)
+      ;;
+  esac
+}
+
+function setup_component() {
+  install_component $1
+  run_component $1
 }
 
 function save_console_fd {
@@ -76,3 +128,32 @@ function print_to_console {
     echo "$@" >&${UNO_CONSOLE_FD}
   fi
 }
+
+function download_tarball() {
+  local url_prefix=$1
+  local tarball=$2
+  local expected_hash=$3
+
+  wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
+  verify_exist_hash "$tarball" "$expected_hash"
+  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
+}
+
+function download_apache() {
+  local url_prefix=$1
+  local tarball=$2
+  local expected_hash=$3
+
+  if [ -n "$apache_mirror" ]; then
+    wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
+  fi 
+
+  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
+    echo "Downloading $tarball from Apache archive"
+    wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
+  fi
+
+  verify_exist_hash "$tarball" "$expected_hash"
+  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
+}
+

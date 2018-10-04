@@ -15,32 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-case "$1" in
-hadoop)
-  echo -n "$HADOOP_VERSION"
-  ;;
-zookeeper)
-  echo -n "$ZOOKEEPER_VERSION"
-  ;;
-accumulo)
-  echo -n "$ACCUMULO_VERSION"
-  ;;
-fluo)
-  echo -n "$FLUO_VERSION"
-  ;;
-fluo-yarn)
-  echo -n "$FLUO_YARN_VERSION"
-  ;;
-spark)
-  echo -n "$SPARK_VERSION"
-  ;;
-influxdb)
-  echo -n "$INFLUXDB_VERSION"
-  ;;
-grafana)
-  echo -n "$GRAFANA_VERSION"
-  ;;
-*)
-  echo "You must specify a valid depedency (i.e hadoop, zookeeper, accumulo, etc)"
+source "$UNO_HOME"/bin/impl/util.sh
+
+if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
+  echo "Encryption cannot be enabled for Accumulo 1.x"
   exit 1
-esac
+fi
+
+accumulo_conf=$ACCUMULO_HOME/conf/accumulo.properties
+encrypt_key=$ACCUMULO_HOME/conf/data-encryption.key
+openssl rand -out $encrypt_key 32
+echo "instance.crypto.opts.key.provider=uri" >> "$accumulo_conf"
+echo "instance.crypto.opts.key.location=file://$encrypt_key" >> "$accumulo_conf"
+echo "instance.crypto.service=org.apache.accumulo.core.security.crypto.impl.AESCryptoService" >> "$accumulo_conf"
