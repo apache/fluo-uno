@@ -25,6 +25,5 @@ fi
 accumulo_conf=$ACCUMULO_HOME/conf/accumulo.properties
 encrypt_key=$ACCUMULO_HOME/conf/data-encryption.key
 openssl rand -out $encrypt_key 32
-echo "instance.crypto.opts.key.provider=uri" >> "$accumulo_conf"
-echo "instance.crypto.opts.key.location=file://$encrypt_key" >> "$accumulo_conf"
+echo "instance.crypto.opts.key.uri=file://$encrypt_key" >> "$accumulo_conf"
 echo "instance.crypto.service=org.apache.accumulo.core.security.crypto.impl.AESCryptoService" >> "$accumulo_conf"
