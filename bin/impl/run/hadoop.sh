@@ -15,32 +15,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-case "$1" in
-hadoop)
-  echo -n "$HADOOP_VERSION"
-  ;;
-zookeeper)
-  echo -n "$ZOOKEEPER_VERSION"
-  ;;
-accumulo)
-  echo -n "$ACCUMULO_VERSION"
-  ;;
-fluo)
-  echo -n "$FLUO_VERSION"
-  ;;
-fluo-yarn)
-  echo -n "$FLUO_YARN_VERSION"
-  ;;
-spark)
-  echo -n "$SPARK_VERSION"
-  ;;
-influxdb)
-  echo -n "$INFLUXDB_VERSION"
-  ;;
-grafana)
-  echo -n "$GRAFANA_VERSION"
-  ;;
-*)
-  echo "You must specify a valid depedency (i.e hadoop, zookeeper, accumulo, etc)"
-  exit 1
-esac
+source "$UNO_HOME"/bin/impl/util.sh
+
+pkill -f hadoop.hdfs
+pkill -f hadoop.yarn
+
+# stop if any command fails
+set -e
+
+"$HADOOP_HOME"/bin/hdfs namenode -format
+"$HADOOP_HOME"/sbin/start-dfs.sh
+"$HADOOP_HOME"/sbin/start-yarn.sh
+
+namenode_port=9870
+if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
+  namenode_port=50070
+  export HADOOP_PREFIX=$HADOOP_HOME
+fi
+
+print_to_console "Apache Hadoop $HADOOP_VERSION is running"
+print_to_console "    * NameNode status: http://localhost:$namenode_port/"
+print_to_console "    * ResourceManager status: http://localhost:8088/"
+print_to_console "    * view logs at $HADOOP_LOG_DIR"

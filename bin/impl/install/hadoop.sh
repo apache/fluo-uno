@@ -1,12 +1,13 @@
 #! /usr/bin/env bash
 
-# Copyright 2014 Uno authors (see AUTHORS)
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,16 +25,7 @@ set -e
 
 verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
 
-namenode_port=9870
-if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
-  namenode_port=50070
-  export HADOOP_PREFIX=$HADOOP_HOME
-fi
-
-print_to_console "Setting up Apache Hadoop $HADOOP_VERSION at $HADOOP_HOME"
-print_to_console "    * NameNode status: http://localhost:$namenode_port/"
-print_to_console "    * ResourceManager status: http://localhost:8088/"
-print_to_console "    * view logs at $HADOOP_LOG_DIR"
+print_to_console "Installing Apache Hadoop $HADOOP_VERSION at $HADOOP_HOME"
 
 rm -rf "$INSTALL"/hadoop-*
 rm -rf "$HADOOP_LOG_DIR"/*
@@ -63,8 +55,3 @@ echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME" >> "$hadoop_conf/hadoop-env.sh"
 if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
   echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
 fi
-
-"$HADOOP_HOME"/bin/hdfs namenode -format
-"$HADOOP_HOME"/sbin/start-dfs.sh
-"$HADOOP_HOME"/sbin/start-yarn.sh
-
