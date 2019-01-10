@@ -10,6 +10,7 @@ sudo yum group install "Development Tools"
 ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 ssh-keyscan -H localhost >> ~/.ssh/known_hosts
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
 
 #add java home to your env by appending this line to ~/.bashrc
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
