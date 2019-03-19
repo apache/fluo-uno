@@ -7,7 +7,7 @@
 Uno makes it easy for a developer to experiment with Accumulo or Fluo in a realistic environment.
 Uno is designed for developers who need to frequently upgrade and test their code, and do not care
 about preserving data. While Uno makes it easy to setup a dev stack running Fluo or Accumulo, it
-also makes it easy clear your data and setup your dev stack again. To avoid inadvertent data loss,
+also makes it easy to clear your data and setup your dev stack again. To avoid inadvertent data loss,
 Uno should not be used in production.
 
 Checkout [Muchos] for setting up Accumulo or Fluo on multiple machines.
