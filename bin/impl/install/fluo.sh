@@ -19,6 +19,7 @@ source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 if [[ -z "$FLUO_REPO" ]]; then
   verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
@@ -32,10 +33,12 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
   print_to_console "Setting up Apache Fluo at $FLUO_HOME"
   # Don't stop if pkills fail
   set +e
+  trap - ERR
   pkill -f fluo.yarn
   pkill -f MiniFluo
   pkill -f twill.launcher
   set -e
+  trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
   rm -rf "$INSTALL"/fluo-[0-9]*
 

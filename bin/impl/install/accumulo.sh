@@ -21,6 +21,7 @@ pkill -f accumulo.start
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 if [[ -z "$ACCUMULO_REPO" ]]; then
   verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"

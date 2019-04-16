@@ -21,6 +21,7 @@ pkill -f QuorumPeerMain
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
 

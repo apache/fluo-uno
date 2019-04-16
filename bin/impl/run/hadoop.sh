@@ -22,6 +22,7 @@ pkill -f hadoop.yarn
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 "$HADOOP_HOME"/bin/hdfs namenode -format
 "$HADOOP_HOME"/sbin/start-dfs.sh

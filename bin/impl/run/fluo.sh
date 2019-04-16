@@ -23,6 +23,7 @@ pkill -f twill.launcher
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 if [[ $2 != "--no-deps" ]]; then
   run_component accumulo
