@@ -21,6 +21,7 @@ pkill -f QuorumPeerMain
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 rm -f "$ZOO_LOG_DIR"/*
 rm -rf "$DATA_DIR"/zookeeper

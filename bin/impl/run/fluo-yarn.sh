@@ -19,6 +19,7 @@ source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
+trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 if [[ $1 != "--no-deps" ]]; then
   run_component fluo
