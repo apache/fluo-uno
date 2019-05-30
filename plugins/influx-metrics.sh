@@ -29,6 +29,7 @@ pkill -f grafana-server
 set -e
 
 BUILD=$DOWNLOADS/build
+mkdir -p "$BUILD"
 
 if [[ ! -f "$BUILD/$INFLUXDB_TARBALL" ]]; then
   IF_DIR=influxdb-$INFLUXDB_VERSION
