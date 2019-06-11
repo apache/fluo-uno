@@ -1,16 +1,26 @@
 #! /usr/bin/env bash
 
-tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
-if [[ "$tmp" ]]; then
-        echo "Hadoop is running at: $tmp"
+atmp="$(pgrep -f accumulo\\.start | tr '\n' ' ')"
+htmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
+ztmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
+
+if [[ "$atmp" || "$ztmp" || "$htmp" ]]; then
+	if [[ "$atmp"  ]]; then
+		echo "Accumulo is running at: $atmp"
+	fi
+
+	if [[ "$ztmp"  ]]; then
+		echo "Zookeeper is running at: $ztmp "
+	fi
+
+	if [[ "$htmp" ]]; then
+		echo "Hadoop is running at: $htmp"
+	fi
+
+else
+	echo "No components runnning."
 fi
 
-tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
-if [[ "$tmp"  ]]; then
-        echo "Zookeeper is running at: $tmp "
-fi
 
-tmp="$(pgrep -f accumulo\\.start | tr '\n' ' ')"
-if [[ "$tmp"  ]]; then
-        echo "Accumulo is running at: $tmp"
-fi
+
+
