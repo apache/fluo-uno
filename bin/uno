@@ -66,6 +66,11 @@ case "$1" in
   version)
     "$bin"/impl/version.sh "${@:2}"
     ;;
+  
+  status)
+    "$bin"/impl/status.sh "${@:2}"
+    ;;
+ 
   wipe)
     "$bin"/impl/kill.sh
     if [[ -d "$INSTALL" ]]; then
@@ -83,6 +88,7 @@ case "$1" in
     echo "  setup <component>      Installs and runs component and its dependencies (clearing any existing data)"
     echo "  start <component>      Start ZooKeeper, Hadoop, Accumulo, if not running."
     echo "  stop  <component>      Stop Accumulo, Hadoop, ZooKeeper, if running."
+    echo "  status                 Check if Accumulo, Hadoop, or Zookeeper are running." 
     echo "  kill                   Kills all processes"
     echo "  ashell                 Runs the Accumulo shell"
     echo "  env                    Prints out shell configuration for PATH and common environment variables."
