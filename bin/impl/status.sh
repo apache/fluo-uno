@@ -15,19 +15,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pkill -f fluo\\.yarn
-pkill -f MiniFluo
-pkill -f accumulo\\.start
-pkill -f hadoop\\.hdfs
-pkill -f hadoop\\.yarn
-pkill -f QuorumPeerMain
 
-if [[ -d "$SPARK_HOME" ]]; then
-  pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
+
+atmp="$(ps -ef | grep accumulo\\.start | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+htmp="$(ps -ef | grep -e hadoop\\.hdfs -e hadoop\\.yarn | tr '.' ' ' | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
+
+if [[ "$atmp" || "$ztmp" || "$htmp" ]]; then
+	if [[ "$atmp"  ]]; then
+		echo "Accumulo processes running: $atmp"	
+	fi
+
+	if [[ "$ztmp"  ]]; then
+		echo "Zookeeper processes running: $ztmp "
+	fi
+
+	if [[ "$htmp" ]]; then
+		echo "Hadoop processes running: $htmp"
+	fi
+
+else
+	echo "No components runnning."
 fi
-if [[ -d "$INFLUXDB_HOME" ]]; then
-  pkill -f influxdb
-fi
-if [[ -d "$GRAFNA_HOME" ]]; then
-  pkill -f grafana-server
-fi
+
+
+
+
