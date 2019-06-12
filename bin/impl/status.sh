@@ -15,21 +15,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-atmp="$(pgrep -f accumulo\\.start | tr '\n' ' ')"
-htmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
-ztmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
+
+
+atmp="$(ps -ef | grep accumulo\\.start | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+htmp="$(ps -ef | grep -e hadoop\\.hdfs -e hadoop\\.yarn | tr '.' ' ' | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
 
 if [[ "$atmp" || "$ztmp" || "$htmp" ]]; then
 	if [[ "$atmp"  ]]; then
-		echo "Accumulo is running at: $atmp"
+		echo "Accumulo processes running: $atmp"	
 	fi
 
 	if [[ "$ztmp"  ]]; then
-		echo "Zookeeper is running at: $ztmp "
+		echo "Zookeeper processes running: $ztmp "
 	fi
 
 	if [[ "$htmp" ]]; then
-		echo "Hadoop is running at: $htmp"
+		echo "Hadoop processes running: $htmp"
 	fi
 
 else
