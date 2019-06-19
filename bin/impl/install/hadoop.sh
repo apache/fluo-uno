@@ -41,6 +41,10 @@ if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
   cp "$UNO_HOME"/conf/hadoop/2/* "$hadoop_conf/"
 else
   cp "$UNO_HOME"/conf/hadoop/3/* "$hadoop_conf/"
+  # need the following for Java 11, because Hadoop doesn't include it
+  mvn dependency:copy \
+    -Dartifact=javax.activation:javax.activation-api:1.2.0 \
+    -DoutputDirectory="$HADOOP_HOME/share/hadoop/common/lib/"
 fi
 
 $SED "s#UNO_HOST#$UNO_HOST#g" "$hadoop_conf/core-site.xml" "$hadoop_conf/hdfs-site.xml" "$hadoop_conf/yarn-site.xml"
