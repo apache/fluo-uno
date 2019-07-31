@@ -42,7 +42,9 @@ if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
 else
   cp "$UNO_HOME"/conf/hadoop/3/* "$hadoop_conf/"
   # need the following for Java 11, because Hadoop doesn't include it
-  mvn dependency:copy \
+  # Using maven-dependency-plugin version 3.1.1 explicitly, because some older
+  # versions require to be executed within a POM project
+  mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy \
     -Dartifact=javax.activation:javax.activation-api:1.2.0 \
     -DoutputDirectory="$HADOOP_HOME/share/hadoop/common/lib/"
 fi
