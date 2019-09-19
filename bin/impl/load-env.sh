@@ -53,7 +53,7 @@ else
 fi
 
 function env_error() {
-  echo 'Make your shell env match uno.conf by running: eval "$(./bin/uno env)"'
+  echo 'Make your shell env match uno.conf by running: source <(./bin/uno env)'
   exit 1
 }
 

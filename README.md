@@ -38,7 +38,7 @@ git clone https://github.com/apache/fluo-uno.git
 cd fluo-uno
 ./bin/uno fetch accumulo            # Fetches binary tarballs of Accumulo and its dependencies
 ./bin/uno setup accumulo            # Sets up Accumulo and its dependencies (Hadoop & ZooKeeper)
-eval "$(./bin/uno env)"             # Bash-specific command that sets up current shell
+source <(./bin/uno env)             # Bash-specific command that sets up current shell
 ```
 
 Accumulo is now ready to use. Verify your installation by checking the [Accumulo Monitor](http://localhost:9995/)
@@ -99,7 +99,7 @@ You can either copy and paste this output into your shell or add the following (
 to your ~/.bashrc automatically configure every new shell.
 
 ```bash
-eval "$(/path/to/uno/bin/uno env)"
+source <(/path/to/uno/bin/uno env)
 ```
 
 With `uno` script set up, you can now use it to download, configure, and run Fluo's dependencies.
