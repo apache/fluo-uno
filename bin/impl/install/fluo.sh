@@ -60,13 +60,16 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
     $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$app_props"
   fi
 
-  $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://$UNO_HOST:8020#g" "$fluo_props"
-  $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$fluo_props"
-  $SED "s/fluo.client.accumulo.user=/fluo.client.accumulo.user=$ACCUMULO_USER/g" "$fluo_props"
-  $SED "s/fluo.client.accumulo.password=/fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$fluo_props"
-  $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$fluo_props"
-  $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$fluo_props"
-  $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$fluo_props"
+  if [[ -f "$fluo_props" ]]; then
+    # This file was deprecated in Fluo 1.2.0 and removed in Fluo 2.0. Only update it if it exists.
+    $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://$UNO_HOST:8020#g" "$fluo_props"
+    $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$fluo_props"
+    $SED "s/fluo.client.accumulo.user=/fluo.client.accumulo.user=$ACCUMULO_USER/g" "$fluo_props"
+    $SED "s/fluo.client.accumulo.password=/fluo.client.accumulo.password=$ACCUMULO_PASSWORD/g" "$fluo_props"
+    $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$fluo_props"
+    $SED "s/.*fluo.yarn.worker.max.memory.mb=.*/fluo.yarn.worker.max.memory.mb=$FLUO_WORKER_MEM_MB/g" "$fluo_props"
+    $SED "s/.*fluo.yarn.worker.instances=.*/fluo.yarn.worker.instances=$FLUO_WORKER_INSTANCES/g" "$fluo_props"
+  fi
 
   $SED "s#HADOOP_PREFIX=.*#HADOOP_PREFIX=$HADOOP_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
   $SED "s#ACCUMULO_HOME=.*o#ACCUMULO_HOME=$ACCUMULO_HOME#g" "$FLUO_HOME"/conf/fluo-env.sh
