@@ -25,6 +25,7 @@ The following instructions can help you setup these requirements in your
 environment :
 
  * [Ubuntu 16.04](/docs/ubuntu1604.md)
+ * [Ubuntu 18.04](/docs/ubuntu1804.md)
  * [CentOS 7](/docs/centos7.md)
 
 ## Quickstart

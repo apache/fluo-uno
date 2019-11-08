@@ -3,7 +3,7 @@ CentOS 7 prep
 
 ```bash
 #install stuff
-sudo yum install java-1.8.0-openjdk maven git openssh-server wget perl-Digest-SHA
+sudo yum install java-11-openjdk maven git openssh-server wget perl-Digest-SHA
 sudo yum group install "Development Tools"
 
 #setup passwordless ssh 
@@ -13,7 +13,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 
 #add java home to your env by appending this line to ~/.bashrc
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 
 #optional: set OS limits - requires restart
 cat <<EOF | sudo tee -a /etc/security/limits.conf > /dev/null 
