@@ -139,7 +139,7 @@ if [[ -z "$ZOOKEEPER_HASH" ]]; then
   echo "ZOOKEEPER_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
   exit 1
 fi
-if [[ -z "$ACCUMULO_HASH" ]]; then
+if [[ -z "$ACCUMULO_HASH" && "$ACCUMULO_VERSION" != *"SNAPSHOT"* ]]; then
   echo "ACCUMULO_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
   exit 1
 fi
