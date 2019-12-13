@@ -167,6 +167,8 @@ These plugins can optionally execute after the `run` command for Accumulo and Fl
 
 * `spark` - Install Apache Spark and start Spark's History server
   * [Spark HistoryServer](http://localhost:18080/)
+* `accumulo-proxy` - Starts an [Accumulo Proxy] which enables Accumulo clients in other languages.
+  * Follow these [instructions][client-instruct] to create a Python Accumulo client.
 
 ## Wipe command
 
@@ -200,3 +202,5 @@ configuring, initializing, and starting your application.
 [logo]: contrib/uno-logo.png
 [Muchos]: https://github.com/apache/fluo-muchos
 [ssh-docs]: https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
+[Accumulo Proxy]: https://github.com/apache/accumulo-proxy
+[client-instruct]: https://github.com/apache/accumulo-proxy#create-an-accumulo-client-using-python
