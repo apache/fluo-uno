@@ -28,6 +28,9 @@ fi
 if [[ -d "$INFLUXDB_HOME" ]]; then
   pkill -f influxdb
 fi
-if [[ -d "$GRAFNA_HOME" ]]; then
+if [[ -d "$GRAFANA_HOME" ]]; then
   pkill -f grafana-server
+fi
+if [[ -d "$PROXY_HOME" ]]; then
+  pkill -f accumulo\\.proxy\\.Proxy
 fi
