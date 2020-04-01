@@ -200,5 +200,5 @@ configuring, initializing, and starting your application.
 [ll]: https://github.com/apache/fluo-uno/blob/master/LICENSE
 [logo]: contrib/uno-logo.png
 [Muchos]: https://github.com/apache/fluo-muchos
-[ssh-docs]: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
+[ssh-docs]: https://hadoop.apache.org/docs/r3.2.1/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
 [Accumulo Proxy]: https://github.com/apache/accumulo-proxy
