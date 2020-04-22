@@ -49,6 +49,8 @@ if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
   cp "$UNO_HOME"/conf/accumulo/1/* "$conf"
   $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
+  $SED "s#ZOOKEEPER_HOME#ZOOKEEPER_HOME/lib#" "$accumulo_conf"
+  $SED "s#-maxdepth 1#-maxdepth 2#" "$ACCUMULO_HOME"/bin/start-all.sh
 else
   accumulo_conf=$conf/accumulo.properties
   cp "$UNO_HOME"/conf/accumulo/2/* "$conf"
