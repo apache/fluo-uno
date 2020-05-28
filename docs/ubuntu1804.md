@@ -6,7 +6,7 @@ Ubuntu 18.04 for Uno.
 
 ```bash
 #install stuff
-sudo apt install openjdk-11-jdk maven git openssh-server wget libxml2-utils make g++
+sudo apt install openjdk-11-jdk maven git openssh-server wget libxml2-utils make g++ libsnappy1v5
 
 #setup passwordless ssh
 ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
