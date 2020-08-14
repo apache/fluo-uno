@@ -193,11 +193,11 @@ configuring, initializing, and starting your application.
 [zookeeper]: http://zookeeper.apache.org/
 [hadoop]: http://hadoop.apache.org/
 [mirrors]: http://www.apache.org/dyn/closer.cgi
-[Webindex]: https://github.com/apache/fluo-examples/tree/master/webindex
-[Phrasecount]: https://github.com/apache/fluo-examples/tree/master/phrasecount
-[configure]: https://github.com/apache/fluo/blob/master/docs/install.md#configure-a-fluo-application
+[Webindex]: https://github.com/apache/fluo-examples/tree/main/webindex
+[Phrasecount]: https://github.com/apache/fluo-examples/tree/main/phrasecount
+[configure]: https://github.com/apache/fluo/blob/main/docs/install.md#configure-a-fluo-application
 [li]: http://img.shields.io/badge/license-ASL-blue.svg
-[ll]: https://github.com/apache/fluo-uno/blob/master/LICENSE
+[ll]: https://github.com/apache/fluo-uno/blob/main/LICENSE
 [logo]: contrib/uno-logo.png
 [Muchos]: https://github.com/apache/fluo-muchos
 [ssh-docs]: https://hadoop.apache.org/docs/r3.3.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
