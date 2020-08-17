@@ -21,7 +21,7 @@ TARBALL_PATH=$PROXY_REPO/target/$PROXY_TARBALL
 
 if [[ ! -f "$TARBALL_PATH" ]]; then
   cd $PROXY_REPO/
-  mvn clean package -Ptarball
+  mvn -V -e clean package -Ptarball
 fi
 
 print_to_console "Installing Accumulo Proxy at $PROXY_HOME"

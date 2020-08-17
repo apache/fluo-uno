@@ -39,7 +39,7 @@ function fetch_accumulo() {
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
     cd "$ACCUMULO_REPO"
-    mvn clean package "${maven_args[@]}"
+    mvn -V -e clean package "${maven_args[@]}"
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
     if [[ ! -f "$accumulo_built_tarball" ]]; then
       echo
@@ -65,7 +65,7 @@ function fetch_fluo() {
   if [[ -n "$FLUO_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_TARBALL"
     cd "$FLUO_REPO"
-    mvn clean package -DskipTests -Dformatter.skip
+    mvn -V -e clean package -DskipTests -Dformatter.skip
 
     fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
     if [[ ! -f "$fluo_built_tarball" ]]; then
@@ -102,7 +102,7 @@ fluo-yarn)
   if [[ -n "$FLUO_YARN_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_YARN_TARBALL"
     cd "$FLUO_YARN_REPO"
-    mvn clean package -DskipTests -Dformatter.skip
+    mvn -V -e clean package -DskipTests -Dformatter.skip
 
     built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL
     if [[ ! -f "$built_tarball" ]]; then
