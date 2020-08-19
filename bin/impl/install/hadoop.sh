@@ -47,7 +47,7 @@ if [[ $HADOOP_VERSION =~ ^3\.[012]\..*$ ]]; then
   # need the following for Java 11, because Hadoop doesn't include it until 3.3
   # Using maven-dependency-plugin version 3.1.1 explicitly, because some older
   # versions require to be executed within a POM project
-  mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy \
+  mvn -V -e org.apache.maven.plugins:maven-dependency-plugin:3.1.1:copy \
     -Dartifact=javax.activation:javax.activation-api:1.2.0 \
     -DoutputDirectory="$HADOOP_HOME/share/hadoop/common/lib/"
 fi
