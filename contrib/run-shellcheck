@@ -2,7 +2,7 @@
 
 set -x
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../" || exit 1 
+cd "$(dirname "${BASH_SOURCE[0]}")/../" || exit 1
 
 mapfile -t filestocheck < <(find bin/ -type f)
 for x in "${filestocheck[@]}"; do
