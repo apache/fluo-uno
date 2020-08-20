@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 [[ -n $LOGS_DIR ]] && rm -f "$LOGS_DIR"/setup/*.{out,err}
@@ -41,9 +42,11 @@ case "$1" in
     ;;
 esac
 
-if [[ "$?" == 0 ]]; then
+# shellcheck disable=SC2181
+if [[ $? -eq 0 ]]; then
   echo "Run complete."
 else
   echo "Run failed!"
   false
 fi
+

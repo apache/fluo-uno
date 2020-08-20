@@ -15,11 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [[ -z "$1" || "$1" == "--vars" ]]; then
+if [[ -z $1 || $1 == '--vars' ]]; then
   echo "export HADOOP_HOME=\"$HADOOP_HOME\""
-  if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
-    echo "export HADOOP_PREFIX=\"$HADOOP_HOME\""
-  fi
+  [[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export HADOOP_PREFIX=\"$HADOOP_HOME\""
   echo "export HADOOP_CONF_DIR=\"$HADOOP_CONF_DIR\""
   echo "export ZOOKEEPER_HOME=\"$ZOOKEEPER_HOME\""
   echo "export SPARK_HOME=\"$SPARK_HOME\""
@@ -28,22 +26,13 @@ if [[ -z "$1" || "$1" == "--vars" ]]; then
   echo "export FLUO_YARN_HOME=\"$FLUO_YARN_HOME\""
 fi
 
-if [[ -z "$1" || "$1" == "--paths" ]]; then
+if [[ -z $1 || $1 == '--paths' ]]; then
   echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_HOME/bin:$ZOOKEEPER_HOME/bin:$ACCUMULO_HOME/bin"
-  if [[ -d "$SPARK_HOME" ]]; then
-    echo -n ":$SPARK_HOME/bin"
-  fi
-  if [[ -d "$FLUO_HOME" ]]; then
-    echo -n ":$FLUO_HOME/bin"
-  fi
-  if [[ -d "$FLUO_YARN_HOME" ]]; then
-    echo -n ":$FLUO_YARN_HOME/bin"
-  fi
-  if [[ -d "$INFLUXDB_HOME" ]]; then
-    echo -n ":$INFLUXDB_HOME/bin"
-  fi
-  if [[ -d "$GRAFANA_HOME" ]]; then
-    echo -n ":$GRAFANA_HOME/bin"
-  fi
+  [[ -d "$SPARK_HOME" ]]     && echo -n ":$SPARK_HOME/bin"
+  [[ -d "$FLUO_HOME" ]]      && echo -n ":$FLUO_HOME/bin"
+  [[ -d "$FLUO_YARN_HOME" ]] && echo -n ":$FLUO_YARN_HOME/bin"
+  [[ -d "$INFLUXDB_HOME" ]]  && echo -n ":$INFLUXDB_HOME/bin"
+  [[ -d "$GRAFANA_HOME" ]]   && echo -n ":$GRAFANA_HOME/bin"
   echo '"'
 fi
+

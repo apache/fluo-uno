@@ -15,13 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
   accumulo)
     check_dirs ACCUMULO_HOME
 
-    if [[ ! -z "$(pgrep -f accumulo\\.start)" ]]; then
+    if pgrep -f accumulo\\.start >/dev/null; then
       if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
         "$ACCUMULO_HOME"/bin/stop-all.sh
       else
@@ -29,41 +30,22 @@ case "$1" in
       fi
     fi
 
-    if [[ "$2" != "--no-deps" ]]; then
+    if [[ $2 != "--no-deps" ]]; then
       check_dirs ZOOKEEPER_HOME HADOOP_HOME
-
-      if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-        "$HADOOP_HOME"/sbin/stop-yarn.sh
-      fi
-
-      if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-        "$HADOOP_HOME"/sbin/stop-dfs.sh
-      fi
-
-      if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
-        "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
-      fi
+      pgrep -f hadoop\\.yarn >/dev/null && "$HADOOP_HOME"/sbin/stop-yarn.sh
+      pgrep -f hadoop\\.hdfs >/dev/null && "$HADOOP_HOME"/sbin/stop-dfs.sh
+      pgrep -f QuorumPeerMain >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
     fi
     ;;
   hadoop)
     check_dirs HADOOP_HOME
-    
-    if [[ ! -z "$(pgrep -f hadoop\\.yarn)" ]]; then
-      "$HADOOP_HOME"/sbin/stop-yarn.sh
-    fi
-
-    if [[ ! -z "$(pgrep -f hadoop\\.hdfs)" ]]; then
-      "$HADOOP_HOME"/sbin/stop-dfs.sh
-    fi
+    pgrep -f hadoop\\.yarn >/dev/null && "$HADOOP_HOME"/sbin/stop-yarn.sh
+    pgrep -f hadoop\\.hdfs >/dev/null && "$HADOOP_HOME"/sbin/stop-dfs.sh
     ;;
   zookeeper)
     check_dirs ZOOKEEPER_HOME
-
-    if [[ ! -z "$(pgrep -f QuorumPeerMain)" ]]; then
-      "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
-    fi
+    pgrep -f QuorumPeerMain >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
     ;;
-
   # NYI
   # fluo)
   #   
@@ -78,4 +60,5 @@ case "$1" in
     echo "    --no-deps  Dependencies will stop unless this option is specified. Only works for accumulo component."
     exit 1
     ;;
-  esac
+esac
+

@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f hadoop.hdfs
@@ -38,3 +39,4 @@ print_to_console "Apache Hadoop $HADOOP_VERSION is running"
 print_to_console "    * NameNode status: http://localhost:$namenode_port/"
 print_to_console "    * ResourceManager status: http://localhost:8088/"
 print_to_console "    * view logs at $HADOOP_LOG_DIR"
+

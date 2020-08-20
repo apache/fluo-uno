@@ -22,15 +22,8 @@ pkill -f hadoop\\.hdfs
 pkill -f hadoop\\.yarn
 pkill -f QuorumPeerMain
 
-if [[ -d "$SPARK_HOME" ]]; then
-  pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
-fi
-if [[ -d "$INFLUXDB_HOME" ]]; then
-  pkill -f influxdb
-fi
-if [[ -d "$GRAFANA_HOME" ]]; then
-  pkill -f grafana-server
-fi
-if [[ -d "$PROXY_HOME" ]]; then
-  pkill -f accumulo\\.proxy\\.Proxy
-fi
+[[ -d $SPARK_HOME ]] && pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
+[[ -d $INFLUXDB_HOME ]] && pkill -f influxdb
+[[ -d $GRAFANA_HOME ]] && pkill -f grafana-server
+[[ -d $PROXY_HOME ]] && pkill -f accumulo\\.proxy\\.Proxy
+

@@ -17,7 +17,7 @@
 
 # Start: Resolve Script Directory
 SOURCE="${BASH_SOURCE[0]}"
-while [[ -h "$SOURCE" ]]; do # resolve $SOURCE until the file is no longer a symlink
+while [[ -h $SOURCE ]]; do # resolve $SOURCE until the file is no longer a symlink
    impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
    SOURCE="$(readlink "$SOURCE")"
    [[ $SOURCE != /* ]] && SOURCE="$impl/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
@@ -29,8 +29,7 @@ bin="$( cd -P "$( dirname "$impl" )" && pwd )"
 # Determine UNO_HOME - Use env variable set by user. If none set, calculate using bin dir
 UNO_HOME="${UNO_HOME:-$( cd -P "${bin}"/.. && pwd )}"
 export UNO_HOME
-if [[ -z "$UNO_HOME" || ! -d "$UNO_HOME" ]]
-then
+if [[ -z $UNO_HOME || ! -d $UNO_HOME ]]; then
   echo "UNO_HOME=$UNO_HOME is not a valid directory. Please make sure it exists"
   exit 1
 fi
@@ -44,8 +43,10 @@ FH=$FLUO_HOME
 
 # Load env configuration
 if [[ -f "$UNO_HOME/conf/uno-local.conf" ]]; then
+  # shellcheck source=conf/uno.conf
   source "$UNO_HOME"/conf/uno-local.conf
 elif [[ -f "$UNO_HOME/conf/uno.conf" ]]; then
+  # shellcheck source=conf/uno.conf
   source "$UNO_HOME"/conf/uno.conf
 else
   echo "ERROR: Configuration file $UNO_HOME/conf/uno.conf does not exist" 1>&2
@@ -131,15 +132,15 @@ fi
 : "${HADOOP_LOG_DIR:?"HADOOP_LOG_DIR is not set in uno.conf"}"
 : "${ZOO_LOG_DIR:?"ZOO_LOG_DIR is not set in uno.conf"}"
 
-if [[ -z "$HADOOP_HASH" ]]; then
+if [[ -z $HADOOP_HASH ]]; then
   echo "HADOOP_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
   exit 1
 fi
-if [[ -z "$ZOOKEEPER_HASH" ]]; then
+if [[ -z $ZOOKEEPER_HASH ]]; then
   echo "ZOOKEEPER_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
   exit 1
 fi
-if [[ -z "$ACCUMULO_HASH" && "$ACCUMULO_VERSION" != *"SNAPSHOT"* ]]; then
+if [[ -z $ACCUMULO_HASH && ! $ACCUMULO_VERSION =~ SNAPSHOT ]]; then
   echo "ACCUMULO_HASH is not set. Set it for your version in 'conf/checksums' or uno.conf"
   exit 1
 fi
@@ -147,8 +148,9 @@ fi
 hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
 hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ $OSTYPE =~ ^darwin ]]; then
   export SED="sed -i .bak"
 else
   export SED="sed -i"
 fi
+

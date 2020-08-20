@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f fluo.yarn
@@ -25,6 +26,5 @@ pkill -f twill.launcher
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ $2 != "--no-deps" ]]; then
-  run_component accumulo
-fi
+[[ $2 != '--no-deps' ]] && run_component accumulo
+

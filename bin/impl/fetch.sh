@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 function fetch_hadoop() {
@@ -33,12 +34,17 @@ function fetch_accumulo() {
 
   if [[ -n "$ACCUMULO_REPO" ]]; then
     declare -a maven_args=(-DskipTests -DskipFormat)
-    if [[ "${HADOOP_VERSION}" = 3.* ]]; then
+    if [[ $HADOOP_VERSION =~ 3\..* ]]; then
       maven_args=("${maven_args[@]}" '-Dhadoop.profile=3')
+      if ! [[ $HADOOP_VERSION =~ 3\.0\..* ]]; then
+        # Hadoop 3.1 and later require a newer version of Guava
+        # than what Accumulo builds by default
+        maven_args=("${maven_args[@]}" '-Dguava.version=27.0-jre')
+      fi
     fi
     rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
     pushd .
-    cd "$ACCUMULO_REPO"
+    cd "$ACCUMULO_REPO" && \
     mvn -V -e clean package "${maven_args[@]}"
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
     if [[ ! -f "$accumulo_built_tarball" ]]; then
@@ -51,7 +57,7 @@ function fetch_accumulo() {
       echo
       exit 1
     fi
-    popd
+    popd || exit 1
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
   else
     download_apache "accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
@@ -64,7 +70,7 @@ function fetch_fluo() {
   fi
   if [[ -n "$FLUO_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_TARBALL"
-    cd "$FLUO_REPO"
+    cd "$FLUO_REPO" && \
     mvn -V -e clean package -DskipTests -Dformatter.skip
 
     fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
@@ -83,7 +89,7 @@ function fetch_fluo() {
 # Determine best apache mirror to use
 apache_mirror=$(curl -sk https://apache.org/mirrors.cgi?as_json | grep preferred | cut -d \" -f 4)
 
-if [ -z "$apache_mirror" ]; then
+if [[ -z $apache_mirror ]]; then
   echo "Failed querying apache.org for best download mirror!"
   echo "Fetch can only verify existing downloads or build Accumulo/Fluo tarballs from a repo."
 fi
@@ -101,7 +107,7 @@ fluo-yarn)
   fi
   if [[ -n "$FLUO_YARN_REPO" ]]; then
     rm -f "$DOWNLOADS/$FLUO_YARN_TARBALL"
-    cd "$FLUO_YARN_REPO"
+    cd "$FLUO_YARN_REPO" && \
     mvn -V -e clean package -DskipTests -Dformatter.skip
 
     built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL

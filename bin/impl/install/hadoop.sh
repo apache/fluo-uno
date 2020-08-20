@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f hadoop.hdfs
@@ -29,7 +30,7 @@ verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
 print_to_console "Installing Apache Hadoop $HADOOP_VERSION at $HADOOP_HOME"
 
 rm -rf "$INSTALL"/hadoop-*
-rm -rf "$HADOOP_LOG_DIR"/*
+rm -rf "${HADOOP_LOG_DIR:?}"/* # use :? to avoid removing /* if var is empty string
 rm -rf "$DATA_DIR"/hadoop
 mkdir -p "$HADOOP_LOG_DIR"
 
@@ -37,11 +38,7 @@ tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
 
 hadoop_conf="$HADOOP_HOME"/etc/hadoop
 cp "$UNO_HOME"/conf/hadoop/common/* "$hadoop_conf/"
-if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
-  cp "$UNO_HOME"/conf/hadoop/2/* "$hadoop_conf/"
-else
-  cp "$UNO_HOME"/conf/hadoop/3/* "$hadoop_conf/"
-fi
+cp "$UNO_HOME/conf/hadoop/${HADOOP_VERSION:0:1}"/* "$hadoop_conf/"
 
 if [[ $HADOOP_VERSION =~ ^3\.[012]\..*$ ]]; then
   # need the following for Java 11, because Hadoop doesn't include it until 3.3
@@ -59,9 +56,10 @@ $SED "s#HADOOP_LOG_DIR#$HADOOP_LOG_DIR#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
 
-echo "export JAVA_HOME=$JAVA_HOME" >> "$hadoop_conf/hadoop-env.sh"
-echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/hadoop-env.sh"
-echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME" >> "$hadoop_conf/hadoop-env.sh"
-if [[ $HADOOP_VERSION =~ ^2\..*$ ]]; then
-  echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
-fi
+{
+  echo "export JAVA_HOME=$JAVA_HOME"
+  echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR"
+  echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME"
+} >> "$hadoop_conf/hadoop-env.sh"
+[[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
+

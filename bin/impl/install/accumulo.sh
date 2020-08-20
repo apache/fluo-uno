@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f accumulo.start
@@ -23,11 +24,8 @@ pkill -f accumulo.start
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ -z "$ACCUMULO_REPO" ]]; then
-  verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
-fi
-
-if [[ $1 != "--no-deps" ]]; then
+[[ -z $ACCUMULO_REPO ]] && verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
+if [[ $1 != '--no-deps' ]]; then
   install_component Hadoop
   install_component ZooKeeper
 fi
@@ -62,6 +60,7 @@ else
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
   if [[ $ACCUMULO_VERSION =~ ^2\.0\.0.*$ ]]; then
+    # shellcheck disable=SC2016
     $SED 's#:[$][{]ZOOKEEPER_HOME[}]/[*]:#:${ZOOKEEPER_HOME}/*:${ZOOKEEPER_HOME}/lib/*:#' "$conf"/accumulo-env.sh
   fi
 fi
@@ -87,10 +86,11 @@ $SED "s#ACCUMULO_INSTANCE#$ACCUMULO_INSTANCE#" "$it_props"
 $SED "s#HADOOP_CONF_DIR#$HADOOP_CONF_DIR#" "$it_props"
 $SED "s#ACCUMULO_HOME#$ACCUMULO_HOME#" "$it_props"
 
-if [[ "$ACCUMULO_USE_NATIVE_MAP" == "true" ]]; then
+if [[ $ACCUMULO_USE_NATIVE_MAP == 'true' ]]; then
   if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
     "$ACCUMULO_HOME"/bin/build_native_library.sh
   else
     "$ACCUMULO_HOME"/bin/accumulo-util build-native
   fi
 fi
+

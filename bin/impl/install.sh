@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in
@@ -38,9 +39,11 @@ case "$1" in
     ;;
 esac
 
-if [[ "$?" == 0 ]]; then
+# shellcheck disable=SC2181
+if [[ $? -eq 0 ]]; then
   echo "Install complete."
 else
   echo "Install failed!"
   false
 fi
+

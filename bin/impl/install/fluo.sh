@@ -15,21 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ -z "$FLUO_REPO" ]]; then
-  verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
-fi
+[[ -z $FLUO_REPO ]] && verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
+[[ $1 != '--no-deps' ]] && install_component Accumulo
 
-if [[ $1 != "--no-deps" ]]; then
-  install_component Accumulo
-fi
-
-if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
+if [[ -f $DOWNLOADS/$FLUO_TARBALL ]]; then
   print_to_console "Setting up Apache Fluo at $FLUO_HOME"
   # Don't stop if pkills fail
   set +e
@@ -60,7 +56,7 @@ if [[ -f "$DOWNLOADS/$FLUO_TARBALL" ]]; then
     $SED "s/.*fluo.worker.num.threads=.*/fluo.worker.num.threads=$FLUO_WORKER_THREADS/g" "$app_props"
   fi
 
-  if [[ -f "$fluo_props" ]]; then
+  if [[ -f $fluo_props ]]; then
     # This file was deprecated in Fluo 1.2.0 and removed in Fluo 2.0. Only update it if it exists.
     $SED "s#fluo.admin.hdfs.root=.*#fluo.admin.hdfs.root=hdfs://$UNO_HOST:8020#g" "$fluo_props"
     $SED "s/fluo.client.accumulo.instance=/fluo.client.accumulo.instance=$ACCUMULO_INSTANCE/g" "$fluo_props"
@@ -82,3 +78,4 @@ else
   print_to_console "WARNING: Apache Fluo tarball '$FLUO_TARBALL' was not found in $DOWNLOADS."
   print_to_console "Apache Fluo will not be set up!"
 fi
+

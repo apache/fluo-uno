@@ -15,13 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ $1 != "--no-deps" ]]; then
-  run_component fluo
-fi
+[[ $1 != '--no-deps' ]] && run_component fluo
 

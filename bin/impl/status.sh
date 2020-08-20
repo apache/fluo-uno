@@ -15,29 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
+# TODO this should be converted to using pgrep
+# shellcheck disable=SC2009
 atmp="$(ps -ef | grep accumulo\\.start | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
 htmp="$(ps -ef | grep -e hadoop\\.hdfs -e hadoop\\.yarn | tr '.' ' ' | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
 ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
 
-if [[ "$atmp" || "$ztmp" || "$htmp" ]]; then
-	if [[ "$atmp"  ]]; then
-		echo "Accumulo processes running: $atmp"	
-	fi
-
-	if [[ "$ztmp"  ]]; then
-		echo "Zookeeper processes running: $ztmp "
-	fi
-
-	if [[ "$htmp" ]]; then
-		echo "Hadoop processes running: $htmp"
-	fi
-
+if [[ -n $atmp || -n $ztmp || -n $htmp ]]; then
+	[[ -n $atmp ]] && echo "Accumulo processes running: $atmp"	
+	[[ -n $ztmp ]] && echo "Zookeeper processes running: $ztmp"
+	[[ -n $htmp ]] && echo "Hadoop processes running: $htmp"
 else
 	echo "No components runnning."
 fi
-
-
-
 

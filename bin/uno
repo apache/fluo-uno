@@ -25,7 +25,9 @@ done
 bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Stop: Resolve Script Directory
 
+# shellcheck source=bin/impl/load-env.sh
 source "$bin"/impl/load-env.sh "$1"
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 case "$1" in

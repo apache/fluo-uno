@@ -15,17 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 # stop if any command fails
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ -z "$FLUO_YARN_REPO" ]]; then
-  verify_exist_hash "$FLUO_YARN_TARBALL" "$FLUO_YARN_HASH"
-fi
+[[ -z $FLUO_YARN_REPO ]] && verify_exist_hash "$FLUO_YARN_TARBALL" "$FLUO_YARN_HASH"
 
-if [[ -f "$DOWNLOADS/$FLUO_YARN_TARBALL" ]]; then
+if [[ -f $DOWNLOADS/$FLUO_YARN_TARBALL ]]; then
   print_to_console "WARNING: Apache Fluo YARN launcher tarball '$FLUO_YARN_TARBALL' was not found in $DOWNLOADS."
   print_to_console "Apache Fluo YARN launcher will not be set up!"
 fi
@@ -56,3 +55,4 @@ $SED "s#ZOOKEEPER_HOME=.*#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_YARN_HOME"/co
 "$FLUO_YARN_HOME"/lib/fetch.sh
 
 stty sane
+
