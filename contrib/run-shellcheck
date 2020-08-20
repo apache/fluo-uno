@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 
+set -x
+
 cd "$(dirname "${BASH_SOURCE[0]}")/../" || exit 1 
 
-shellcheck conf/uno.conf $(find bin/ -type f)
+mapfile -t filestocheck < <(find bin/ -type f)
+for x in "${filestocheck[@]}"; do
+  shellcheck conf/uno.conf bin/impl/util.sh bin/impl/load-env.sh "$x"
+done
 
