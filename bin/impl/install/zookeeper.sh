@@ -28,7 +28,7 @@ verify_exist_hash "$ZOOKEEPER_TARBALL" "$ZOOKEEPER_HASH"
 
 print_to_console "Installing Apache ZooKeeper $ZOOKEEPER_VERSION at $ZOOKEEPER_HOME"
 
-rm -rf "$INSTALL"/zookeeper-*
+rm -rf "$INSTALL"/*zookeeper-*
 rm -f "$ZOO_LOG_DIR"/*
 rm -rf "$DATA_DIR"/zookeeper
 mkdir -p "$ZOO_LOG_DIR"
