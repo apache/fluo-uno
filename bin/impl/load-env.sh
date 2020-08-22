@@ -15,16 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Start: Resolve Script Directory
-SOURCE="${BASH_SOURCE[0]}"
-while [[ -h $SOURCE ]]; do # resolve $SOURCE until the file is no longer a symlink
-   impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-   SOURCE="$(readlink "$SOURCE")"
-   [[ $SOURCE != /* ]] && SOURCE="$impl/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-impl="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-bin="$( cd -P "$( dirname "$impl" )" && pwd )"
-# Stop: Resolve Script Directory
+: "${bin:?"'\$bin' should be set by 'uno' script"}"
 
 # Determine UNO_HOME - Use env variable set by user. If none set, calculate using bin dir
 UNO_HOME="${UNO_HOME:-$( cd -P "${bin}"/.. && pwd )}"
@@ -54,36 +45,19 @@ else
 fi
 
 function env_error() {
+  echo "$1 in your shell env '$2' needs to match your uno.conf '$3'"
   echo 'Make your shell env match uno.conf by running: source <(./bin/uno env)'
   exit 1
 }
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
-  if [[ -n "$HH" && "$HH" != "$HADOOP_HOME" ]]; then
-    echo "HADOOP_HOME in your shell env '$HH' needs to match your uno uno.conf '$HADOOP_HOME'"
-    env_error
-  fi
-  if [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]]; then
-    echo "HADOOP_CONF_DIR in your shell env '$HC' needs to match your uno uno.conf '$HADOOP_CONF_DIR'"
-    env_error
-  fi
-  if [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]]; then
-    echo "ZOOKEEPER_HOME in your shell env '$ZH' needs to match your uno uno.conf '$ZOOKEEPER_HOME'"
-    env_error
-  fi
-  if [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]]; then
-    echo "SPARK_HOME in your shell env '$SH' needs to match your uno uno.conf '$SPARK_HOME'"
-    env_error
-  fi
-  if [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]]; then
-    echo "ACCUMULO_HOME in your shell env '$AH' needs to match your uno uno.conf '$ACCUMULO_HOME'"
-    env_error
-  fi
-  if [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]]; then
-    echo "FLUO_HOME in your shell env '$FH' needs to match your uno uno.conf '$FLUO_HOME'"
-    env_error
-  fi
+  [[ -n "$HH" && "$HH" != "$HADOOP_HOME" ]] && env_error 'HADOOP_HOME' "$HH" "$HADOOP_HOME"
+  [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]] && env_error 'HADOOP_CONF_DIR' "$HC" "$HADOOP_CONF_DIR"
+  [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]] && env_error 'ZOOKEEPER_HOME' "$ZH" "$ZOOKEEPER_HOME"
+  [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]] && env_error 'SPARK_HOME' "$SH" "$SPARK_HOME"
+  [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]] && env_error 'ACCUMULO_HOME' "$AH" "$ACCUMULO_HOME"
+  [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]] && env_error 'FLUO_HOME' "$FH" "$FLUO_HOME"
 fi
 
 # Confirm that env variables were set correctly
@@ -106,7 +80,7 @@ if [[ ! -d "$INSTALL" ]]; then
 fi
 
 if [[ -z "$JAVA_HOME" || ! -d "$JAVA_HOME" ]]; then
-  echo "JAVA_HOME must be set in your shell to a valid directory.  Currently, JAVA_HOME=$JAVA_HOME"
+  echo "JAVA_HOME must be set in your shell to a valid directory. Currently, JAVA_HOME=$JAVA_HOME"
   exit 1
 fi
 

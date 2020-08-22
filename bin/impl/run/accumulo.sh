@@ -24,10 +24,7 @@ pkill -f accumulo.start
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ $1 != '--no-deps' ]]; then
-  run_component hadoop
-  run_component zookeeper
-fi
+[[ $1 != '--no-deps' ]] && run_component hadoop && run_component zookeeper
 
 "$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"

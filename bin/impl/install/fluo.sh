@@ -23,7 +23,7 @@ set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 [[ -z $FLUO_REPO ]] && verify_exist_hash "$FLUO_TARBALL" "$FLUO_HASH"
-[[ $1 != '--no-deps' ]] && install_component Accumulo
+[[ $1 != '--no-deps' ]] && install_component accumulo
 
 if [[ -f $DOWNLOADS/$FLUO_TARBALL ]]; then
   print_to_console "Setting up Apache Fluo at $FLUO_HOME"

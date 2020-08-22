@@ -57,9 +57,9 @@ $SED "s#YARN_NM_MEM_MB#$YARN_NM_MEM_MB#g" "$hadoop_conf/yarn-site.xml"
 $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
 
 {
-  echo "export JAVA_HOME=$JAVA_HOME"
-  echo "export HADOOP_LOG_DIR=$HADOOP_LOG_DIR"
-  echo "export HADOOP_MAPRED_HOME=$HADOOP_HOME"
+  echo "export JAVA_HOME=\"$JAVA_HOME\""
+  echo "export HADOOP_LOG_DIR=\"$HADOOP_LOG_DIR\""
+  echo "export HADOOP_MAPRED_HOME=\"$HADOOP_HOME\""
 } >> "$hadoop_conf/hadoop-env.sh"
 [[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
 

@@ -25,10 +25,7 @@ set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
 [[ -z $ACCUMULO_REPO ]] && verify_exist_hash "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
-if [[ $1 != '--no-deps' ]]; then
-  install_component Hadoop
-  install_component ZooKeeper
-fi
+[[ $1 != '--no-deps' ]] && install_component hadoop && install_component zookeeper
 
 print_to_console "Installing Apache Accumulo $ACCUMULO_VERSION at $ACCUMULO_HOME"
 
@@ -60,6 +57,7 @@ else
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
   if [[ $ACCUMULO_VERSION =~ ^2\.0\.0.*$ ]]; then
+    # Ignore false positive; we actually want the literal '${ZOOKEEPER_HOME}' and not its current value
     # shellcheck disable=SC2016
     $SED 's#:[$][{]ZOOKEEPER_HOME[}]/[*]:#:${ZOOKEEPER_HOME}/*:${ZOOKEEPER_HOME}/lib/*:#' "$conf"/accumulo-env.sh
   fi
