@@ -270,7 +270,7 @@ function uno_status_main() {
 
   if [[ -n $atmp || -n $ztmp || -n $htmp ]]; then
     [[ -n $atmp ]] && echo "Accumulo processes running: $atmp"
-    [[ -n $ztmp ]] && echo "Zookeeper processes running: $ztmp"
+    [[ -n $ztmp ]] && echo "ZooKeeper processes running: $ztmp"
     [[ -n $htmp ]] && echo "Hadoop processes running: $htmp"
   else
     echo "No components runnning."
