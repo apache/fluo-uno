@@ -298,11 +298,20 @@ function uno_fetch_main() {
 }
 
 function uno_wipe_main() {
+  local yn
   uno_kill_main
-  if [[ -d $INSTALL && $INSTALL != '/' ]]; then
-    echo "removing $INSTALL"
-    rm -rf "$INSTALL"
-  fi
+  read -r -p "Are you sure you want to wipe '$INSTALL'? " yn
+  case "$yn" in
+    [yY]|[yY][eE][sS])
+      if [[ -d $INSTALL && $INSTALL != '/' ]]; then
+        echo "removing $INSTALL"
+        rm -rf "${INSTALL:?}"
+      fi
+      ;;
+    *)
+      exit
+      ;;
+  esac
 }
 
 function uno_help_main() {

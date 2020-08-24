@@ -38,7 +38,7 @@ pkill -f twill.launcher
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-rm -rf "$INSTALL"/fluo-yarn*
+rm -rf "${INSTALL:?}"/fluo-yarn*
 
 tar xzf "$DOWNLOADS/$FLUO_YARN_TARBALL" -C "$INSTALL"/
 
@@ -56,3 +56,5 @@ $SED "s#ZOOKEEPER_HOME=.*#ZOOKEEPER_HOME=$ZOOKEEPER_HOME#g" "$FLUO_YARN_HOME"/co
 
 stty sane
 
+true
+# fluo-yarn.sh

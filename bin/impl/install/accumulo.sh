@@ -29,8 +29,8 @@ trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAN
 
 print_to_console "Installing Apache Accumulo $ACCUMULO_VERSION at $ACCUMULO_HOME"
 
-rm -rf "$INSTALL"/accumulo-*
-rm -f "$ACCUMULO_LOG_DIR"/*
+rm -rf "${INSTALL:?}"/accumulo-*
+rm -f "${ACCUMULO_LOG_DIR:?}"/*
 mkdir -p "$ACCUMULO_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
@@ -92,3 +92,5 @@ if [[ $ACCUMULO_USE_NATIVE_MAP == 'true' ]]; then
   fi
 fi
 
+true
+# accumulo.sh

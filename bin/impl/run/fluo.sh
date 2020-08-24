@@ -28,3 +28,5 @@ trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAN
 
 [[ $2 != '--no-deps' ]] && run_component accumulo
 
+true
+# fluo.sh

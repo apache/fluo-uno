@@ -39,7 +39,7 @@ function fetch_accumulo() {
         maven_args=("${maven_args[@]}" '-Dguava.version=27.0-jre')
       fi
     fi
-    rm -f "$DOWNLOADS/$ACCUMULO_TARBALL"
+    rm -f "${DOWNLOADS:?}/${ACCUMULO_TARBALL:?}"
     (cd "$ACCUMULO_REPO" && mvn -V -e clean package "${maven_args[@]}")
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
     if [[ ! -f "$accumulo_built_tarball" ]]; then
@@ -63,7 +63,7 @@ EOF
 function fetch_fluo() {
   [[ $1 != '--no-deps' ]] && fetch_accumulo
   if [[ -n "$FLUO_REPO" ]]; then
-    rm -f "$DOWNLOADS/$FLUO_TARBALL"
+    rm -f "${DOWNLOADS:?}/${FLUO_TARBALL:?}"
     (cd "$FLUO_REPO" && mvn -V -e clean package -DskipTests -Dformatter.skip)
     fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
     if [[ ! -f "$fluo_built_tarball" ]]; then
@@ -96,7 +96,7 @@ fluo)
 fluo-yarn)
   [[ $2 != '--no-deps' ]] && fetch_fluo
   if [[ -n $FLUO_YARN_REPO ]]; then
-    rm -f "$DOWNLOADS/$FLUO_YARN_TARBALL"
+    rm -f "${DOWNLOADS:?}/${FLUO_YARN_TARBALL:?}"
     (cd "$FLUO_YARN_REPO" && mvn -V -e clean package -DskipTests -Dformatter.skip)
     built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL
     if [[ ! -f "$built_tarball" ]]; then
@@ -131,3 +131,5 @@ Options:
 EOF
   exit 1
 esac
+
+# fetch.sh

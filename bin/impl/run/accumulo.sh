@@ -38,3 +38,5 @@ print_to_console "Apache Accumulo $ACCUMULO_VERSION is running"
 print_to_console "    * Accumulo Monitor: http://localhost:9995/"
 print_to_console "    * view logs at $ACCUMULO_LOG_DIR"
 
+true
+# accumulo.sh

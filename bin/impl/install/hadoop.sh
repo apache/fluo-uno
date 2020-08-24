@@ -29,9 +29,9 @@ verify_exist_hash "$HADOOP_TARBALL" "$HADOOP_HASH"
 
 print_to_console "Installing Apache Hadoop $HADOOP_VERSION at $HADOOP_HOME"
 
-rm -rf "$INSTALL"/hadoop-*
+rm -rf "${INSTALL:?}"/hadoop-*
 rm -rf "${HADOOP_LOG_DIR:?}"/* # use :? to avoid removing /* if var is empty string
-rm -rf "$DATA_DIR"/hadoop
+rm -rf "${DATA_DIR:?}"/hadoop
 mkdir -p "$HADOOP_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$HADOOP_TARBALL" -C "$INSTALL"
@@ -63,3 +63,5 @@ $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
 } >> "$hadoop_conf/hadoop-env.sh"
 [[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
 
+true
+# hadoop.sh

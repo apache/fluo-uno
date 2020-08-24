@@ -36,7 +36,7 @@ if [[ -f $DOWNLOADS/$FLUO_TARBALL ]]; then
   set -e
   trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-  rm -rf "$INSTALL"/fluo-[0-9]*
+  rm -rf "${INSTALL:?}"/fluo-[0-9]*
 
   tar xzf "$DOWNLOADS/$FLUO_TARBALL" -C "$INSTALL"/
 
@@ -79,3 +79,5 @@ else
   print_to_console "Apache Fluo will not be set up!"
 fi
 
+true
+# fluo.sh

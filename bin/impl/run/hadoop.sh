@@ -40,3 +40,5 @@ print_to_console "    * NameNode status: http://localhost:$namenode_port/"
 print_to_console "    * ResourceManager status: http://localhost:8088/"
 print_to_console "    * view logs at $HADOOP_LOG_DIR"
 
+true
+# hadoop.sh
