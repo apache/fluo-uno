@@ -1,6 +1,6 @@
 ![Uno][logo]
 ---
-[![Apache License][li]][ll]
+[![ShellCheck][ci_img]][ci_link] [![Apache License][li]][ll]
 
 **Uno automates setting up [Apache Accumulo][accumulo] or [Apache Fluo][fluo] (and their dependencies) on a single machine.**
 
@@ -188,17 +188,19 @@ applications or follow the instructions starting at the [Configure a Fluo applic
 section of the Fluo install instructions. These instructions will guide you through the process of
 configuring, initializing, and starting your application.
 
-[fluo]: http://fluo.apache.org/
-[accumulo]: http://accumulo.apache.org/
-[zookeeper]: http://zookeeper.apache.org/
-[hadoop]: http://hadoop.apache.org/
-[mirrors]: http://www.apache.org/dyn/closer.cgi
-[Webindex]: https://github.com/apache/fluo-examples/tree/main/webindex
+[Accumulo Proxy]: https://github.com/apache/accumulo-proxy
+[Muchos]: https://github.com/apache/fluo-muchos
 [Phrasecount]: https://github.com/apache/fluo-examples/tree/main/phrasecount
+[Webindex]: https://github.com/apache/fluo-examples/tree/main/webindex
+[accumulo]: https://accumulo.apache.org/
+[ci_img]: https://github.com/apache/fluo-uno/workflows/ShellCheck/badge.svg
+[ci_link]: https://github.com/apache/fluo-uno/actions
 [configure]: https://github.com/apache/fluo/blob/main/docs/install.md#configure-a-fluo-application
-[li]: http://img.shields.io/badge/license-ASL-blue.svg
+[fluo]: https://fluo.apache.org/
+[hadoop]: https://hadoop.apache.org/
+[li]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
 [ll]: https://github.com/apache/fluo-uno/blob/main/LICENSE
 [logo]: contrib/uno-logo.png
-[Muchos]: https://github.com/apache/fluo-muchos
+[mirrors]: https://www.apache.org/dyn/closer.cgi
 [ssh-docs]: https://hadoop.apache.org/docs/r3.3.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Setup_passphraseless_ssh
-[Accumulo Proxy]: https://github.com/apache/accumulo-proxy
+[zookeeper]: https://zookeeper.apache.org/

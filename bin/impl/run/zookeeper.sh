@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f QuorumPeerMain
@@ -23,11 +24,14 @@ pkill -f QuorumPeerMain
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-rm -f "$ZOO_LOG_DIR"/*
-rm -rf "$DATA_DIR"/zookeeper
+rm -f "${ZOO_LOG_DIR:?}"/*
+rm -rf "${DATA_DIR:?}"/zookeeper
 mkdir -p "$ZOO_LOG_DIR"
 
 "$ZOOKEEPER_HOME"/bin/zkServer.sh start
 
 print_to_console "Apache ZooKeeper $ZOOKEEPER_VERSION is running"
 print_to_console "    * view logs at $ZOO_LOG_DIR"
+
+true
+# zookeeper.sh

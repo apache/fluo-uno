@@ -17,89 +17,33 @@
 
 # Start: Resolve Script Directory
 SOURCE="${BASH_SOURCE[0]}"
-while [[ -h "$SOURCE" ]]; do # resolve $SOURCE until the file is no longer a symlink
+# resolve $SOURCE until the file is no longer a symlink
+while [[ -h "$SOURCE" ]]; do
    bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
    SOURCE="$(readlink "$SOURCE")"
-   [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+   # if $SOURCE was a relative symlink, we need to resolve it relative to the
+   # path where the symlink file was located
+   [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE"
 done
 bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Stop: Resolve Script Directory
 
-source "$bin"/impl/load-env.sh "$1"
-source "$UNO_HOME"/bin/impl/util.sh
+uno_cmd=$1
+shift
 
-case "$1" in
-  ashell)
-    check_dirs ACCUMULO_HOME
-    "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "${@:2}"
-    ;;
-  zk)
-    check_dirs ZOOKEEPER_HOME 
-    "$ZOOKEEPER_HOME"/bin/zkCli.sh
-    ;;
-  env)
-    "$bin"/impl/print-env.sh "${@:2}"
-    ;;
-  fetch)
-    hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; exit 1; }
-    hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; exit 1; }
-    if [[ "$2" == "all" ]]; then
-      "$bin"/impl/fetch.sh fluo
-    else
-      "$bin"/impl/fetch.sh "$2" "$3"
-    fi
-    ;;
-  install)
-    "$bin"/impl/install.sh "${@:2}"
-    ;;
-  kill)
-    "$bin"/impl/kill.sh "${@:2}"
-    ;;
-  run)
-    "$bin"/impl/run.sh "${@:2}"
-    ;;
-  setup)
-    "$bin"/impl/setup.sh "${@:2}"
-    ;;
-  start)
-    "$bin"/impl/start.sh "${@:2}"
-    ;;
-  stop)
-    "$bin"/impl/stop.sh "${@:2}"
-    ;;
-  version)
-    "$bin"/impl/version.sh "${@:2}"
-    ;;
-  
-  status)
-    "$bin"/impl/status.sh "${@:2}"
-    ;;
- 
-  wipe)
-    "$bin"/impl/kill.sh
-    if [[ -d "$INSTALL" ]]; then
-      echo "removing $INSTALL"
-      rm -rf "$INSTALL"
-    fi
+# shellcheck source=bin/impl/load-env.sh
+source "$bin"/impl/load-env.sh "$uno_cmd"
+# shellcheck source=bin/impl/commands.sh
+source "$UNO_HOME"/bin/impl/commands.sh
+
+case "$uno_cmd" in
+  ashell|env|fetch|install|kill|run|setup|start|status|stop|version|wipe|zk)
+    "uno_${uno_cmd}_main" "$@"
     ;;
   *)
-    echo -e "Usage: uno <command> (<argument>)\n"
-    echo -e "Possible commands:\n"
-    echo "  fetch <component>      Fetches binary tarballs of component and it dependencies by either building or downloading"
-    echo "                         the tarball (as configured by uno.conf). Run 'uno fetch all' to fetch all binary tarballs."
-    echo "  install <component>    Installs component and its dependencies (clearing any existing data)"
-    echo "  run <component>        Runs component and its dependencies (clearing any existing data)"
-    echo "  setup <component>      Installs and runs component and its dependencies (clearing any existing data)"
-    echo "  start <component>      Start ZooKeeper, Hadoop, Accumulo, if not running."
-    echo "  stop  <component>      Stop Accumulo, Hadoop, ZooKeeper, if running."
-    echo "  status                 Check if Accumulo, Hadoop, or Zookeeper are running." 
-    echo "  kill                   Kills all processes"
-    echo "  ashell                 Runs the Accumulo shell"
-    echo "  zk                     Connects to ZooKeeper CLI"
-    echo "  env                    Prints out shell configuration for PATH and common environment variables."
-    echo "                         Add '--paths' or '--vars' command to limit what is printed."
-    echo "  version <dep>          Prints out configured version for dependency"
-    echo -e "  wipe                   Kills all processes and clears install directory\n"
-    echo "Possible components: accumulo, fluo, fluo-yarn, hadoop, zookeeper"
+    uno_help_main "$@"
     exit 1
+    ;;
 esac
+
+# uno

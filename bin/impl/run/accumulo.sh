@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
 pkill -f accumulo.start
@@ -23,10 +24,7 @@ pkill -f accumulo.start
 set -e
 trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAND"' ERR
 
-if [[ $1 != "--no-deps" ]]; then
-  run_component hadoop
-  run_component zookeeper
-fi
+[[ $1 != '--no-deps' ]] && run_component hadoop && run_component zookeeper
 
 "$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
@@ -39,3 +37,6 @@ fi
 print_to_console "Apache Accumulo $ACCUMULO_VERSION is running"
 print_to_console "    * Accumulo Monitor: http://localhost:9995/"
 print_to_console "    * view logs at $ACCUMULO_LOG_DIR"
+
+true
+# accumulo.sh
