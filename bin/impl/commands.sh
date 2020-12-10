@@ -261,11 +261,10 @@ EOF
 }
 
 function uno_status_main() {
-  # TODO this should be converted to using pgrep
   # shellcheck disable=SC2009
-  atmp="$(ps -ef | grep accumulo\\.start | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+  atmp="$(pgrep -f accumulo\\.start -a | awk '{print $NF "(" $1 ")"}' | tr '\n' ' ')"
   # shellcheck disable=SC2009
-  htmp="$(ps -ef | grep -e hadoop\\.hdfs -e hadoop\\.yarn | tr '.' ' ' | awk '{print $NF "(" $2 ")"}' | tr '\n' ' ')"
+  htmp="$(pgrep -f hadoop\\. -a | tr '.' ' ' | awk '{print $NF "(" $1 ")"}' | tr '\n' ' ')"
   ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
 
   if [[ -n $atmp || -n $ztmp || -n $htmp ]]; then
@@ -273,7 +272,7 @@ function uno_status_main() {
     [[ -n $ztmp ]] && echo "ZooKeeper processes running: $ztmp"
     [[ -n $htmp ]] && echo "Hadoop processes running: $htmp"
   else
-    echo "No components runnning."
+    echo "No components running."
   fi
 }
 
@@ -300,7 +299,7 @@ function uno_fetch_main() {
 function uno_wipe_main() {
   local yn
   uno_kill_main
-  read -r -p "Are you sure you want to wipe '$INSTALL'? " yn
+  read -r -p "Are you sure you want to wipe '$INSTALL'? [Y/n] " yn
   case "$yn" in
     [yY]|[yY][eE][sS])
       if [[ -d $INSTALL && $INSTALL != '/' ]]; then
