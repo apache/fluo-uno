@@ -262,7 +262,7 @@ EOF
 
 function uno_status_main() {
   # shellcheck disable=SC2009
-  atmp="$(pgrep -f accumulo\\.start -a | awk '{print $NF "(" $1 ")"}' | tr '\n' ' ')"
+  atmp="$(pgrep -f accumulo\\.start -a | awk '{str1 = $1;for(i=1;i<=NF;i++)if($i=="org.apache.accumulo.start.Main")print $(i+1) "("str1")"}' | tr '\n' ' ')"
   # shellcheck disable=SC2009
   htmp="$(pgrep -f hadoop\\. -a | tr '.' ' ' | awk '{print $NF "(" $1 ")"}' | tr '\n' ' ')"
   ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
