@@ -15,6 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# check if running in a color terminal
+function terminalSupportsColor() { local c; c=$(tput colors 2>/dev/null) || c=-1; [[ -t 1 ]] && [[ $c -ge 8 ]]; }
+terminalSupportsColor && doColor=1 || doColor=0
+function color() { local c; c=$1; shift; [[ $doColor -eq 1 ]] && echo -e "\\e[0;${c}m${*}\\e[0m" || echo "$@"; }
+function red() { color 31 "$@"; }
+function green() { color 32 "$@"; }
+function yellow() { color 33 "$@"; }
+
 function verify_exist_hash() {
   local tarball=$1 expected_hash actual_hash hash_cmd
   expected_hash=$(echo "${2// /}" | tr '[:upper:]' '[:lower:]')
@@ -30,14 +38,14 @@ function verify_exist_hash() {
     64) hash_cmd='shasum -a 256' ;;
     128) hash_cmd='shasum -a 512' ;;
     *)
-      print_to_console "Expected checksum ($expected_hash) of $tarball is not an MD5, SHA1, SHA256, or SHA512 sum"
+      print_to_console "Expected checksum ($(red "$expected_hash")) of $(yellow "$tarball") is not an MD5, SHA1, SHA256, or SHA512 sum"
       return 1
       ;;
   esac
   actual_hash=$($hash_cmd "$DOWNLOADS/$tarball" | awk '{print $1}')
 
   if [[ $actual_hash != "$expected_hash" ]]; then
-    print_to_console "The actual checksum ($actual_hash) of $tarball does not match the expected checksum ($expected_hash)"
+    print_to_console "The actual checksum ($(red "$actual_hash")) of $(yellow "$tarball") does not match the expected checksum ($(green "$expected_hash"))"
     return 1
   fi
 }
@@ -121,20 +129,24 @@ function print_to_console {
 
 function download_tarball() {
   local url_prefix=$1 tarball=$2 expected_hash=$3
+  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null || \
   wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
   verify_exist_hash "$tarball" "$expected_hash" || return 1
-  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
+  echo "$(yellow "$tarball") download matches expected checksum ($(green "$expected_hash"))"
 }
 
 function download_apache() {
   local url_prefix=$1 tarball=$2 expected_hash=$3
-  [[ -n "${apache_mirror:-}" ]] && wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
-  if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-    echo "Downloading $tarball from Apache archive"
-    wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
-  fi
+  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null || \
+  {
+    [[ -n "${apache_mirror:-}" ]] && wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
+    if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
+      echo "Downloading $tarball from Apache archive"
+      wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
+    fi
+  }
   verify_exist_hash "$tarball" "$expected_hash" || return 1
-  echo "$tarball exists in downloads/ and matches expected checksum ($expected_hash)"
+  echo "$(yellow "$tarball") download matches expected checksum ($(green "$expected_hash"))"
 }
 
 function print_cmd_usage() {
