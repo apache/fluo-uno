@@ -73,6 +73,19 @@
     <name>tserver.walog.max.size</name>
     <value>512M</value>
   </property>
+  <property>
+    <name>replication.receipt.service.port</name>
+    <value>0</value>
+  </property>
+  <property>
+    <name>tserver.port.search</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>tserver.port.client</name>
+    <value>11000</value>
+  </property>
+
 
   <property>
     <name>general.classpaths</name>
