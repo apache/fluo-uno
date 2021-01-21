@@ -62,7 +62,12 @@ else
     $SED 's#:[$][{]ZOOKEEPER_HOME[}]/[*]:#:${ZOOKEEPER_HOME}/*:${ZOOKEEPER_HOME}/lib/*:#' "$conf"/accumulo-env.sh
   fi
 fi
-$SED "s#localhost#$UNO_HOST#" "$conf/masters" "$conf/monitor" "$conf/gc"
+
+managers_file="$conf/managers"
+if [[ -f "$conf/masters" ]]; then
+  managers_file="$conf/masters"
+fi
+$SED "s#localhost#$UNO_HOST#" "$managers_file" "$conf/monitor" "$conf/gc"
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
 $SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
