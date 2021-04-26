@@ -26,4 +26,5 @@ accumulo_conf=$ACCUMULO_HOME/conf/accumulo.properties
 encrypt_key=$ACCUMULO_HOME/conf/data-encryption.key
 openssl rand -out $encrypt_key 32
 echo "instance.crypto.opts.key.uri=file://$encrypt_key" >> "$accumulo_conf"
-echo "instance.crypto.service=org.apache.accumulo.core.cryptoImpl.AESCryptoService" >> "$accumulo_conf"
+jar -tvf $ACCUMULO_HOME/lib/accumulo-core-2.*.jar | grep -qi org.apache.accumulo.core.cryptoImpl.AESCryptoService && echo "instance.crypto.service=org.apache.accumulo.core.cryptoImpl.AESCryptoService" >> "$accumulo_conf" && exit 0
+jar -tvf $ACCUMULO_HOME/lib/accumulo-core-2.*.jar | grep -qi org.apache.accumulo.core.spi.crypto.AESCryptoService && echo "instance.crypto.service=org.apache.accumulo.core.spi.crypto.AESCryptoService" >> "$accumulo_conf"
