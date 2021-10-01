@@ -50,7 +50,9 @@ else
   accumulo_conf=$conf/accumulo.properties
   cp "$UNO_HOME"/conf/accumulo/2/* "$conf"
   "$ACCUMULO_HOME"/bin/accumulo-cluster create-config
-  $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
+  if [[ -f "$conf/tservers" ]]; then
+    $SED "s#localhost#$UNO_HOST#" "$conf/tservers"
+  fi
   $SED "s#export HADOOP_HOME=[^ ]*#export HADOOP_HOME=$HADOOP_HOME#" "$conf"/accumulo-env.sh
   $SED "s#instance[.]name=#instance.name=$ACCUMULO_INSTANCE#" "$conf"/accumulo-client.properties
   $SED "s#instance[.]zookeepers=localhost:2181#instance.zookeepers=$UNO_HOST:2181#" "$conf"/accumulo-client.properties
@@ -63,11 +65,16 @@ else
   fi
 fi
 
-managers_file="$conf/managers"
-if [[ -f "$conf/masters" ]]; then
-  managers_file="$conf/masters"
+if [[ -f "$conf/cluster.yaml" ]]; then
+    $SED "s#localhost#$UNO_HOST#" "$conf/cluster.yaml"
+else
+  managers_file="$conf/managers"
+  if [[ -f "$conf/masters" ]]; then
+    managers_file="$conf/masters"
+  fi
+  $SED "s#localhost#$UNO_HOST#" "$managers_file" "$conf/monitor" "$conf/gc"
 fi
-$SED "s#localhost#$UNO_HOST#" "$managers_file" "$conf/monitor" "$conf/gc"
+
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
 $SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
