@@ -99,7 +99,7 @@ function run_component() {
   local logs; logs="$LOGS_DIR/setup"
   mkdir -p "$logs"
   shift
-  "$UNO_HOME/bin/impl/run/$component.sh" "$component" "$@" 1>"$logs/${component}.out" 2>"$logs/${component}.err" || return 1
+  "$UNO_HOME/bin/impl/run/$component.sh" "$@" 1>"$logs/${component}.out" 2>"$logs/${component}.err" || return 1
   case "$component" in
     accumulo|fluo) post_run_plugins ;;
     *) ;;
