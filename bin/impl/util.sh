@@ -151,7 +151,7 @@ function download_apache() {
 
 function print_cmd_usage() {
     cat <<EOF
-Usage: uno $1 <component> [--no-deps][--test]
+Usage: uno $1 <component> [--no-deps] [--test]
 
 Possible components:
 
