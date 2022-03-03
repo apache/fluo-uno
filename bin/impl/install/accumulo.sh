@@ -18,6 +18,13 @@
 # shellcheck source=bin/impl/util.sh
 source "$UNO_HOME"/bin/impl/util.sh
 
+function install_test_jar() {
+  local test_jar_source="$DOWNLOADS/accumulo-test-2.1.0-SNAPSHOT.jar"
+  local test_jar_destination="$ACCUMULO_HOME/lib"
+  print_to_console "Installing Apache Accumulo test jar $test_jar_source to $test_jar_destination"
+  mv $test_jar_source $test_jar_destination
+}
+
 pkill -f accumulo.start
 
 # stop if any command fails
@@ -34,6 +41,9 @@ rm -f "${ACCUMULO_LOG_DIR:?}"/*
 mkdir -p "$ACCUMULO_LOG_DIR"
 
 tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
+
+# Install test jar if available
+[[ $1 == '--test' ]] && install_test_jar
 
 conf=$ACCUMULO_HOME/conf
 

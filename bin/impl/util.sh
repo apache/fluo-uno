@@ -151,7 +151,7 @@ function download_apache() {
 
 function print_cmd_usage() {
     cat <<EOF
-Usage: uno $1 <component> [--no-deps]
+Usage: uno $1 <component> [--no-deps][--test]
 
 Possible components:
 
@@ -161,9 +161,9 @@ Possible components:
     fluo-yarn  $2 Apache Fluo YARN and its dependencies (Fluo, Accumulo, Hadoop, & ZooKeeper)
     zookeeper  $2 Apache ZooKeeper
 
-Options:
+Options (Only work for fluo & accumulo components):
     --no-deps  Dependencies will be setup unless this option is specified.
-               Only works for fluo & accumulo components.
+    --test     Copy the test jar built in accumulo to downloads. Requires ACCUMULO_REPO
 EOF
 }
 
