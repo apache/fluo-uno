@@ -22,7 +22,7 @@ function install_test_jar() {
   local test_jar_source="$DOWNLOADS/accumulo-test-2.1.0-SNAPSHOT.jar"
   local test_jar_destination="$ACCUMULO_HOME/lib"
   print_to_console "Installing Apache Accumulo test jar $test_jar_source to $test_jar_destination"
-  mv "$test_jar_source" "$test_jar_destination"
+  cp "$test_jar_source" "$test_jar_destination"
 }
 
 pkill -f accumulo.start
