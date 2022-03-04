@@ -161,7 +161,7 @@ Possible components:
     fluo-yarn  $2 Apache Fluo YARN and its dependencies (Fluo, Accumulo, Hadoop, & ZooKeeper)
     zookeeper  $2 Apache ZooKeeper
 
-Options (Only work for fluo & accumulo components):
+Options (these only work for fluo and accumulo components):
     --no-deps  Dependencies will be setup unless this option is specified.
     --test     Copy the test jar built in accumulo to downloads. Requires ACCUMULO_REPO
 EOF
