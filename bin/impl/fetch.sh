@@ -55,6 +55,7 @@ EOF
       exit 1
     fi
     cp "$accumulo_built_tarball" "$DOWNLOADS"/
+    [[ $1 == '--test' ]] && cp "$ACCUMULO_REPO/test/target/accumulo-test-2.1.0-SNAPSHOT.jar" "$DOWNLOADS"/
   else
     download_apache "accumulo/$ACCUMULO_VERSION" "$ACCUMULO_TARBALL" "$ACCUMULO_HASH"
   fi
@@ -128,6 +129,7 @@ Possible components:
 
 Options:
     --no-deps  Dependencies will be fetched unless this option is specified. Only works for fluo & accumulo components.
+    --test     Copy the test jar built in accumulo to the downloads directory
 EOF
   exit 1
 esac
