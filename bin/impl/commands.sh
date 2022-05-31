@@ -83,7 +83,7 @@ function uno_kill_main() {
   pkill -f accumulo\\.start
   pkill -f hadoop\\.hdfs
   pkill -f hadoop\\.yarn
-  pkill -f QuorumPeerMain
+  kill -9 $(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}')
   [[ -d $SPARK_HOME ]] && pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
   [[ -d $INFLUXDB_HOME ]] && pkill -f influxdb
   [[ -d $GRAFANA_HOME ]] && pkill -f grafana-server
@@ -142,7 +142,7 @@ function uno_start_main() {
       if [[ $2 != '--no-deps' ]]; then
         check_dirs ZOOKEEPER_HOME HADOOP_HOME || return 1
 
-        tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
+	tmp="$(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}' | tr '\n' ' ')"
         if [[ -z $tmp ]]; then
           "$ZOOKEEPER_HOME"/bin/zkServer.sh start
         else echo "ZooKeeper   already running at: $tmp"
@@ -189,7 +189,7 @@ function uno_start_main() {
     zookeeper)
       check_dirs ZOOKEEPER_HOME || return 1
 
-      tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
+      tmp="$(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}' | tr '\n' ' ')"
       if [[ -z $tmp ]]; then
         "$ZOOKEEPER_HOME"/bin/zkServer.sh start
       else echo "ZooKeeper   already running at: $tmp"
@@ -230,7 +230,7 @@ function uno_stop_main() {
         check_dirs ZOOKEEPER_HOME HADOOP_HOME || return 1
         pgrep -f hadoop\\.yarn >/dev/null && "$HADOOP_HOME"/sbin/stop-yarn.sh
         pgrep -f hadoop\\.hdfs >/dev/null && "$HADOOP_HOME"/sbin/stop-dfs.sh
-        pgrep -f QuorumPeerMain >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
+        ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}' >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
       fi
       ;;
     hadoop)
@@ -240,7 +240,7 @@ function uno_stop_main() {
       ;;
     zookeeper)
       check_dirs ZOOKEEPER_HOME || return 1
-      pgrep -f QuorumPeerMain >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
+       ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}' >/dev/null && "$ZOOKEEPER_HOME"/bin/zkServer.sh stop
       ;;
     *)
       cat <<EOF
@@ -263,8 +263,7 @@ EOF
 function uno_status_main() {
   atmp="$(pgrep -f accumulo\\.start -a | awk '{pid = $1;for(i=1;i<=NF;i++)if($i=="org.apache.accumulo.start.Main")print $(i+1) "("pid")"}' | tr '\n' ' ')"
   htmp="$(pgrep -f hadoop\\. -a | tr '.' ' ' | awk '{print $NF "(" $1 ")"}' | tr '\n' ' ')"
-  ztmp="$(pgrep -f QuorumPeerMain | awk '{print "zoo(" $1 ")"}' | tr '\n' ' ')"
-
+  ztmp="$(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}' | tr '\n' ' ')"
   if [[ -n $atmp || -n $ztmp || -n $htmp ]]; then
     [[ -n $atmp ]] && echo "Accumulo processes running: $atmp"
     [[ -n $ztmp ]] && echo "ZooKeeper processes running: $ztmp"
