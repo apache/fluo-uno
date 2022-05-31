@@ -83,7 +83,7 @@ function uno_kill_main() {
   pkill -f accumulo\\.start
   pkill -f hadoop\\.hdfs
   pkill -f hadoop\\.yarn
-  kill -9 $(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}')
+  kill -9 "$(ps aux | grep "[Q]uorumPeerMain" | awk '{print $2}')"
   [[ -d $SPARK_HOME ]] && pkill -f org\\.apache\\.spark\\.deploy\\.history\\.HistoryServer
   [[ -d $INFLUXDB_HOME ]] && pkill -f influxdb
   [[ -d $GRAFANA_HOME ]] && pkill -f grafana-server
