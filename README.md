@@ -16,7 +16,7 @@ Checkout [Muchos] for setting up Accumulo or Fluo on multiple machines.
 
 Uno requires the following software to be installed on your machine.
 
-* Java - JDK 8 is required for running Fluo.
+* Java - JDK 11 is required for running Fluo (with Accumulo 2.1).
 * wget - Needed for `fetch` command to download tarballs.
 * Maven - Only needed if `fetch` command builds tarball from local repo.
 
