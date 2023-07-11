@@ -37,7 +37,7 @@ source "$bin"/impl/load-env.sh "$uno_cmd"
 source "$UNO_HOME"/bin/impl/commands.sh
 
 case "$uno_cmd" in
-  ashell|env|fetch|install|kill|run|setup|start|status|stop|version|wipe|zk)
+  ashell|env|fetch|install|jshell|kill|run|setup|start|status|stop|version|wipe|zk)
     "uno_${uno_cmd}_main" "$@"
     ;;
   *)

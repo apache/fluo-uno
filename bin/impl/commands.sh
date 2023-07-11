@@ -279,6 +279,11 @@ function uno_ashell_main() {
   "$ACCUMULO_HOME"/bin/accumulo shell -u "$ACCUMULO_USER" -p "$ACCUMULO_PASSWORD" "$@"
 }
 
+function uno_jshell_main() {
+  check_dirs ACCUMULO_HOME || return 1
+  "$ACCUMULO_HOME"/bin/accumulo jshell "$@"
+}
+
 function uno_zk_main() {
   check_dirs ZOOKEEPER_HOME  || return 1
   "$ZOOKEEPER_HOME"/bin/zkCli.sh "$@"
@@ -327,6 +332,7 @@ Possible commands:
   status                 Check if Accumulo, Hadoop, or Zookeeper are running.
   kill                   Kills all processes
   ashell                 Runs the Accumulo shell
+  jshell                 Runs JShell with Accumulo properties
   zk                     Connects to ZooKeeper CLI
   env                    Prints out shell configuration for PATH and common environment variables.
                          Add '--paths' or '--vars' command to limit what is printed.

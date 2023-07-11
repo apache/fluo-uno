@@ -55,6 +55,11 @@ and password `secret` (set in the `uno.conf` file). Therefore, the shell can be 
 accumulo shell -u root -p secret
 ```
 
+Starting with Accumulo 2.1, a Jshell session can also be used.
+```
+./bin/uno jshell
+```
+
 When you're all done testing out Accumulo you can clean up:
 ```
 ./bin/uno wipe
