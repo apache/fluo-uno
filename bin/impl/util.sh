@@ -111,7 +111,9 @@ function setup_component() {
 }
 
 function save_console_fd {
-  if [[ -z $UNO_CONSOLE_FD && ! $OSTYPE =~ ^darwin ]]; then
+  # this requires at least bash 4.1
+  local v=("${BASH_VERSINFO[@]}")
+  if [[ -z $UNO_CONSOLE_FD ]] && (( v[0]>4 || (v[0]==4 && v[1]>=1) )); then
     # Allocate an unused file descriptor and make it dup stdout
     # https://stackoverflow.com/a/41620630/7298689
     exec {UNO_CONSOLE_FD}>&1
