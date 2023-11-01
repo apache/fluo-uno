@@ -27,9 +27,8 @@ trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAN
 
 "$HADOOP_HOME"/bin/hdfs namenode -format
 "$HADOOP_HOME"/sbin/start-dfs.sh
-#
 # Yarn won't start on newer versions of Java
-jver=$("$JAVA_HOME"/bin/java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1}')
+jver=$("$JAVA_HOME"/bin/java -version 2>&1 | grep version | cut -f2 -d'"' | cut -f1 -d.)
 if [[ $jver -gt 11 ]]; then
   echo "Skipping yarn because it doesn't start on Java $jver"
 else
