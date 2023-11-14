@@ -122,10 +122,12 @@ fi
 hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
 hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
 
-if [[ $OSTYPE =~ ^darwin ]]; then
-  export SED="sed -i .bak"
-else
+if sed --version >/dev/null 2>&1; then
+  # GNU sed supports --version and -i without a backup suffix parameter
   export SED="sed -i"
+else
+  # BSD sed requires backup suffix parameter with -i
+  export SED="sed -i .bak"
 fi
 
 # load-env.sh
