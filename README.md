@@ -43,7 +43,7 @@ source <(./bin/uno env)             # Bash-specific command that sets up current
 ```
 
 Accumulo is now ready to use. Verify your installation by checking the [Accumulo Monitor](http://localhost:9995/)
-and [Hadoop NameNode](http://localhost:50070/) status pages. 
+and [Hadoop NameNode](http://localhost:9870/) status pages. 
 
 Note that the Accumulo shell can be accessed in one of two ways. The easiest is method is to use the `uno` command.
 ```
