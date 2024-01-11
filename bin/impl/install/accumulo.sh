@@ -47,6 +47,10 @@ tar xzf "$DOWNLOADS/$ACCUMULO_TARBALL" -C "$INSTALL"
 
 conf=$ACCUMULO_HOME/conf
 
+# On BSD systems (e.g., Mac OS X), paste(1) requires an argument.
+
+sed -i'' -e 's!paste -sd:)!paste -sd: -)!' "$conf/accumulo-env.sh"
+
 cp "$UNO_HOME"/conf/accumulo/common/* "$conf"
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
   accumulo_conf=$conf/accumulo-site.xml
