@@ -28,11 +28,7 @@ trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAN
 
 "$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
-if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-  "$ACCUMULO_HOME"/bin/start-all.sh
-else
-  "$ACCUMULO_HOME"/bin/accumulo-cluster start
-fi
+"$ACCUMULO_HOME"/bin/accumulo-cluster start
 
 print_to_console "Apache Accumulo $ACCUMULO_VERSION is running"
 print_to_console "    * Accumulo Monitor: http://localhost:9995/"

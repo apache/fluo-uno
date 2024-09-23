@@ -53,13 +53,8 @@ sed -i'' -e 's!paste -sd:)!paste -sd: -)!' "$conf/accumulo-env.sh"
 
 cp "$UNO_HOME"/conf/accumulo/common/* "$conf"
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-  accumulo_conf=$conf/accumulo-site.xml
-  cp "$conf"/examples/2GB/standalone/* "$conf"/
-  $SED "s#localhost#$UNO_HOST#" "$conf/slaves"
-  cp "$UNO_HOME"/conf/accumulo/1/* "$conf"
-  $SED "s#export HADOOP_PREFIX=[^ ]*#export HADOOP_PREFIX=$HADOOP_HOME#" "$conf"/accumulo-env.sh
-  $SED "s#ZOOKEEPER_HOME#ZOOKEEPER_HOME/lib#" "$accumulo_conf"
-  $SED "s#-maxdepth 1#-maxdepth 2#" "$ACCUMULO_HOME"/bin/start-all.sh
+    print_to_console "Accumulo 1 is not supported; use an earlier uno or a newer accumulo"
+    exit 1
 else
   accumulo_conf=$conf/accumulo.properties
   cp "$UNO_HOME"/conf/accumulo/2/* "$conf"
@@ -73,21 +68,12 @@ else
   $SED "s#auth[.]principal=#auth.principal=$ACCUMULO_USER#" "$conf"/accumulo-client.properties
   $SED "s#auth[.]token=#auth.token=$ACCUMULO_PASSWORD#" "$conf"/accumulo-client.properties
   if [[ $ACCUMULO_VERSION =~ ^2\.0\..*$ ]]; then
-    # Ignore false positive; we actually want the literal '${ZOOKEEPER_HOME}' and not its current value
-    # shellcheck disable=SC2016
-    $SED 's#:[$][{]ZOOKEEPER_HOME[}]/[*]:#:${ZOOKEEPER_HOME}/*:${ZOOKEEPER_HOME}/lib/*:#' "$conf"/accumulo-env.sh
+    print_to_console "Accumulo 2.0 is not supported; use an earlier uno or a newer accumulo"
+    exit 1
   fi
 fi
 
-if [[ -f "$conf/cluster.yaml" ]]; then
-    $SED "s#localhost#$UNO_HOST#" "$conf/cluster.yaml"
-else
-  managers_file="$conf/managers"
-  if [[ -f "$conf/masters" ]]; then
-    managers_file="$conf/masters"
-  fi
-  $SED "s#localhost#$UNO_HOST#" "$managers_file" "$conf/monitor" "$conf/gc"
-fi
+$SED "s#localhost#$UNO_HOST#" "$conf/cluster.yaml"
 
 $SED "s#export ZOOKEEPER_HOME=[^ ]*#export ZOOKEEPER_HOME=$ZOOKEEPER_HOME#" "$conf"/accumulo-env.sh
 $SED "s#export ACCUMULO_LOG_DIR=[^ ]*#export ACCUMULO_LOG_DIR=$ACCUMULO_LOG_DIR#" "$conf"/accumulo-env.sh
