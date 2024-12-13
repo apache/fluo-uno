@@ -168,7 +168,7 @@ function uno_start_main() {
       if [[ -z $tmp ]]; then
         if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
           "$ACCUMULO_HOME"/bin/start-all.sh
-        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]*$ ]]; then
+        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]$ ]]; then
           "$ACCUMULO_HOME"/bin/accumulo-cluster start
         else
           "$ACCUMULO_HOME"/bin/accumulo-cluster start --local
