@@ -168,8 +168,10 @@ function uno_start_main() {
       if [[ -z $tmp ]]; then
         if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
           "$ACCUMULO_HOME"/bin/start-all.sh
-        else
+        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]$ ]]; then
           "$ACCUMULO_HOME"/bin/accumulo-cluster start
+        else
+          "$ACCUMULO_HOME"/bin/accumulo-cluster start --local
         fi
       else
         echo "Accumulo    already running at: $tmp"
@@ -228,8 +230,10 @@ function uno_stop_main() {
       if pgrep -f accumulo\\.start >/dev/null; then
         if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
           "$ACCUMULO_HOME"/bin/stop-all.sh
-        else
+        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]$ ]]; then
           "$ACCUMULO_HOME"/bin/accumulo-cluster stop
+        else
+          "$ACCUMULO_HOME"/bin/accumulo-cluster stop --local
         fi
       fi
 
