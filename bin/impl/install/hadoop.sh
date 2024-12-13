@@ -60,8 +60,8 @@ $SED "s#YARN_NM_CPU_VCORES#$YARN_NM_CPU_VCORES#g" "$hadoop_conf/yarn-site.xml"
   echo "export JAVA_HOME=\"$JAVA_HOME\""
   echo "export HADOOP_LOG_DIR=\"$HADOOP_LOG_DIR\""
   echo "export HADOOP_MAPRED_HOME=\"$HADOOP_HOME\""
-} >> "$hadoop_conf/hadoop-env.sh"
-[[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >> "$hadoop_conf/yarn-env.sh"
+} >>"$hadoop_conf/hadoop-env.sh"
+[[ $HADOOP_VERSION =~ ^2\..*$ ]] && echo "export YARN_LOG_DIR=$HADOOP_LOG_DIR" >>"$hadoop_conf/yarn-env.sh"
 
 # Yarn requires extra JVM args to start with Java 17+
 jver=$("$JAVA_HOME"/bin/java -version 2>&1 | grep version | cut -f2 -d'"' | cut -f1 -d.)
@@ -69,9 +69,9 @@ jver=$("$JAVA_HOME"/bin/java -version 2>&1 | grep version | cut -f2 -d'"' | cut 
 if [[ $jver -gt 11 ]]; then
   echo "Setting yarn JVM args for java $jver"
   {
-    echo "export YARN_RESOURCEMANAGER_OPTS=\"--add-opens java.base/java.lang=ALL-UNNAMED\""
-    echo "export YARN_NODEMANAGER_OPTS=\"--add-opens java.base/java.lang=ALL-UNNAMED\""
-  } >> "$hadoop_conf/yarn-env.sh"
+    echo 'export YARN_RESOURCEMANAGER_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"'
+    echo 'export YARN_NODEMANAGER_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"'
+  } >>"$hadoop_conf/yarn-env.sh"
 fi
 
 true
