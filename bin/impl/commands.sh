@@ -230,7 +230,7 @@ function uno_stop_main() {
       if pgrep -f accumulo\\.start >/dev/null; then
         if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
           "$ACCUMULO_HOME"/bin/stop-all.sh
-        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]*$ ]]; then
+        elif [[ $ACCUMULO_VERSION =~ ^2\.[0-1]\.[0-3]$ ]]; then
           "$ACCUMULO_HOME"/bin/accumulo-cluster stop
         else
           "$ACCUMULO_HOME"/bin/accumulo-cluster stop --local
