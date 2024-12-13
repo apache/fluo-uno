@@ -19,7 +19,7 @@ source "$UNO_HOME"/bin/impl/util.sh
 
 TARBALL_PATH=$PROXY_REPO/target/$PROXY_TARBALL
 
-if [[ ! -f "$TARBALL_PATH" ]]; then
+if [[ ! -f $TARBALL_PATH ]]; then
   cd $PROXY_REPO/
   mvn -V -e clean package -Ptarball
 fi
@@ -37,7 +37,7 @@ mkdir -p "${INSTALL}/logs/accumulo-proxy"
 
 pkill -f accumulo\\.proxy\\.Proxy
 
-"$PROXY_HOME"/bin/accumulo-proxy -p "$PROXY_HOME"/conf/proxy.properties &> "${INSTALL}/logs/accumulo-proxy/accumulo-proxy.log" &
+"$PROXY_HOME"/bin/accumulo-proxy -p "$PROXY_HOME"/conf/proxy.properties &>"${INSTALL}/logs/accumulo-proxy/accumulo-proxy.log" &
 
 print_to_console "Accumulo Proxy $PROXY_VERSION is running"
 print_to_console "    * view logs at $INSTALL/logs/accumulo-proxy/"

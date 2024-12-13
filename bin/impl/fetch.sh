@@ -29,7 +29,7 @@ function fetch_zookeeper() {
 function fetch_accumulo() {
   [[ $1 != '--no-deps' ]] && fetch_hadoop && fetch_zookeeper
 
-  if [[ -n "$ACCUMULO_REPO" ]]; then
+  if [[ -n $ACCUMULO_REPO ]]; then
     declare -a maven_args=(-DskipTests -DskipFormat)
     if [[ $HADOOP_VERSION =~ 3\..* ]]; then
       maven_args=("${maven_args[@]}" '-Dhadoop.profile=3')
@@ -42,7 +42,7 @@ function fetch_accumulo() {
     rm -f "${DOWNLOADS:?}/${ACCUMULO_TARBALL:?}"
     (cd "$ACCUMULO_REPO" && mvn -V -e clean package "${maven_args[@]}")
     accumulo_built_tarball=$ACCUMULO_REPO/assemble/target/$ACCUMULO_TARBALL
-    if [[ ! -f "$accumulo_built_tarball" ]]; then
+    if [[ ! -f $accumulo_built_tarball ]]; then
       cat <<EOF
 
 The following file does not exist :
@@ -63,11 +63,11 @@ EOF
 
 function fetch_fluo() {
   [[ $1 != '--no-deps' ]] && fetch_accumulo
-  if [[ -n "$FLUO_REPO" ]]; then
+  if [[ -n $FLUO_REPO ]]; then
     rm -f "${DOWNLOADS:?}/${FLUO_TARBALL:?}"
     (cd "$FLUO_REPO" && mvn -V -e clean package -DskipTests -Dformatter.skip)
     fluo_built_tarball=$FLUO_REPO/modules/distribution/target/$FLUO_TARBALL
-    if [[ ! -f "$fluo_built_tarball" ]]; then
+    if [[ ! -f $fluo_built_tarball ]]; then
       echo "The tarball $fluo_built_tarball does not exist after building from the FLUO_REPO=$FLUO_REPO"
       echo "Does your repo contain code matching the FLUO_VERSION=$FLUO_VERSION set in uno.conf?"
       exit 1
@@ -88,36 +88,36 @@ if [[ -z $apache_mirror ]]; then
 fi
 
 case "$1" in
-accumulo)
-  fetch_accumulo "$2"
-  ;;
-fluo)
-  fetch_fluo "$2"
-  ;;
-fluo-yarn)
-  [[ $2 != '--no-deps' ]] && fetch_fluo
-  if [[ -n $FLUO_YARN_REPO ]]; then
-    rm -f "${DOWNLOADS:?}/${FLUO_YARN_TARBALL:?}"
-    (cd "$FLUO_YARN_REPO" && mvn -V -e clean package -DskipTests -Dformatter.skip)
-    built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL
-    if [[ ! -f "$built_tarball" ]]; then
-      echo "The tarball $built_tarball does not exist after building from the FLUO_YARN_REPO=$FLUO_YARN_REPO"
-      echo "Does your repo contain code matching the FLUO_YARN_VERSION=$FLUO_YARN_VERSION set in uno.conf?"
-      exit 1
+  accumulo)
+    fetch_accumulo "$2"
+    ;;
+  fluo)
+    fetch_fluo "$2"
+    ;;
+  fluo-yarn)
+    [[ $2 != '--no-deps' ]] && fetch_fluo
+    if [[ -n $FLUO_YARN_REPO ]]; then
+      rm -f "${DOWNLOADS:?}/${FLUO_YARN_TARBALL:?}"
+      (cd "$FLUO_YARN_REPO" && mvn -V -e clean package -DskipTests -Dformatter.skip)
+      built_tarball=$FLUO_YARN_REPO/target/$FLUO_YARN_TARBALL
+      if [[ ! -f $built_tarball ]]; then
+        echo "The tarball $built_tarball does not exist after building from the FLUO_YARN_REPO=$FLUO_YARN_REPO"
+        echo "Does your repo contain code matching the FLUO_YARN_VERSION=$FLUO_YARN_VERSION set in uno.conf?"
+        exit 1
+      fi
+      cp "$built_tarball" "$DOWNLOADS"/
+    else
+      download_apache "fluo/fluo-yarn/$FLUO_YARN_VERSION" "$FLUO_YARN_TARBALL" "$FLUO_YARN_HASH"
     fi
-    cp "$built_tarball" "$DOWNLOADS"/
-  else
-    download_apache "fluo/fluo-yarn/$FLUO_YARN_VERSION" "$FLUO_YARN_TARBALL" "$FLUO_YARN_HASH"
-  fi
-  ;;
-hadoop)
-  fetch_hadoop
-  ;;
-zookeeper)
-  fetch_zookeeper
-  ;;
-*)
-  cat <<EOF
+    ;;
+  hadoop)
+    fetch_hadoop
+    ;;
+  zookeeper)
+    fetch_zookeeper
+    ;;
+  *)
+    cat <<EOF
 Usage: uno fetch <component>
 
 Possible components:
@@ -131,7 +131,8 @@ Options:
     --no-deps  Dependencies will be fetched unless this option is specified. Only works for fluo & accumulo components.
     --test     Copy the test jar built in accumulo to the downloads directory
 EOF
-  exit 1
+    exit 1
+    ;;
 esac
 
 # fetch.sh

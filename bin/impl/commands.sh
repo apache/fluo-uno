@@ -22,7 +22,7 @@ source "$bin"/impl/util.sh
 
 function uno_install_main() {
   case "$1" in
-    accumulo|hadoop|fluo|fluo-yarn|zookeeper)
+    accumulo | hadoop | fluo | fluo-yarn | zookeeper)
       if install_component "$@"; then
         echo "Installation of $1 complete."
       else
@@ -42,7 +42,7 @@ function uno_run_main() {
   echo "Running $1 (detailed logs in $LOGS_DIR/setup)..."
   save_console_fd
   case "$1" in
-    accumulo|hadoop|fluo|fluo-yarn|zookeeper)
+    accumulo | hadoop | fluo | fluo-yarn | zookeeper)
       if run_component "$@"; then
         echo "Running $1 complete."
       else
@@ -62,7 +62,7 @@ function uno_setup_main() {
   echo "Setting up $1 (detailed logs in $LOGS_DIR/setup)..."
   save_console_fd
   case "$1" in
-    accumulo|hadoop|fluo|fluo-yarn|zookeeper)
+    accumulo | hadoop | fluo | fluo-yarn | zookeeper)
       if setup_component "$@"; then
         echo "Setup of $1 complete."
       else
@@ -108,11 +108,11 @@ function uno_env_main() {
   fi
   if [[ -z $1 || $1 == '--paths' ]]; then
     echo -n "export PATH=\"\$PATH:$UNO_HOME/bin:$HADOOP_HOME/bin:$ZOOKEEPER_HOME/bin:$ACCUMULO_HOME/bin"
-    [[ -d "$SPARK_HOME" ]]     && echo -n ":$SPARK_HOME/bin"
-    [[ -d "$FLUO_HOME" ]]      && echo -n ":$FLUO_HOME/bin"
-    [[ -d "$FLUO_YARN_HOME" ]] && echo -n ":$FLUO_YARN_HOME/bin"
-    [[ -d "$INFLUXDB_HOME" ]]  && echo -n ":$INFLUXDB_HOME/bin"
-    [[ -d "$GRAFANA_HOME" ]]   && echo -n ":$GRAFANA_HOME/bin"
+    [[ -d $SPARK_HOME ]] && echo -n ":$SPARK_HOME/bin"
+    [[ -d $FLUO_HOME ]] && echo -n ":$FLUO_HOME/bin"
+    [[ -d $FLUO_YARN_HOME ]] && echo -n ":$FLUO_YARN_HOME/bin"
+    [[ -d $INFLUXDB_HOME ]] && echo -n ":$INFLUXDB_HOME/bin"
+    [[ -d $GRAFANA_HOME ]] && echo -n ":$GRAFANA_HOME/bin"
     echo '"'
   fi
 }
@@ -145,19 +145,22 @@ function uno_start_main() {
         tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
         if [[ -z $tmp ]]; then
           "$ZOOKEEPER_HOME"/bin/zkServer.sh start
-        else echo "ZooKeeper   already running at: $tmp"
+        else
+          echo "ZooKeeper   already running at: $tmp"
         fi
 
         tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
         if [[ -z $tmp ]]; then
           "$HADOOP_HOME"/sbin/start-dfs.sh
-        else echo "Hadoop DFS  already running at: $tmp"
+        else
+          echo "Hadoop DFS  already running at: $tmp"
         fi
 
         tmp="$(pgrep -f hadoop\\.yarn | tr '\n' ' ')"
         if [[ -z $tmp ]]; then
           "$HADOOP_HOME"/sbin/start-yarn.sh
-        else echo "Hadoop Yarn already running at: $tmp"
+        else
+          echo "Hadoop Yarn already running at: $tmp"
         fi
       fi
 
@@ -168,7 +171,8 @@ function uno_start_main() {
         else
           "$ACCUMULO_HOME"/bin/accumulo-cluster start
         fi
-      else echo "Accumulo    already running at: $tmp"
+      else
+        echo "Accumulo    already running at: $tmp"
       fi
       ;;
     hadoop)
@@ -177,13 +181,15 @@ function uno_start_main() {
       tmp="$(pgrep -f hadoop\\.hdfs | tr '\n' ' ')"
       if [[ -z $tmp ]]; then
         "$HADOOP_HOME"/sbin/start-dfs.sh
-      else echo "Hadoop DFS  already running at: $tmp"
+      else
+        echo "Hadoop DFS  already running at: $tmp"
       fi
 
       tmp="$(pgrep -f hadoop\\.yarn | tr '\n' ' ')"
       if [[ -z $tmp ]]; then
         "$HADOOP_HOME"/sbin/start-yarn.sh
-      else echo "Hadoop Yarn already running at: $tmp"
+      else
+        echo "Hadoop Yarn already running at: $tmp"
       fi
       ;;
     zookeeper)
@@ -192,7 +198,8 @@ function uno_start_main() {
       tmp="$(pgrep -f QuorumPeerMain | tr '\n' ' ')"
       if [[ -z $tmp ]]; then
         "$ZOOKEEPER_HOME"/bin/zkServer.sh start
-      else echo "ZooKeeper   already running at: $tmp"
+      else
+        echo "ZooKeeper   already running at: $tmp"
       fi
       ;;
     *)
@@ -285,14 +292,20 @@ function uno_jshell_main() {
 }
 
 function uno_zk_main() {
-  check_dirs ZOOKEEPER_HOME  || return 1
+  check_dirs ZOOKEEPER_HOME || return 1
   "$ZOOKEEPER_HOME"/bin/zkCli.sh "$@"
 }
 
 function uno_fetch_main() {
-  hash mvn 2>/dev/null || { echo >&2 "Maven must be installed & on PATH. Aborting."; return 1; }
-  hash wget 2>/dev/null || { echo >&2 "wget must be installed & on PATH. Aborting."; return 1; }
-  if [[ "$1" == "all" ]]; then
+  hash mvn 2>/dev/null || {
+    echo >&2 "Maven must be installed & on PATH. Aborting."
+    return 1
+  }
+  hash wget 2>/dev/null || {
+    echo >&2 "wget must be installed & on PATH. Aborting."
+    return 1
+  }
+  if [[ $1 == "all" ]]; then
     "$bin"/impl/fetch.sh fluo
   else
     "$bin"/impl/fetch.sh "$1" "$2"
@@ -304,7 +317,7 @@ function uno_wipe_main() {
   uno_kill_main
   read -r -p "Are you sure you want to wipe '$INSTALL'? " yn
   case "$yn" in
-    [yY]|[yY][eE][sS])
+    [yY] | [yY][eE][sS])
       if [[ -d $INSTALL && $INSTALL != '/' ]]; then
         echo "removing $INSTALL"
         rm -rf "${INSTALL:?}"

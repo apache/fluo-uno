@@ -17,7 +17,7 @@
 
 source "$UNO_HOME"/bin/impl/util.sh
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ $OSTYPE == "darwin"* ]]; then
   echo "The metrics services (InfluxDB and Grafana) are not supported on Mac OS X at this time."
   exit 1
 fi
@@ -66,7 +66,7 @@ mkdir -p "$LOGS_DIR"/metrics
 echo "Installing InfluxDB $INFLUXDB_VERSION to $INFLUXDB_HOME"
 
 tar xzf "$DOWNLOADS/build/$INFLUXDB_TARBALL" -C "$INSTALL"
-"$INFLUXDB_HOME"/bin/influxd config -config "$UNO_HOME"/plugins/influx-metrics/influxdb.conf > "$INFLUXDB_HOME"/influxdb.conf
+"$INFLUXDB_HOME"/bin/influxd config -config "$UNO_HOME"/plugins/influx-metrics/influxdb.conf >"$INFLUXDB_HOME"/influxdb.conf
 if [[ ! -f "$INFLUXDB_HOME"/influxdb.conf ]]; then
   print_to_console "Failed to create $INFLUXDB_HOME/influxdb.conf"
   exit 1
@@ -81,7 +81,7 @@ $SED "s#GRAFANA_HOME#$GRAFANA_HOME#g" "$GRAFANA_HOME"/conf/custom.ini
 $SED "s#LOGS_DIR#$LOGS_DIR#g" "$GRAFANA_HOME"/conf/custom.ini
 mkdir "$GRAFANA_HOME"/dashboards
 
-if [[ -d "$ACCUMULO_HOME" ]]; then
+if [[ -d $ACCUMULO_HOME ]]; then
   echo "Configuring Accumulo metrics"
   cp "$UNO_HOME"/plugins/influx-metrics/accumulo-dashboard.json "$GRAFANA_HOME"/dashboards/
   conf=$ACCUMULO_HOME/conf
@@ -93,10 +93,10 @@ if [[ -d "$ACCUMULO_HOME" ]]; then
     echo "accumulo.sink.graphite.server_host=localhost"
     echo "accumulo.sink.graphite.server_port=2004"
     echo "accumulo.sink.graphite.metrics_prefix=accumulo"
-  } >> "$conf"/"$metrics_props"
+  } >>"$conf"/"$metrics_props"
 fi
 
-if [[ -d "$FLUO_HOME" ]]; then
+if [[ -d $FLUO_HOME ]]; then
   echo "Configuring Fluo metrics"
   cp "$FLUO_HOME"/contrib/grafana/* "$GRAFANA_HOME"/dashboards/
   if [[ $FLUO_VERSION =~ ^1\.[0-1].*$ ]]; then
@@ -110,16 +110,16 @@ if [[ -d "$FLUO_HOME" ]]; then
     echo "fluo.metrics.reporter.graphite.host=$UNO_HOST"
     echo "fluo.metrics.reporter.graphite.port=2003"
     echo "fluo.metrics.reporter.graphite.frequency=30"
-  } >> "$FLUO_PROPS"
+  } >>"$FLUO_PROPS"
 fi
 
-"$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &> "$LOGS_DIR"/metrics/influxdb.log &
+"$INFLUXDB_HOME"/bin/influxd -config "$INFLUXDB_HOME"/influxdb.conf &>"$LOGS_DIR"/metrics/influxdb.log &
 
-"$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2> /dev/null &
+"$GRAFANA_HOME"/bin/grafana-server -homepath="$GRAFANA_HOME" 2>/dev/null &
 
 sleep 10
 
-if [[ -d "$FLUO_HOME" ]]; then
+if [[ -d $FLUO_HOME ]]; then
   "$INFLUXDB_HOME"/bin/influx -import -path "$FLUO_HOME"/contrib/influxdb/fluo_metrics_setup.txt
 fi
 
@@ -130,7 +130,7 @@ sleep 5
 
 function add_datasource() {
   retcode=1
-  while [[ $retcode != 0 ]];  do
+  while [[ $retcode != 0 ]]; do
     curl 'http://admin:admin@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' \
       --data-binary "$1"
     retcode=$?
@@ -142,14 +142,14 @@ function add_datasource() {
   echo ""
 }
 
-if [[ -d "$ACCUMULO_HOME" ]]; then
+if [[ -d $ACCUMULO_HOME ]]; then
   accumulo_data='{"name":"accumulo_metrics","type":"influxdb","url":"http://'
   accumulo_data+=$UNO_HOST
   accumulo_data+=':8086","access":"direct","isDefault":true,"database":"accumulo_metrics","user":"accumulo","password":"secret"}'
   add_datasource $accumulo_data
 fi
 
-if [[ -d "$FLUO_HOME" ]]; then
+if [[ -d $FLUO_HOME ]]; then
   fluo_data='{"name":"fluo_metrics","type":"influxdb","url":"http://'
   fluo_data+=$UNO_HOST
   fluo_data+=':8086","access":"direct","isDefault":false,"database":"fluo_metrics","user":"fluo","password":"secret"}'

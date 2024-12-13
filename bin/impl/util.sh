@@ -16,9 +16,18 @@
 # limitations under the License.
 
 # check if running in a color terminal
-function terminalSupportsColor() { local c; c=$(tput colors 2>/dev/null) || c=-1; [[ -t 1 ]] && [[ $c -ge 8 ]]; }
+function terminalSupportsColor() {
+  local c
+  c=$(tput colors 2>/dev/null) || c=-1
+  [[ -t 1 ]] && [[ $c -ge 8 ]]
+}
 terminalSupportsColor && doColor=1 || doColor=0
-function color() { local c; c=$1; shift; [[ $doColor -eq 1 ]] && echo -e "\\e[0;${c}m${*}\\e[0m" || echo "$@"; }
+function color() {
+  local c
+  c=$1
+  shift
+  [[ $doColor -eq 1 ]] && echo -e "\\e[0;${c}m${*}\\e[0m" || echo "$@"
+}
 function red() { color 31 "$@"; }
 function green() { color 32 "$@"; }
 function yellow() { color 33 "$@"; }
@@ -76,7 +85,7 @@ function post_run_plugins() {
   for plugin in $POST_RUN_PLUGINS; do
     echo "Executing post run plugin: $plugin"
     plugin_script="${UNO_HOME}/plugins/${plugin}.sh"
-    if [[ ! -f "$plugin_script" ]]; then
+    if [[ ! -f $plugin_script ]]; then
       echo "Plugin does not exist: $plugin_script"
       return 1
     fi
@@ -85,23 +94,26 @@ function post_run_plugins() {
 }
 
 function install_component() {
-  local component; component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
+  local component
+  component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
   shift
   "$UNO_HOME/bin/impl/install/$component.sh" "$@" || return 1
   case "$component" in
-    accumulo|fluo) post_install_plugins ;;
+    accumulo | fluo) post_install_plugins ;;
     *) ;;
   esac
 }
 
 function run_component() {
-  local component; component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
-  local logs; logs="$LOGS_DIR/setup"
+  local component
+  component=$(echo "$1" | tr '[:upper:] ' '[:lower:]-')
+  local logs
+  logs="$LOGS_DIR/setup"
   mkdir -p "$logs"
   shift
   "$UNO_HOME/bin/impl/run/$component.sh" "$@" 1>"$logs/${component}.out" 2>"$logs/${component}.err" || return 1
   case "$component" in
-    accumulo|fluo) post_run_plugins ;;
+    accumulo | fluo) post_run_plugins ;;
     *) ;;
   esac
 }
@@ -113,7 +125,7 @@ function setup_component() {
 function save_console_fd {
   # this requires at least bash 4.1
   local v=("${BASH_VERSINFO[@]}")
-  if [[ -z $UNO_CONSOLE_FD ]] && (( v[0]>4 || (v[0]==4 && v[1]>=1) )); then
+  if [[ -z $UNO_CONSOLE_FD ]] && ((v[0] > 4 || (v[0] == 4 && v[1] >= 1))); then
     # Allocate an unused file descriptor and make it dup stdout
     # https://stackoverflow.com/a/41620630/7298689
     exec {UNO_CONSOLE_FD}>&1
@@ -125,34 +137,34 @@ function print_to_console {
   if [[ -z $UNO_CONSOLE_FD ]]; then
     echo "$@"
   else
-    echo "$@" >&${UNO_CONSOLE_FD}
+    echo "$@" >&"$UNO_CONSOLE_FD"
   fi
 }
 
 function download_tarball() {
   local url_prefix=$1 tarball=$2 expected_hash=$3
-  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null || \
-  wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
+  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null ||
+    wget -c -P "$DOWNLOADS" "$url_prefix/$tarball"
   verify_exist_hash "$tarball" "$expected_hash" || return 1
   echo "$(yellow "$tarball") download matches expected checksum ($(green "$expected_hash"))"
 }
 
 function download_apache() {
   local url_prefix=$1 tarball=$2 expected_hash=$3
-  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null || \
-  {
-    [[ -n "${apache_mirror:-}" ]] && wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
-    if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
-      echo "Downloading $tarball from Apache archive"
-      wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
-    fi
-  }
+  verify_exist_hash "$tarball" "$expected_hash" &>/dev/null ||
+    {
+      [[ -n ${apache_mirror:-} ]] && wget -c -P "$DOWNLOADS" "$apache_mirror/$url_prefix/$tarball"
+      if [[ ! -f "$DOWNLOADS/$tarball" ]]; then
+        echo "Downloading $tarball from Apache archive"
+        wget -c -P "$DOWNLOADS" "https://archive.apache.org/dist/$url_prefix/$tarball"
+      fi
+    }
   verify_exist_hash "$tarball" "$expected_hash" || return 1
   echo "$(yellow "$tarball") download matches expected checksum ($(green "$expected_hash"))"
 }
 
 function print_cmd_usage() {
-    cat <<EOF
+  cat <<EOF
 Usage: uno $1 <component> [--no-deps] [--test]
 
 Possible components:

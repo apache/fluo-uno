@@ -1,3 +1,4 @@
+#! /usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,37 +18,12 @@
 # under the License.
 #
 
-name: ShellCheck
+# Install shfmt tool to search for and optionally format bash scripts
+# This is useful for other CI tools to run ShellCheck and shfmt to format
 
-on:
-  push:
-    branches: [ '*' ]
-  pull_request:
-    branches: [ '*' ]
+set -e
+set -x
 
-permissions:
-  contents: read
-
-jobs:
-  shfmt:
-    name: shfmt
-    timeout-minutes: 3
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Show the first log message
-      run: git log -n1
-    - name: Install shfmt
-      run: contrib/ci/install-shfmt.sh
-    - name: Checking formatting of all scripts
-      run: contrib/ci/run-shfmt.sh
-
-  shellcheck:
-    name: ShellCheck
-    timeout-minutes: 3
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Running shellcheck on bin/** and conf/uno.conf
-        run: contrib/ci/run-shellcheck.sh
-
+shfmt_version=3.4.3
+sudo wget "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_linux_amd64" -O /usr/local/bin/shfmt &&
+  sudo chmod +x /usr/local/bin/shfmt

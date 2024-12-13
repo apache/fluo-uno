@@ -26,7 +26,7 @@ trap 'echo "[ERROR] Error occurred at $BASH_SOURCE:$LINENO command: $BASH_COMMAN
 
 [[ $1 != '--no-deps' ]] && run_component hadoop && run_component zookeeper
 
-"$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2> /dev/null || true
+"$HADOOP_HOME"/bin/hadoop fs -rm -r /accumulo 2>/dev/null || true
 "$ACCUMULO_HOME"/bin/accumulo init --clear-instance-name --instance-name "$ACCUMULO_INSTANCE" --password "$ACCUMULO_PASSWORD"
 "$ACCUMULO_HOME"/bin/accumulo-cluster start
 

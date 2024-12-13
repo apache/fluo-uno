@@ -18,7 +18,7 @@
 : "${bin:?"'\$bin' should be set by 'uno' script"}"
 
 # Determine UNO_HOME - Use env variable set by user. If none set, calculate using bin dir
-UNO_HOME="${UNO_HOME:-$( cd -P "${bin}"/.. && pwd )}"
+UNO_HOME="${UNO_HOME:-$(cd -P "${bin}"/.. && pwd)}"
 export UNO_HOME
 if [[ -z $UNO_HOME || ! -d $UNO_HOME ]]; then
   echo "UNO_HOME=$UNO_HOME is not a valid directory. Please make sure it exists"
@@ -52,34 +52,34 @@ function env_error() {
 
 # Confirm that hadoop, accumulo, and zookeeper env variables are not set
 if [[ ! "version env" =~ $1 ]]; then
-  [[ -n "$HH" && "$HH" != "$HADOOP_HOME" ]] && env_error 'HADOOP_HOME' "$HH" "$HADOOP_HOME"
-  [[ -n "$HC" && "$HC" != "$HADOOP_CONF_DIR" ]] && env_error 'HADOOP_CONF_DIR' "$HC" "$HADOOP_CONF_DIR"
-  [[ -n "$ZH" && "$ZH" != "$ZOOKEEPER_HOME" ]] && env_error 'ZOOKEEPER_HOME' "$ZH" "$ZOOKEEPER_HOME"
-  [[ -n "$SH" && "$SH" != "$SPARK_HOME" ]] && env_error 'SPARK_HOME' "$SH" "$SPARK_HOME"
-  [[ -n "$AH" && "$AH" != "$ACCUMULO_HOME" ]] && env_error 'ACCUMULO_HOME' "$AH" "$ACCUMULO_HOME"
-  [[ -n "$FH" && "$FH" != "$FLUO_HOME" ]] && env_error 'FLUO_HOME' "$FH" "$FLUO_HOME"
+  [[ -n $HH && $HH != "$HADOOP_HOME" ]] && env_error 'HADOOP_HOME' "$HH" "$HADOOP_HOME"
+  [[ -n $HC && $HC != "$HADOOP_CONF_DIR" ]] && env_error 'HADOOP_CONF_DIR' "$HC" "$HADOOP_CONF_DIR"
+  [[ -n $ZH && $ZH != "$ZOOKEEPER_HOME" ]] && env_error 'ZOOKEEPER_HOME' "$ZH" "$ZOOKEEPER_HOME"
+  [[ -n $SH && $SH != "$SPARK_HOME" ]] && env_error 'SPARK_HOME' "$SH" "$SPARK_HOME"
+  [[ -n $AH && $AH != "$ACCUMULO_HOME" ]] && env_error 'ACCUMULO_HOME' "$AH" "$ACCUMULO_HOME"
+  [[ -n $FH && $FH != "$FLUO_HOME" ]] && env_error 'FLUO_HOME' "$FH" "$FLUO_HOME"
 fi
 
 # Confirm that env variables were set correctly
-if [[ -n "$FLUO_REPO" && ! -d "$FLUO_REPO" ]]; then
+if [[ -n $FLUO_REPO && ! -d $FLUO_REPO ]]; then
   echo "FLUO_REPO=$FLUO_REPO is not a valid directory. Please make sure it exists"
   exit 1
 fi
-if [[ -n "$ACCUMULO_REPO" && ! -d "$ACCUMULO_REPO" ]]; then
+if [[ -n $ACCUMULO_REPO && ! -d $ACCUMULO_REPO ]]; then
   echo "ACCUMULO_REPO=$ACCUMULO_REPO is not a valid directory. Please make sure it exists"
   exit 1
 fi
 
-if [[ -z "$INSTALL" ]]; then
+if [[ -z $INSTALL ]]; then
   echo "INSTALL=$INSTALL needs to be set in uno.conf"
   exit 1
 fi
 
-if [[ ! -d "$INSTALL" ]]; then
+if [[ ! -d $INSTALL ]]; then
   mkdir -p "$INSTALL"
 fi
 
-if [[ -z "$JAVA_HOME" || ! -d "$JAVA_HOME" ]]; then
+if [[ -z $JAVA_HOME || ! -d $JAVA_HOME ]]; then
   echo "JAVA_HOME must be set in your shell to a valid directory. Currently, JAVA_HOME=$JAVA_HOME"
   exit 1
 fi
@@ -119,8 +119,14 @@ if [[ -z $ACCUMULO_HASH && ! $ACCUMULO_VERSION =~ SNAPSHOT ]]; then
   exit 1
 fi
 
-hash shasum 2>/dev/null || { echo >&2 "shasum must be installed & on PATH. Aborting."; exit 1; }
-hash sed 2>/dev/null || { echo >&2 "sed must be installed & on PATH. Aborting."; exit 1; }
+hash shasum 2>/dev/null || {
+  echo >&2 "shasum must be installed & on PATH. Aborting."
+  exit 1
+}
+hash sed 2>/dev/null || {
+  echo >&2 "sed must be installed & on PATH. Aborting."
+  exit 1
+}
 
 if sed --version >/dev/null 2>&1; then
   # GNU sed supports --version and -i without a backup suffix parameter

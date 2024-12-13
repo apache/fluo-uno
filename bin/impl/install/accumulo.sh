@@ -53,8 +53,8 @@ sed -i'' -e 's!paste -sd:)!paste -sd: -)!' "$conf/accumulo-env.sh"
 
 cp "$UNO_HOME"/conf/accumulo/common/* "$conf"
 if [[ $ACCUMULO_VERSION =~ ^1\..*$ ]]; then
-    print_to_console "Accumulo 1 is not supported; use an earlier uno or a newer accumulo"
-    exit 1
+  print_to_console "Accumulo 1 is not supported; use an earlier uno or a newer accumulo"
+  exit 1
 else
   accumulo_conf=$conf/accumulo.properties
   cp "$UNO_HOME"/conf/accumulo/2/* "$conf"

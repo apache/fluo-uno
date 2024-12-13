@@ -18,14 +18,14 @@
 # Start: Resolve Script Directory
 SOURCE="${BASH_SOURCE[0]}"
 # resolve $SOURCE until the file is no longer a symlink
-while [[ -h "$SOURCE" ]]; do
-   bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-   SOURCE="$(readlink "$SOURCE")"
-   # if $SOURCE was a relative symlink, we need to resolve it relative to the
-   # path where the symlink file was located
-   [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE"
+while [[ -L $SOURCE ]]; do
+  bin="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  # if $SOURCE was a relative symlink, we need to resolve it relative to the
+  # path where the symlink file was located
+  [[ $SOURCE != /* ]] && SOURCE="$bin/$SOURCE"
 done
-bin="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+bin="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 # Stop: Resolve Script Directory
 
 uno_cmd=$1
@@ -37,7 +37,7 @@ source "$bin"/impl/load-env.sh "$uno_cmd"
 source "$UNO_HOME"/bin/impl/commands.sh
 
 case "$uno_cmd" in
-  ashell|env|fetch|install|jshell|kill|run|setup|start|status|stop|version|wipe|zk)
+  ashell | env | fetch | install | jshell | kill | run | setup | start | status | stop | version | wipe | zk)
     "uno_${uno_cmd}_main" "$@"
     ;;
   *)
